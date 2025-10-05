@@ -3,3 +3,4 @@ env/
 notebook.ipynb
 chatbot.py
 app/.vercel
+app/__pycache__
