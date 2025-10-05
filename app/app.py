@@ -76,6 +76,5 @@ def get_response(prompt):
         "total_tokens": session['total_tokens']
     }
 
-
 if __name__ == '__main__':
     app.run(debug=True)
