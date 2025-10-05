@@ -42,7 +42,7 @@ def get_response(prompt):
     current_response_id = session.get('id')
     
     response = client.responses.create(
-            model = "gpt-4o-mini", # Change to GPT 5
+            model = "gpt-4o", # Simulating GPT 5
             input = prompt,
             previous_response_id=current_response_id
         )     

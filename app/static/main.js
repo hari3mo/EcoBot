@@ -31,6 +31,16 @@ $(document).ready(function () {
         $("#messageFormeight").append(userHtml);
         scrollToBottom();
 
+        // Show loading animation
+        var loadingHtml =
+            '<div class="d-flex justify-content-start mb-4" id="loading-indicator">' +
+            '<div class="img_cont_msg"><img src="/static/images/placeholder.png" class="rounded-circle user_img_msg"></div>' +
+            '<div class="msg_container">' +
+            '<div class="typing-indicator"><span></span><span></span><span></span></div>' +
+            '</div></div>';
+        $("#messageFormeight").append(loadingHtml);
+        scrollToBottom();
+
         $.ajax({
             data: {
                 prompt: rawText,
@@ -38,6 +48,9 @@ $(document).ready(function () {
             type: "POST",
             url: "/chat",
         }).done(function (data) {
+            // Remove loading animation
+            $("#loading-indicator").remove();
+            
             const botContainerId = "bot-msg-" + Date.now();
             var botHtml =
                 '<div class="d-flex justify-content-start mb-4"><div class="img_cont_msg"><img src="/static/images/placeholder.png" class="rounded-circle user_img_msg"></div><div class="msg_container" id="' +
