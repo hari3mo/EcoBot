@@ -279,7 +279,7 @@ html {
 }
 
 .stats_item {
-    margin-bottom: 23.58px;
+    /* margin-bottom: 23.58px; */
 }
 
 .stats_item h5 {
@@ -354,4 +354,41 @@ html {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     letter-spacing: 0.5px;
     line-height: 1.4;
+}
+
+.stats_row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.increment {
+    font-size: 0.9em;
+    color: #4cd137;
+    font-weight: 600;
+    margin-left: 10px;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.increment-flash {
+    animation: flash 1s ease;
+}
+
+@keyframes flash {
+    0% {
+        opacity: 0;
+        transform: translateX(10px);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateX(0);
+        color: #82ff82;
+    }
+
+    100% {
+        opacity: 0.8;
+        color: #4cd137;
+    }
 }

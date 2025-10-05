@@ -82,33 +82,46 @@
           </div>
         </div>
         <div class="col-md-4 col-xl-3 stats">
-            <div class="card">
-                
-                <div class="card-body">
-                    <div class="stats_item">
-                        <h5>Energy Cost (Wh)</h5>
-                        <p><span id="total_wh">0.00000</span> ⚡️</p>
-                    </div>
-                    <div class="stats_item">
-                        <h5>Water Cost (ml)</h5>
-                        <p><span id="total_ml">0.00000</span> 💧</p>
-                    </div>
-                    <div class="stats_item">
-                        <h5>Emissions (kg CO2)</h5>
-                        <p><span id="total_co2">0.00000</span> 💨</p>
-                    </div>
-                    <div class="stats_item">
-                        <h5>Money (USD)</h5>
-                        <p>$<span id="total_usd">0.00</span> 💵</p>
-                    </div>
-                    <div class="stats_item">
-                        <h5>Tokens</h5>
-                        <p><span id="total_tokens">0</span> 🪙</p>
-                    </div>
-
+    <div class="card">
+        <div class="card-body">
+            <div class="stats_item">
+                <h5>Energy Cost (Wh)</h5>
+                <div class="stats_row">
+                    <p><span id="total_wh">0.00000</span> ⚡️</p>
+                    <span class="increment" id="inc_wh"></span>
+                </div>
+            </div>
+            <div class="stats_item">
+                <h5>Water Cost (ml)</h5>
+                <div class="stats_row">
+                    <p><span id="total_ml">0.00000</span> 💧</p>
+                    <span class="increment" id="inc_ml"></span>
+                </div>
+            </div>
+            <div class="stats_item">
+                <h5>Emissions (kg CO2)</h5>
+                <div class="stats_row">
+                    <p><span id="total_co2">0.00000</span> 💨</p>
+                    <span class="increment" id="inc_co2"></span>
+                </div>
+            </div>
+            <div class="stats_item">
+                <h5>Money (USD)</h5>
+                <div class="stats_row">
+                    <p>$<span id="total_usd">0.00</span> 💵</p>
+                    <span class="increment" id="inc_usd"></span>
+                </div>
+            </div>
+            <div class="stats_item">
+                <h5>Tokens</h5>
+                <div class="stats_row">
+                    <p><span id="total_tokens">0</span> 🪙</p>
+                    <span class="increment" id="inc_tokens"></span>
                 </div>
             </div>
         </div>
+    </div>
+</div>
       </div>
     </div>
     <script src="{{ url_for('static', filename='main.js') }}"></script> 

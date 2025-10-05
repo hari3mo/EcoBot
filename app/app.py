@@ -73,8 +73,14 @@ def get_response(prompt):
         "total_ml": f"{session['total_ML']:.5f}",
         "total_co2": f"{session['total_CO2']:.5f}",
         "total_usd": f"{session['total_usd']:.5f}",
-        "total_tokens": session['total_tokens']
+        "total_tokens": session['total_tokens'],
+        # Add incremental values
+        "inc_wh": f"{wh_cost:.5f}",
+        "inc_ml": f"{ml_cost:.5f}",
+        "inc_co2": f"{co2_cost:.5f}",
+        "inc_usd": f"{usd_cost:.5f}",
+        "inc_tokens": query_tokens
     }
-
+    
 if __name__ == '__main__':
     app.run(debug=True)

@@ -50,7 +50,7 @@ $(document).ready(function () {
         }).done(function (data) {
             // Remove loading animation
             $("#loading-indicator").remove();
-            
+
             const botContainerId = "bot-msg-" + Date.now();
             var botHtml =
                 '<div class="d-flex justify-content-start mb-4"><div class="img_cont_msg"><img src="/static/images/placeholder.png" class="rounded-circle user_img_msg"></div><div class="msg_container" id="' +
@@ -74,14 +74,31 @@ $(document).ready(function () {
                     );
                     scrollToBottom();
 
-                    // Update stats
+                    // Update stats with totals
                     $("#total_wh").text(data.total_wh);
                     $("#total_ml").text(data.total_ml);
                     $("#total_co2").text(data.total_co2);
                     $("#total_usd").text(data.total_usd);
                     $("#total_tokens").text(data.total_tokens);
+
+                    // Update incremental values with animation and units
+                    updateIncrement("#inc_wh", data.inc_wh, " Wh");
+                    updateIncrement("#inc_ml", data.inc_ml, " ml");
+                    updateIncrement("#inc_co2", data.inc_co2, " kg");
+                    updateIncrement("#inc_usd", data.inc_usd, "", "$");
+                    updateIncrement("#inc_tokens", data.inc_tokens, " tokens");
                 }
             }, 30);
         });
+
+        // Function to update and animate increment display
+        function updateIncrement(elementId, value, unit = "", prefix = "") {
+            const $element = $(elementId);
+            $element.text("+" + prefix + value + unit);
+            $element.addClass("increment-flash");
+            setTimeout(function () {
+                $element.removeClass("increment-flash");
+            }, 1000);
+        }
     });
 });
