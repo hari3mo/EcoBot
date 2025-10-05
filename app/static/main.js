@@ -81,7 +81,7 @@ $(document).ready(function () {
                     $("#total_usd").text(data.total_usd);
                     $("#total_tokens").text(data.total_tokens);
                 }
-            }, 50);
+            }, 30);
         });
     });
 });
