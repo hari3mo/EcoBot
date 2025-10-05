@@ -4,3 +4,4 @@ notebook.ipynb
 chatbot.py
 app/.vercel
 app/__pycache__
+.DS_Store
