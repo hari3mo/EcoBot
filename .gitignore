@@ -1,8 +1,9 @@
 env/
 .env
-notebook.ipynb
-chatbot.py
 app/.vercel
 app/__pycache__
 app/env
+docs/reading*.txt
 .DS_Store
+notebook.ipynb
+chatbot.py

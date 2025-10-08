@@ -1,4 +1,4 @@
-from flask import Flask, logging, render_template, request, session, jsonify
+from flask import Flask, render_template, request, session, jsonify
 from openai import OpenAI
 from dotenv import load_dotenv
 import tiktoken
@@ -80,7 +80,8 @@ def get_response(prompt):
         "total_co2": f"{session['total_CO2']:.5f}",
         "total_usd": f"{session['total_usd']:.5f}",
         "total_tokens": session['total_tokens'],
-        # Add incremental values
+        
+        # Marginal cost
         "inc_wh": f"{wh_cost:.3f}",
         "inc_ml": f"{ml_cost:.3f}",
         "inc_co2": f"{co2_cost:.5f}",
