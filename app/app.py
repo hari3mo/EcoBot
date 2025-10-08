@@ -30,6 +30,7 @@ def index():
     session['total_CO2'] = 0
     session['total_usd'] = 0
     session['total_tokens'] = 0
+    session['cached_tokens'] = 0
     return render_template('index.html')
 
 
@@ -56,14 +57,17 @@ def get_response(prompt):
     output_text = response.output_text
     usage = response.usage
     query_tokens = usage.total_tokens
-    cached_tokens = query_tokens - (input_tokenizer + usage.output_tokens)
+    
+    current_cache_total = input_tokenizer + usage.output_tokens
+    session['cached_tokens'] = session.get('cached_tokens', 0) + current_cache_total
+    cached_tokens_used = query_tokens - (input_tokenizer + usage.output_tokens)
 
     # Calculate metrics
     wh_cost = (input_tokenizer + usage.output_tokens) * WH_RATE
     ml_cost = (input_tokenizer + usage.output_tokens) * ML_RATE
     co2_cost = (input_tokenizer + usage.output_tokens) * G_CO2_RATE
     usd_cost_in = usage.input_tokens * USD_RATE_INPUT
-    usd_cost_cache = cached_tokens * USD_RATE_CACHE
+    usd_cost_cache = cached_tokens_used * USD_RATE_CACHE
     usd_cost_out = usage.output_tokens * USD_RATE_OUT
     usd_cost = usd_cost_in + usd_cost_out + usd_cost_cache
     
@@ -95,7 +99,7 @@ def get_response(prompt):
         
         "input_tokens": input_tokenizer,
         "output_tokens": usage.output_tokens,
-        "cached_tokens": cached_tokens        
+        "cached_tokens": session['cached_tokens']
     }
     
 if __name__ == '__main__':
