@@ -45,3 +45,14 @@ The calculation to arrive at the estimated CO2 emission per token is as follows:
     Calculate CO2 Emissions per Token:
 
         0.000018 kWh/token × 0.33 kg CO2/kWh = 0.00000594 kg CO2/token
+
+USD Cost per Token
+The pricing per token for the ChatGPT 5 API is available on OpenAIs website.
+
+Price:
+Input:
+$1.250 / 1M tokens = $0.00000125 / token
+Cached input:
+$0.125 / 1M tokens = $0.000000125 / token
+Output:
+$10.000 / 1M tokens = $0.00001 / token
