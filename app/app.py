@@ -17,7 +17,8 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 WH_RATE = 0.018
 ML_RATE = 0.0324
 G_CO2_RATE = 0.00594
-USD_RATE_IN = 0.000001375
+USD_RATE_INPUT = 0.00000125
+USD_RATE_CACHE = 0.000000125
 USD_RATE_OUT = 0.00001
 
 # Routes
@@ -40,7 +41,7 @@ def chat():
 
 
 def get_response(prompt):
-    current_response_id = session.get('id')
+    current_response_id = session.get('id', None)
     
     response = client.responses.create(
             model = "gpt-4o", # Simulating GPT 5
@@ -55,14 +56,16 @@ def get_response(prompt):
     output_text = response.output_text
     usage = response.usage
     query_tokens = usage.total_tokens
-    
+    cached_tokens = usage.input_tokens - input_tokenizer if current_response_id else 0
+
     # Calculate metrics
     wh_cost = (input_tokenizer + usage.output_tokens) * WH_RATE
     ml_cost = (input_tokenizer + usage.output_tokens) * ML_RATE
     co2_cost = (input_tokenizer + usage.output_tokens) * G_CO2_RATE
-    usd_cost_in = usage.input_tokens * USD_RATE_IN
+    usd_cost_in = usage.input_tokens * USD_RATE_INPUT
+    usd_cost_cache = cached_tokens * USD_RATE_CACHE
     usd_cost_out = usage.output_tokens * USD_RATE_OUT
-    usd_cost = usd_cost_in + usd_cost_out
+    usd_cost = usd_cost_in + usd_cost_out + usd_cost_cache
     
     # Update session totals
     session['total_WH'] = session.get('total_WH', 0) + wh_cost
