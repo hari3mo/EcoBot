@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, session, jsonify
+from flask import Flask, logging, render_template, request, session, jsonify
 from openai import OpenAI
 from dotenv import load_dotenv
+import logging
 import os
 
 load_dotenv()
@@ -11,6 +12,8 @@ app.config['SECRET_KEY'] = SECRET_KEY
 
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 client = OpenAI(api_key=OPENAI_API_KEY)
+
+logging.basicConfig(level=logging.INFO)
 
 # Constants
 WH_RATE = 0.00034
@@ -51,6 +54,11 @@ def get_response(prompt):
     usage = response.usage
     query_tokens = usage.total_tokens
     
+    session['id'] = response.id
+
+    # Log token usage
+    logging.info(f"Response ID: {response.id}, Input Tokens: {usage.input_tokens}, Output Tokens: {usage.output_tokens}, Total Tokens: {query_tokens}")
+    
     wh_cost = query_tokens * WH_RATE
     ml_cost = query_tokens * ML_RATE
     co2_cost = query_tokens * KG_CO2_RATE
@@ -65,7 +73,6 @@ def get_response(prompt):
     session['total_usd'] = session.get('total_usd', 0) + usd_cost
     session['total_tokens'] = session.get('total_tokens', 0) + query_tokens
     
-    session['id'] = response.id
 
     return {
         "response_text": output_text,
