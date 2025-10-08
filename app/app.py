@@ -24,12 +24,6 @@ USD_RATE_OUT = 0.00001
 # Routes
 @app.route("/")
 def index():
-    session['id'] = None
-    session['total_WH'] = 0
-    session['total_ML'] = 0
-    session['total_CO2'] = 0
-    session['total_usd'] = 0
-    session['total_tokens'] = 0
     return render_template('index.html')
 
 
@@ -78,13 +72,15 @@ def get_response(prompt):
 
     return {
         "response_text": output_text,
+        
+        # Cumulative totals
         "total_wh": f"{session['total_WH']:.3f}",
         "total_ml": f"{session['total_ML']:.3f}",
         "total_co2": f"{session['total_CO2']:.4f}",
         "total_usd": f"{session['total_usd']:.5f}",
         "total_tokens": session['total_tokens'],
         
-        # Marginal cost
+        # Marginal costs
         "inc_wh": f"{wh_cost:.3f}",
         "inc_ml": f"{ml_cost:.3f}",
         "inc_co2": f"{co2_cost:.4f}",
