@@ -2,6 +2,7 @@ env/
 .env
 app/.vercel
 app/__pycache__
+__pycache__/
 app/env
 docs/reading*.txt
 .DS_Store
