@@ -1,7 +1,7 @@
 from flask import Flask, logging, render_template, request, session, jsonify
 from openai import OpenAI
 from dotenv import load_dotenv
-import logging
+# import logging
 import tiktoken
 import os
 
@@ -14,7 +14,7 @@ app.config['SECRET_KEY'] = SECRET_KEY
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 client = OpenAI(api_key=OPENAI_API_KEY)
 
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
 
 # Constants
 WH_RATE = 0.018
@@ -60,10 +60,10 @@ def get_response(prompt):
     query_tokens = usage.total_tokens
 
     # Log token usage
-    logging.info(f'Input Tokens (Tokenizer): {input_tokenizer}')
-    logging.info(f'Input Tokens (from API): {usage.input_tokens}')
-    logging.info(f'Total Tokens (Tokenizer): {usage.output_tokens + input_tokenizer}')
-    logging.info(f"Total Tokens: {query_tokens}")
+    # logging.info(f'Input Tokens (Tokenizer): {input_tokenizer}')
+    # logging.info(f'Input Tokens (from API): {usage.input_tokens}')
+    # logging.info(f'Total Tokens (Tokenizer): {usage.output_tokens + input_tokenizer}')
+    # logging.info(f"Total Tokens: {query_tokens}")
     
     # Calculate metrics
     wh_cost = (input_tokenizer + usage.output_tokens) * WH_RATE
