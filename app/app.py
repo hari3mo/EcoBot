@@ -16,7 +16,7 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 # Constants
 WH_RATE = 0.018
 ML_RATE = 0.0324
-KG_CO2_RATE = 0.00000594
+G_CO2_RATE = 0.00594
 USD_RATE_IN = 0.000001375
 USD_RATE_OUT = 0.00001
 
@@ -59,7 +59,7 @@ def get_response(prompt):
     # Calculate metrics
     wh_cost = (input_tokenizer + usage.output_tokens) * WH_RATE
     ml_cost = (input_tokenizer + usage.output_tokens) * ML_RATE
-    co2_cost = (input_tokenizer + usage.output_tokens) * KG_CO2_RATE
+    co2_cost = (input_tokenizer + usage.output_tokens) * G_CO2_RATE
     usd_cost_in = usage.input_tokens * USD_RATE_IN
     usd_cost_out = usage.output_tokens * USD_RATE_OUT
     usd_cost = usd_cost_in + usd_cost_out
@@ -77,14 +77,14 @@ def get_response(prompt):
         "response_text": output_text,
         "total_wh": f"{session['total_WH']:.3f}",
         "total_ml": f"{session['total_ML']:.3f}",
-        "total_co2": f"{session['total_CO2']:.5f}",
+        "total_co2": f"{session['total_CO2']:.4f}",
         "total_usd": f"{session['total_usd']:.5f}",
         "total_tokens": session['total_tokens'],
         
         # Marginal cost
         "inc_wh": f"{wh_cost:.3f}",
         "inc_ml": f"{ml_cost:.3f}",
-        "inc_co2": f"{co2_cost:.5f}",
+        "inc_co2": f"{co2_cost:.4f}",
         "inc_usd": f"{usd_cost:.5f}",
         "inc_tokens": query_tokens
     }

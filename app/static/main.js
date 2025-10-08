@@ -84,7 +84,7 @@ $(document).ready(function () {
                     // Update incremental values with animation and units
                     updateIncrement("#inc_wh", data.inc_wh, " Wh");
                     updateIncrement("#inc_ml", data.inc_ml, " ml");
-                    updateIncrement("#inc_co2", data.inc_co2, " kg");
+                    updateIncrement("#inc_co2", data.inc_co2, " g");
                     updateIncrement("#inc_usd", data.inc_usd, "", "$");
                     updateIncrement("#inc_tokens", data.inc_tokens, " tokens");
                 }
