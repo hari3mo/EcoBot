@@ -60,6 +60,9 @@
             </div>
             <div id="messageFormeight" class="card-body msg_card_body"></div>
             <div class="card-footer">
+              <div id="cached-tokens-display" style="text-align: right; color: rgba(255, 255, 255, 0.6); font-size: 12px; margin-bottom: 5px; padding-right: 10px; display: none;">
+                <span id="cached-tokens-count">0</span> tokens cached
+              </div>
               <form id="messageArea" class="input-group">
                 <input
                   type="text"
@@ -121,9 +124,9 @@
                     <span class="increment" id="inc_tokens"></span>
                 </div>
             </div>
-        </div>
+          </div>
     </div>
-</div>
+</div>    
       </div>
     </div>
     <script src="{{ url_for('static', filename='main.js') }}"></script> 

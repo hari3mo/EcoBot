@@ -203,6 +203,7 @@ html {
 .msg_time {
     position: absolute;
     left: 0;
+    text-align: left;
     bottom: -17.43px;
     color: rgba(255, 255, 255, 0.5);
     font-size: 11.79px;
@@ -391,4 +392,52 @@ html {
         opacity: 0.8;
         color: #4cd137;
     }
+}
+
+.msg_container {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: 11.79px;
+    border-radius: 29.73px;
+    font-size: 0.82em;
+    background-color: #2185ff;
+    padding: 11.79px;
+    position: relative;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 25px;
+}
+
+.msg_container_send {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 11.79px;
+    border-radius: 29.73px;
+    font-size: 0.82em;
+    background-color: #4cd137;
+    padding: 11.79px;
+    position: relative;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 25px;
+}
+
+
+.msg_tokens {
+    position: absolute;
+    right: 0;
+    bottom: -20px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 11.79px;
+    text-align: right;
+    padding-right: 10px;
+    white-space: nowrap;
+}
+
+.msg_tokens_send {
+    position: absolute;
+    left: 0;
+    bottom: -20px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 11.79px;
+    padding-left: 10px;
+    white-space: nowrap;
 }

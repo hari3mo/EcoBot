@@ -20,12 +20,15 @@ $(document).ready(function () {
             return;
         }
 
+        const userContainerId = "user-msg-" + Date.now();
         var userHtml =
-            '<div class="d-flex justify-content-end mb-4"><div class="msg_container_send">' +
+            '<div class="d-flex justify-content-end mb-4"><div class="msg_container_send" id="' +
+            userContainerId +
+            '">' +
             rawText +
-            '<span class="msg_time_send">' +
+            /*'<span class="msg_time_send">' +
             str_time +
-            '</span></div><div class="img_cont_msg"><img src="/static/images/Seventh_College_logo2.png" class="rounded-circle user_img_msg"></div></div>';
+            '</span>*/'</div><div class="img_cont_msg"><img src="/static/images/Seventh_College_logo2.png" class="rounded-circle user_img_msg"></div></div>';
 
         $("#text").val("");
         $("#messageFormeight").append(userHtml);
@@ -51,6 +54,15 @@ $(document).ready(function () {
             // Remove loading animation
             $("#loading-indicator").remove();
 
+            // Update cached tokens display in the input area
+            $("#cached-tokens-count").text(data.cached_tokens);
+            $("#cached-tokens-display").fadeIn();
+
+            // Add input tokens to user message with fade-in effect
+            const inputTokensSpan = $('<span class="msg_tokens_send" style="display: none;">' + data.input_tokens + ' tokens</span>');
+            $("#" + userContainerId).append(inputTokensSpan);
+            inputTokensSpan.fadeIn(400);
+
             const botContainerId = "bot-msg-" + Date.now();
             var botHtml =
                 '<div class="d-flex justify-content-start mb-4"><div class="img_cont_msg"><img src="/static/images/placeholder.png" class="rounded-circle user_img_msg"></div><div class="msg_container" id="' +
@@ -69,9 +81,10 @@ $(document).ready(function () {
                     scrollToBottom();
                 } else {
                     clearInterval(interval);
-                    $("#" + botContainerId).append(
-                        '<span class="msg_time">' + str_time + "</span>"
-                    );
+                    // Add output tokens with fade-in effect
+                    const outputTokensSpan = $('<span class="msg_tokens" style="display: none;">' + data.output_tokens + ' tokens</span>');
+                    $("#" + botContainerId).append(outputTokensSpan);
+                    outputTokensSpan.fadeIn(400);
                     scrollToBottom();
 
                     // Update stats with totals

@@ -24,6 +24,12 @@ USD_RATE_OUT = 0.00001
 # Routes
 @app.route("/")
 def index():
+    session['id'] = None
+    session['total_WH'] = 0
+    session['total_ML'] = 0
+    session['total_CO2'] = 0
+    session['total_usd'] = 0
+    session['total_tokens'] = 0
     return render_template('index.html')
 
 
@@ -50,7 +56,7 @@ def get_response(prompt):
     output_text = response.output_text
     usage = response.usage
     query_tokens = usage.total_tokens
-    cached_tokens = usage.input_tokens - input_tokenizer if current_response_id else 0
+    cached_tokens = query_tokens - (input_tokenizer + usage.output_tokens)
 
     # Calculate metrics
     wh_cost = (input_tokenizer + usage.output_tokens) * WH_RATE
@@ -85,7 +91,11 @@ def get_response(prompt):
         "inc_ml": f"{ml_cost:.3f}",
         "inc_co2": f"{co2_cost:.4f}",
         "inc_usd": f"{usd_cost:.5f}",
-        "inc_tokens": query_tokens
+        "inc_tokens": query_tokens,
+        
+        "input_tokens": input_tokenizer,
+        "output_tokens": usage.output_tokens,
+        "cached_tokens": cached_tokens        
     }
     
 if __name__ == '__main__':
