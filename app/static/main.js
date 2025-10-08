@@ -98,7 +98,7 @@ $(document).ready(function () {
             $element.addClass("increment-flash");
             setTimeout(function () {
                 $element.removeClass("increment-flash");
-            }, 1000);
+            }, 750);
         }
     });
 });
