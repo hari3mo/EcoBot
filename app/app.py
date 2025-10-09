@@ -27,7 +27,7 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('MYSQL_URI')
 db = SQLAlchemy(app)
-engine = create_engine(os.getenv('MYSQL_URI')).connect()
+engine = create_engine(os.getenv('MYSQL_URI'))
 
 # Constants
 WH_RATE = 0.018
@@ -125,9 +125,10 @@ def get_response(prompt):
     prompt = df[['id', 'timestamp', 'prompt', 'response']]
     
     if session['PROD']:
-        logs.to_sql('logs', con=engine, if_exists='append', index=False)
-        prompt.to_sql('prompts', con=engine, if_exists='append', index=False)
-        db.session.commit()
+        with engine.connect() as connection:
+            logs.to_sql('logs', con=connection, if_exists='append', index=False)
+            prompt.to_sql('prompts', con=connection, if_exists='append', index=False)
+            connection.commit()
     else:
         logging.info(f"Cached: {cached_tokens}, Aggregate: {input_tokenizer + output_tokenizer}")
         prompt.to_csv('logs/prompts.csv', index=False, mode='a', header=not os.path.exists('logs/prompts.csv'))
