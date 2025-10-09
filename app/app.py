@@ -3,13 +3,10 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import tiktoken
 import csv
-import json
 import os
 
 load_dotenv()
 app = Flask(__name__)
-
-PROD = os.getenv('PROD')
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 app.config['SECRET_KEY'] = SECRET_KEY
@@ -25,47 +22,9 @@ USD_RATE_INPUT = 0.00000125
 USD_RATE_CACHE = 0.000000125
 USD_RATE_OUT = 0.00001
 
-def log_json(log_data):
-    log_dir = 'logs'
-    os.makedirs(log_dir, exist_ok=True)
-
-    log_file_path = os.path.join(log_dir, 'logs.json')
-    prompt_file_path = os.path.join(log_dir, 'prompts.json')
-
-    log_entry = {k: v for k, v in log_data.items() if k not in ['prompt', 'response']}
-
-    prompt_entry = {
-        'id': log_data['id'],
-        'timestamp': log_data['timestamp'],
-        'prompt': log_data['prompt'],
-        'response': log_data['response']
-    }
-    
-    def append_to_json(file_path, data_entry):
-        try:
-            with open(file_path, 'r+', encoding='utf-8') as f:
-                try:
-                    data = json.load(f)
-                except json.JSONDecodeError:
-                    data = []
-                data.append(data_entry)
-                f.seek(0)
-                json.dump(data, f, indent=4)
-                f.truncate()
-        except FileNotFoundError:
-            with open(file_path, 'w', encoding='utf-8') as f:
-                json.dump([data_entry], f, indent=4)
-
-    append_to_json(log_file_path, log_entry)
-    append_to_json(prompt_file_path, prompt_entry)
-
-
-
 def log_csv(log_data):
-    log_dir = 'logs'
-    os.makedirs(log_dir, exist_ok=True)
-    log_file = os.path.join(log_dir, 'logs.csv')
-    prompt_file = os.path.join(log_dir, 'prompts.csv')
+    log_file = 'logs/logs.csv'  
+    prompt_file = 'logs/prompts.csv'
     file_exists = os.path.isfile(log_file)
     prompt_exists = os.path.isfile(prompt_file)
 
@@ -136,9 +95,9 @@ def get_response(prompt):
     cached_tokens = query_tokens - (input_tokenizer + usage.output_tokens)
     session['cached_tokens'] += input_tokenizer + usage.output_tokens if current_response_id else cached_tokens
     
-    # import logging
-    # logging.basicConfig(level=logging.INFO)
-    # logging.info(f"Cached Tokens: {cached_tokens}, Aggregate Cached Tokens: {input_tokenizer + output_tokenizer}")
+    import logging
+    logging.basicConfig(level=logging.INFO)
+    logging.info(f"Cached Tokens: {cached_tokens}, Aggregate Cached Tokens: {input_tokenizer + output_tokenizer}")
 
     # Calculate metrics
     wh_cost = (input_tokenizer + usage.output_tokens) * WH_RATE
@@ -182,10 +141,7 @@ def get_response(prompt):
         'total_tokens': session['total_tokens'],
         'total_cached_tokens': session['cached_tokens']
     }
-    if PROD:
-        log_json(log_data)
-    else:
-        log_csv(log_data)
+    log_csv(log_data)
 
     return {
         "response_text": output_text,
@@ -208,30 +164,6 @@ def get_response(prompt):
         "output_tokens": usage.output_tokens,
         "cached_tokens": session['cached_tokens']
     }
-
-@app.route('/logs', methods=['GET'])
-def get_logs():
-    log_file_path = os.path.join('logs', 'logs.json')
-    try:
-        with open(log_file_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        return jsonify(data)
-    except FileNotFoundError:
-        return jsonify({"error": "Log file not found."}), 404
-    except json.JSONDecodeError:
-        return jsonify([]), 200
-
-@app.route('/prompts', methods=['GET'])
-def get_prompts():
-    prompt_file_path = os.path.join('logs', 'prompts.json')
-    try:
-        with open(prompt_file_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        return jsonify(data)
-    except FileNotFoundError:
-        return jsonify({"error": "Prompt file not found."}), 404
-    except json.JSONDecodeError:
-        return jsonify([]), 200
-
+    
 if __name__ == '__main__':
     app.run(debug=True)

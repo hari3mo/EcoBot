@@ -6,7 +6,8 @@ app/__pycache__
 __pycache__/
 app/env
 docs/reading*.txt
-.DS_Store
 notebook.ipynb
 chatbot.py
+test.py
+.DS_Store
 .vercel
