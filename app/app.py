@@ -61,11 +61,7 @@ def get_response(prompt):
     output_tokenizer = len(enc.encode(output_text))
     
     cached_tokens = query_tokens - (input_tokenizer + usage.output_tokens)
-    session['cached_tokens'] += input_tokenizer + usage.output_tokens if current_response_id else cached_tokens
-    
-    # import logging
-    # logging.basicConfig(level=logging.INFO)
-    # logging.info(f"Cached Tokens: {cached_tokens}, Aggregate Cached Tokens: {input_tokenizer + output_tokenizer}")
+    session['cached_tokens'] += input_tokenizer + usage.output_tokens
 
     # Calculate metrics
     wh_cost = (input_tokenizer + usage.output_tokens) * WH_RATE
@@ -87,6 +83,9 @@ def get_response(prompt):
     
     if not PROD:
         import csv
+        import logging
+        logging.basicConfig(level=logging.INFO)
+        logging.info(f"Cached Tokens: {cached_tokens}, Aggregate Cached Tokens: {input_tokenizer + output_tokenizer}")
         def log_csv(log_data):
             log_dir = 'logs'
             os.makedirs(log_dir, exist_ok=True)
