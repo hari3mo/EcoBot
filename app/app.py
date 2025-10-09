@@ -3,11 +3,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import pandas as pd
 import tiktoken
-import json
 import os
-import logging
-
-logging.basicConfig(level=logging.INFO)
 
 load_dotenv()
 app = Flask(__name__)
@@ -161,6 +157,8 @@ def get_response(prompt):
         pass
     
     else:
+        import logging
+        logging.basicConfig(level=logging.INFO)
         logging.info(f"Cached: {cached_tokens}, Aggregate: {input_tokenizer + output_tokenizer}")
         
         logs.to_csv('logs/logs.csv', index=False, mode='a', header=not os.path.exists('logs/logs.csv'))
