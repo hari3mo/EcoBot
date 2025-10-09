@@ -1,8 +1,11 @@
--- DROP TABLE prompts_dev;
--- DROP TABLE logs_dev;
+-- --@block--
+-- DROP TABLE prompts;
+-- DROP TABLE logs;
 
--- CREATE TABLE logs_dev (
+-- --@block--
+-- CREATE TABLE logs (
 --     id VARCHAR(255) PRIMARY KEY,
+--     previous_id VARCHAR(255),
 --     datetime DATETIME,
 --     wh DECIMAL(18, 9),
 --     ml DECIMAL(18, 9),
@@ -25,15 +28,12 @@
 -- );
 
 -- --@block--
--- -- Create prompts table (child table with foreign key)
--- CREATE TABLE prompts_dev (
+-- CREATE TABLE prompts (
 --     id VARCHAR(255) PRIMARY KEY,
+--     previous_id VARCHAR(255),
 --     datetime DATETIME,
 --     prompt TEXT,
 --     response TEXT,
---     FOREIGN KEY (id) REFERENCES logs_dev(id) ON DELETE CASCADE
+--     FOREIGN KEY (id) REFERENCES logs(id)
 -- );
 
--- --@block--
--- ALTER TABLE logs
--- CHANGE timestamp datetime DATETIME;

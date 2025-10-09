@@ -41,6 +41,7 @@ USD_RATE_OUT = 0.00001
 @app.route("/")
 def index():
     session['id'] = None
+    session['previous_id'] = None
     session['total_WH'] = 0
     session['total_ML'] = 0
     session['total_CO2'] = 0
@@ -64,7 +65,8 @@ def get_response(prompt):
     response = client.responses.create(
             model = "gpt-4o", # Simulating GPT 5
             input = prompt,
-            previous_response_id=current_response_id
+            previous_response_id=current_response_id,
+            instructions='Format your response in markdown.'
         )
     
     output_text = response.output_text
@@ -94,12 +96,15 @@ def get_response(prompt):
     session['total_usd'] = session.get('total_usd', 0) + usd_cost
     session['total_tokens'] = session.get('total_tokens', 0) + query_tokens
     
+    
     session['id'] = response.id
+    logging.info(f"Response ID: {response.id}, Previous ID: {current_response_id}")
     
     log_data = {
             'prompt': prompt,
             'response': output_text,
             'id': response.id,
+            'previous_id': current_response_id,
             'datetime': datetime.fromtimestamp(response.created_at),
             'wh': wh_cost,
             'ml': ml_cost,
@@ -124,12 +129,12 @@ def get_response(prompt):
     df = pd.DataFrame([log_data])
     
     log_columns = [
-        'id', 'datetime', 'wh', 'ml', 'g_co2', 'usd_in', 'usd_cache', 'usd_out',
+        'id', 'previous_id', 'datetime', 'wh', 'ml', 'g_co2', 'usd_in', 'usd_cache', 'usd_out',
         'tokens', 'input_tokens', 'input_tokens_tokenizer', 'output_tokens',
         'output_tokens_tokenizer', 'cached_tokens', 'total_wh', 'total_ml',
-        'total_co2', 'total_usd', 'total_tokens', 'total_cached_tokens'
-    ]
-    prompt_columns = ['id', 'datetime', 'prompt', 'response']
+        'total_co2', 'total_usd', 'total_tokens', 'total_cached_tokens']
+    
+    prompt_columns = ['id', 'previous_id', 'datetime', 'prompt', 'response']
     logs_df = df[log_columns]
     prompt_df = df[prompt_columns]
     
