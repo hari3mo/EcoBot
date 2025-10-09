@@ -124,7 +124,7 @@ def get_response(prompt):
     logs = df.iloc[:, 2:]
     prompt = df[['id', 'timestamp', 'prompt', 'response']]
     
-    if session['PROD']:
+    if PROD:
         with engine.connect() as connection:
             logs.to_sql('logs', con=connection, if_exists='append', index=False)
             prompt.to_sql('prompts', con=connection, if_exists='append', index=False)
