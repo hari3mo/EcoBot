@@ -1,7 +1,7 @@
-DROP TABLE prompts;
-DROP TABLE logs;
+DROP TABLE prompts_dev;
+DROP TABLE logs_dev;
 
-CREATE TABLE logs (
+CREATE TABLE logs_dev (
     id VARCHAR(255) PRIMARY KEY,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     wh DECIMAL(18, 9),
@@ -25,10 +25,10 @@ CREATE TABLE logs (
 );
 
 -- Create prompts table (child table with foreign key)
-CREATE TABLE prompts (
+CREATE TABLE prompts_dev (
     id VARCHAR(255) PRIMARY KEY,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     prompt TEXT,
     response TEXT,
-    FOREIGN KEY (id) REFERENCES logs(id) ON DELETE CASCADE
+    FOREIGN KEY (id) REFERENCES logs_dev(id) ON DELETE CASCADE
 );

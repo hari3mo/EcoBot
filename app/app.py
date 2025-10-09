@@ -124,15 +124,16 @@ def get_response(prompt):
     logs = df.iloc[:, 2:]
     prompt = df[['id', 'timestamp', 'prompt', 'response']]
     
-    if PROD:
-        with engine.connect() as connection:
+    with engine.connect() as connection:
+        if PROD:
             logs.to_sql('logs', con=connection, if_exists='append', index=False)
             prompt.to_sql('prompts', con=connection, if_exists='append', index=False)
-            connection.commit()
-    else:
-        logging.info(f"Cached: {cached_tokens}, Aggregate: {input_tokenizer + output_tokenizer}")
-        prompt.to_csv('logs/prompts.csv', index=False, mode='a', header=not os.path.exists('logs/prompts.csv'))
-        logs.to_csv('logs/logs.csv', index=False, mode='a', header=not os.path.exists('logs/logs.csv'))
+        else:
+            logging.info(f"Cached: {cached_tokens}, Aggregate: {input_tokenizer + output_tokenizer}")
+            logs.to_sql('logs_dev', con=connection, if_exists='append', index=False)
+            prompt.to_sql('prompts_dev', con=connection, if_exists='append', index=False)
+            
+        connection.commit()
     
 
     return {
