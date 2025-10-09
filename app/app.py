@@ -1,20 +1,33 @@
 from flask import Flask, render_template, request, session, jsonify
 from openai import OpenAI
 from dotenv import load_dotenv
+from datetime import datetime
 import pandas as pd
 import tiktoken
 import os
 
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine
+
+import logging
+logging.basicConfig(level=logging.INFO)
+
 load_dotenv()
 app = Flask(__name__)
 
-PROD = os.getenv('PROD') == 'True'
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 app.config['SECRET_KEY'] = SECRET_KEY
 
+PROD = os.getenv('PROD') == 'True'
+
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 client = OpenAI(api_key=OPENAI_API_KEY)
+
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('MYSQL_URI')
+db = SQLAlchemy(app)
+engine = create_engine(os.getenv('MYSQL_URI')).connect()
 
 # Constants
 WH_RATE = 0.018
@@ -86,7 +99,7 @@ def get_response(prompt):
             'prompt': prompt,
             'response': output_text,
             'id': response.id,
-            'timestamp': response.created_at,
+            'timestamp': datetime.fromtimestamp(response.created_at),
             'wh': wh_cost,
             'ml': ml_cost,
             'g_co2': co2_cost,
@@ -111,60 +124,15 @@ def get_response(prompt):
     logs = df.iloc[:, 2:]
     prompt = df[['id', 'timestamp', 'prompt', 'response']]
     
-    
-    if PROD:
-        # import gspread
-        # from google.oauth2.service_account import Credentials
-        
-        # def append_to_gsheet(logs_df, prompts_df, sheet_name='logs.csv'):
-        #     try:
-        #         scopes = [
-        #             'https://www.googleapis.com/auth/spreadsheets',
-        #             'https://www.googleapis.com/auth/drive'
-        #         ]
-                
-        #         creds_json_str = os.getenv('GOOGLE_API_CREDENTIALS')
-        #         if not creds_json_str:
-        #             logging.error("Google API credentials not found.")
-        #             return False
-
-        #         creds_info = json.loads(creds_json_str)
-        #         creds = Credentials.from_service_account_info(creds_info, scopes=scopes)
-        #         client = gspread.authorize(creds)
-
-        #         sheet = client.open(sheet_name)
-        #         logs_sheet = sheet.worksheet('Logs')
-        #         prompts_sheet = sheet.worksheet('Prompts')
-
-        #         logs_row = logs_df.values.tolist()
-        #         prompt_row = prompts_df.values.tolist()
-
-        #         logs_sheet.append_rows(logs_row, value_input_option='RAW')
-        #         prompts_sheet.append_rows(prompt_row, value_input_option='RAW')
-
-        #         return True
-
-        #     except gspread.exceptions.SpreadsheetNotFound:
-        #         logging.error(f"Error: Spreadsheet '{sheet_name}' not found.")
-        #         return False
-        #     except gspread.exceptions.WorksheetNotFound:
-        #         logging.error("Error: Worksheet 'Logs' or 'Prompts' not found.")
-        #         return False
-        #     except Exception as e:
-        #         logging.error(f"An error occurred: {e}")
-        #         return False
-
-        # append_to_gsheet(logs, prompt, sheet_name='logs.csv')
-        # logs.to_csv('/logs/prod_logs.csv', index=False, mode='a', header=not os.path.exists('/logs/prod_logs.csv'))
-        # prompt.to_csv('/logs/prod_prompts.csv', index=False, mode='a', header=not os.path.exists('/logs/prod_prompts.csv'))
-        pass
-    
+    logging.info(f"{session['PROD']}")
+    if session['PROD']:
+        logs.to_sql('logs', con=engine, if_exists='append', index=False)
+        prompt.to_sql('prompts', con=engine, if_exists='append', index=False)
+        db.session.commit()
     else:
-        import logging
-        logging.basicConfig(level=logging.INFO)
         logging.info(f"Cached: {cached_tokens}, Aggregate: {input_tokenizer + output_tokenizer}")
-        logs.to_csv('logs/logs.csv', index=False, mode='a', header=not os.path.exists('logs/logs.csv'))
         prompt.to_csv('logs/prompts.csv', index=False, mode='a', header=not os.path.exists('logs/prompts.csv'))
+        logs.to_csv('logs/logs.csv', index=False, mode='a', header=not os.path.exists('logs/logs.csv'))
     
 
     return {
@@ -189,5 +157,8 @@ def get_response(prompt):
         "cached_tokens": session['cached_tokens']
     }
 
+
+
+    
 if __name__ == '__main__':
     app.run(debug=True)
