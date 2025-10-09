@@ -58,6 +58,7 @@ def chat():
 
 
 def get_response(prompt):
+    db.session.commit()
     current_response_id = session.get('id', None)
     
     response = client.responses.create(
