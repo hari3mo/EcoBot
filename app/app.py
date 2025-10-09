@@ -3,11 +3,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import pandas as pd
 import tiktoken
-import json
 import os
-import logging
-
-logging.basicConfig(level=logging.INFO)
 
 load_dotenv()
 app = Flask(__name__)
@@ -115,6 +111,7 @@ def get_response(prompt):
     logs = df.iloc[:, 2:]
     prompt = df[['id', 'timestamp', 'prompt', 'response']]
     
+    
     if PROD:
         # import gspread
         # from google.oauth2.service_account import Credentials
@@ -158,14 +155,18 @@ def get_response(prompt):
         #         return False
 
         # append_to_gsheet(logs, prompt, sheet_name='logs.csv')
+        # logs.to_csv('/logs/prod_logs.csv', index=False, mode='a', header=not os.path.exists('/logs/prod_logs.csv'))
+        # prompt.to_csv('/logs/prod_prompts.csv', index=False, mode='a', header=not os.path.exists('/logs/prod_prompts.csv'))
         pass
     
     else:
+        import logging
+        logging.basicConfig(level=logging.INFO)
         logging.info(f"Cached: {cached_tokens}, Aggregate: {input_tokenizer + output_tokenizer}")
-        
         logs.to_csv('logs/logs.csv', index=False, mode='a', header=not os.path.exists('logs/logs.csv'))
         prompt.to_csv('logs/prompts.csv', index=False, mode='a', header=not os.path.exists('logs/prompts.csv'))
     
+    logging.info(f"Cached: {cached_tokens}, Aggregate: {input_tokenizer + output_tokenizer}")
 
     return {
         "response_text": output_text,
@@ -188,6 +189,6 @@ def get_response(prompt):
         "output_tokens": usage.output_tokens,
         "cached_tokens": session['cached_tokens']
     }
-    
+
 if __name__ == '__main__':
     app.run(debug=True)
