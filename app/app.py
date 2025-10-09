@@ -5,6 +5,9 @@ import pandas as pd
 import tiktoken
 import json
 import os
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 load_dotenv()
 app = Flask(__name__)
@@ -113,55 +116,51 @@ def get_response(prompt):
     prompt = df[['id', 'timestamp', 'prompt', 'response']]
     
     if PROD:
-        import gspread
-        from google.oauth2.service_account import Credentials
+        # import gspread
+        # from google.oauth2.service_account import Credentials
         
-        import logging
-        logging.basicConfig(level=logging.INFO)
-        
-        def append_to_gsheet(logs_df, prompts_df, sheet_name='logs.csv'):
-            try:
-                scopes = [
-                    'https://www.googleapis.com/auth/spreadsheets',
-                    'https://www.googleapis.com/auth/drive'
-                ]
+        # def append_to_gsheet(logs_df, prompts_df, sheet_name='logs.csv'):
+        #     try:
+        #         scopes = [
+        #             'https://www.googleapis.com/auth/spreadsheets',
+        #             'https://www.googleapis.com/auth/drive'
+        #         ]
                 
-                creds_json_str = os.getenv('GOOGLE_API_CREDENTIALS')
-                if not creds_json_str:
-                    logging.error("Google API credentials not found.")
-                    return False
+        #         creds_json_str = os.getenv('GOOGLE_API_CREDENTIALS')
+        #         if not creds_json_str:
+        #             logging.error("Google API credentials not found.")
+        #             return False
 
-                creds_info = json.loads(creds_json_str)
-                creds = Credentials.from_service_account_info(creds_info, scopes=scopes)
-                client = gspread.authorize(creds)
+        #         creds_info = json.loads(creds_json_str)
+        #         creds = Credentials.from_service_account_info(creds_info, scopes=scopes)
+        #         client = gspread.authorize(creds)
 
-                sheet = client.open(sheet_name)
-                logs_sheet = sheet.worksheet('Logs')
-                prompts_sheet = sheet.worksheet('Prompts')
+        #         sheet = client.open(sheet_name)
+        #         logs_sheet = sheet.worksheet('Logs')
+        #         prompts_sheet = sheet.worksheet('Prompts')
 
-                logs_row = logs_df.values.tolist()
-                prompt_row = prompts_df.values.tolist()
+        #         logs_row = logs_df.values.tolist()
+        #         prompt_row = prompts_df.values.tolist()
 
-                logs_sheet.append_rows(logs_row, value_input_option='RAW')
-                prompts_sheet.append_rows(prompt_row, value_input_option='RAW')
+        #         logs_sheet.append_rows(logs_row, value_input_option='RAW')
+        #         prompts_sheet.append_rows(prompt_row, value_input_option='RAW')
 
-                return True
+        #         return True
 
-            except gspread.exceptions.SpreadsheetNotFound:
-                logging.error(f"Error: Spreadsheet '{sheet_name}' not found.")
-                return False
-            except gspread.exceptions.WorksheetNotFound:
-                logging.error("Error: Worksheet 'Logs' or 'Prompts' not found.")
-                return False
-            except Exception as e:
-                logging.error(f"An error occurred: {e}")
-                return False
+        #     except gspread.exceptions.SpreadsheetNotFound:
+        #         logging.error(f"Error: Spreadsheet '{sheet_name}' not found.")
+        #         return False
+        #     except gspread.exceptions.WorksheetNotFound:
+        #         logging.error("Error: Worksheet 'Logs' or 'Prompts' not found.")
+        #         return False
+        #     except Exception as e:
+        #         logging.error(f"An error occurred: {e}")
+        #         return False
 
-        append_to_gsheet(logs, prompt, sheet_name='logs.csv')
+        # append_to_gsheet(logs, prompt, sheet_name='logs.csv')
+        pass
     
     else:
-        import logging
-        logging.basicConfig(level=logging.INFO)
         logging.info(f"Cached: {cached_tokens}, Aggregate: {input_tokenizer + output_tokenizer}")
         
         logs.to_csv('logs/logs.csv', index=False, mode='a', header=not os.path.exists('logs/logs.csv'))
