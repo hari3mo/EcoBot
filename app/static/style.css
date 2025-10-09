@@ -111,14 +111,12 @@ html {
     height: 82px;
     width: 82px;
     border: 1.74px solid #f5f6fa;
-
 }
 
 .user_img_msg {
     height: 47.15px;
     width: 47.15px;
     border: 1.74px solid #f5f6fa;
-
 }
 
 .img_cont {
@@ -186,6 +184,7 @@ html {
     padding: 11.79px;
     position: relative;
     color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 25px;
 }
 
 .msg_container_send {
@@ -198,6 +197,128 @@ html {
     padding: 11.79px;
     position: relative;
     color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 25px;
+}
+
+/* Added markdown styling for bot messages */
+.msg_container h1,
+.msg_container h2,
+.msg_container h3,
+.msg_container h4,
+.msg_container h5,
+.msg_container h6 {
+    color: white;
+    margin-top: 8px;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.msg_container h1 {
+    font-size: 1.5em;
+}
+
+.msg_container h2 {
+    font-size: 1.3em;
+}
+
+.msg_container h3 {
+    font-size: 1.15em;
+}
+
+.msg_container h4 {
+    font-size: 1.05em;
+}
+
+.msg_container h5 {
+    font-size: 0.95em;
+}
+
+.msg_container h6 {
+    font-size: 0.85em;
+}
+
+.msg_container p {
+    margin: 6px 0;
+}
+
+.msg_container ul,
+.msg_container ol {
+    margin: 6px 0;
+    padding-left: 20px;
+}
+
+.msg_container li {
+    margin: 3px 0;
+}
+
+.msg_container code {
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 0.9em;
+}
+
+.msg_container pre {
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 10px;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 8px 0;
+}
+
+.msg_container pre code {
+    background-color: transparent;
+    padding: 0;
+}
+
+.msg_container blockquote {
+    border-left: 3px solid rgba(255, 255, 255, 0.5);
+    padding-left: 10px;
+    margin: 8px 0;
+    font-style: italic;
+    opacity: 0.9;
+}
+
+.msg_container a {
+    color: white;
+    text-decoration: underline;
+}
+
+.msg_container a:hover {
+    opacity: 0.8;
+}
+
+.msg_container strong {
+    font-weight: 700;
+}
+
+.msg_container em {
+    font-style: italic;
+}
+
+.msg_container hr {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    margin: 10px 0;
+}
+
+.msg_container table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 8px 0;
+}
+
+.msg_container th,
+.msg_container td {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 6px;
+    text-align: left;
+}
+
+.msg_container th {
+    background-color: rgba(0, 0, 0, 0.3);
+    font-weight: 600;
 }
 
 .msg_time {
@@ -305,7 +426,7 @@ html {
     height: 8px;
     width: 8px;
     margin: 0 2px;
-    background-color: #9E9EA1;
+    background-color: #9e9ea1;
     border-radius: 50%;
     display: inline-block;
     animation: typing 1.4s infinite both;
@@ -340,8 +461,7 @@ html {
     }
 }
 
-
-@media(max-width: 590.4px) {
+@media (max-width: 590.4px) {
     .contacts_card {
         margin-bottom: 17.43px !important;
     }
@@ -395,33 +515,6 @@ html {
         color: #4cd137;
     }
 }
-
-.msg_container {
-    margin-top: auto;
-    margin-bottom: auto;
-    margin-left: 11.79px;
-    border-radius: 29.73px;
-    font-size: 0.82em;
-    background-color: #2185ff;
-    padding: 11.79px;
-    position: relative;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 25px;
-}
-
-.msg_container_send {
-    margin-top: auto;
-    margin-bottom: auto;
-    margin-right: 11.79px;
-    border-radius: 29.73px;
-    font-size: 0.82em;
-    background-color: #4cd137;
-    padding: 11.79px;
-    position: relative;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 25px;
-}
-
 
 .msg_tokens {
     position: absolute;
