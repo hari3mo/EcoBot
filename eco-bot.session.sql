@@ -3,7 +3,7 @@
 
 -- CREATE TABLE logs_dev (
 --     id VARCHAR(255) PRIMARY KEY,
---     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     datetime DATETIME,
 --     wh DECIMAL(18, 9),
 --     ml DECIMAL(18, 9),
 --     g_co2 DECIMAL(18, 9),
@@ -24,11 +24,16 @@
 --     total_cached_tokens INT
 -- );
 
+-- --@block--
 -- -- Create prompts table (child table with foreign key)
 -- CREATE TABLE prompts_dev (
 --     id VARCHAR(255) PRIMARY KEY,
---     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     datetime DATETIME,
 --     prompt TEXT,
 --     response TEXT,
 --     FOREIGN KEY (id) REFERENCES logs_dev(id) ON DELETE CASCADE
 -- );
+
+-- --@block--
+-- ALTER TABLE logs
+-- CHANGE timestamp datetime DATETIME;

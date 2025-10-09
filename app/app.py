@@ -1,3 +1,4 @@
+from operator import index
 from flask import Flask, render_template, request, session, jsonify
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -14,7 +15,6 @@ logging.basicConfig(level=logging.INFO)
 
 load_dotenv()
 app = Flask(__name__)
-
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 app.config['SECRET_KEY'] = SECRET_KEY
@@ -100,7 +100,7 @@ def get_response(prompt):
             'prompt': prompt,
             'response': output_text,
             'id': response.id,
-            'timestamp': datetime.fromtimestamp(response.created_at),
+            'datetime': datetime.fromtimestamp(response.created_at),
             'wh': wh_cost,
             'ml': ml_cost,
             'g_co2': co2_cost,
@@ -122,18 +122,26 @@ def get_response(prompt):
         }
     
     df = pd.DataFrame([log_data])
-    logs = df.iloc[:, 2:]
-    prompt = df[['id', 'timestamp', 'prompt', 'response']]
+    
+    log_columns = [
+        'id', 'datetime', 'wh', 'ml', 'g_co2', 'usd_in', 'usd_cache', 'usd_out',
+        'tokens', 'input_tokens', 'input_tokens_tokenizer', 'output_tokens',
+        'output_tokens_tokenizer', 'cached_tokens', 'total_wh', 'total_ml',
+        'total_co2', 'total_usd', 'total_tokens', 'total_cached_tokens'
+    ]
+    prompt_columns = ['id', 'datetime', 'prompt', 'response']
+    logs_df = df[log_columns]
+    prompt_df = df[prompt_columns]
     
     with engine.connect() as connection:
         if PROD:
-            logs.to_sql('logs', con=connection, if_exists='append', index=False)
-            prompt.to_sql('prompts', con=connection, if_exists='append', index=False)
+            logs_df.to_sql('logs', con=connection, if_exists='append', index=False)
+            prompt_df.to_sql('prompts', con=connection, if_exists='append', index=False)
         else:
             logging.info(f"Cached: {cached_tokens}, Aggregate: {input_tokenizer + output_tokenizer}")
-            logs.to_sql('logs_dev', con=connection, if_exists='append', index=False)
-            prompt.to_sql('prompts_dev', con=connection, if_exists='append', index=False)
-            
+            logs_df.to_sql('logs_dev', con=connection, if_exists='append', index=False)
+            prompt_df.to_sql('prompts_dev', con=connection, if_exists='append', index=False)
+
         connection.commit()
     
 
