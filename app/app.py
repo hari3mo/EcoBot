@@ -116,6 +116,9 @@ def get_response(prompt):
         import gspread
         from google.oauth2.service_account import Credentials
         
+        import logging
+        logging.basicConfig(level=logging.INFO)
+        
         def append_to_gsheet(logs_df, prompts_df, sheet_name='logs.csv'):
             try:
                 scopes = [
@@ -125,6 +128,7 @@ def get_response(prompt):
                 
                 creds_json_str = os.getenv('GOOGLE_API_CREDENTIALS')
                 if not creds_json_str:
+                    logging.error("Google API credentials not found.")
                     return False
 
                 creds_info = json.loads(creds_json_str)
@@ -143,7 +147,14 @@ def get_response(prompt):
 
                 return True
 
+            except gspread.exceptions.SpreadsheetNotFound:
+                logging.error(f"Error: Spreadsheet '{sheet_name}' not found.")
+                return False
+            except gspread.exceptions.WorksheetNotFound:
+                logging.error("Error: Worksheet 'Logs' or 'Prompts' not found.")
+                return False
             except Exception as e:
+                logging.error(f"An error occurred: {e}")
                 return False
 
         append_to_gsheet(logs, prompt, sheet_name='logs.csv')
@@ -151,7 +162,7 @@ def get_response(prompt):
     else:
         import logging
         logging.basicConfig(level=logging.INFO)
-        logging.info(f"Cached Tokens: {cached_tokens}, Aggregate Cached Tokens: {input_tokenizer + output_tokenizer}")
+        logging.info(f"Cached: {cached_tokens}, Aggregate: {input_tokenizer + output_tokenizer}")
         
         logs.to_csv('logs/logs.csv', index=False, mode='a', header=not os.path.exists('logs/logs.csv'))
         prompt.to_csv('logs/prompts.csv', index=False, mode='a', header=not os.path.exists('logs/prompts.csv'))
