@@ -160,13 +160,12 @@ def get_response(prompt):
         pass
     
     else:
-        # import logging
-        # logging.basicConfig(level=logging.INFO)
-        # logging.info(f"Cached: {cached_tokens}, Aggregate: {input_tokenizer + output_tokenizer}")
+        import logging
+        logging.basicConfig(level=logging.INFO)
+        logging.info(f"Cached: {cached_tokens}, Aggregate: {input_tokenizer + output_tokenizer}")
         logs.to_csv('logs/logs.csv', index=False, mode='a', header=not os.path.exists('logs/logs.csv'))
         prompt.to_csv('logs/prompts.csv', index=False, mode='a', header=not os.path.exists('logs/prompts.csv'))
     
-    logging.info(f"Cached: {cached_tokens}, Aggregate: {input_tokenizer + output_tokenizer}")
 
     return {
         "response_text": output_text,
