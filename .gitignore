@@ -1,5 +1,5 @@
 env/
-app/logs/prompts.csv
+app/logs/prompts*
 .env
 app/.vercel
 app/__pycache__
@@ -9,3 +9,4 @@ docs/reading*.txt
 .DS_Store
 notebook.ipynb
 chatbot.py
+.vercel
