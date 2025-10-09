@@ -7,6 +7,7 @@ __pycache__/
 app/env
 docs/reading*.txt
 notebook.ipynb
+credentials.json
 chatbot.py
 test.py
 .DS_Store

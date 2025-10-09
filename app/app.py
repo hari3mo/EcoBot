@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, session, jsonify
 from openai import OpenAI
 from dotenv import load_dotenv
+import pandas as pd
 import tiktoken
 import os
 
@@ -82,50 +83,15 @@ def get_response(prompt):
     session['id'] = response.id
     
     if not PROD:
-        import csv
         import logging
         logging.basicConfig(level=logging.INFO)
         logging.info(f"Cached Tokens: {cached_tokens}, Aggregate Cached Tokens: {input_tokenizer + output_tokenizer}")
-        def log_csv(log_data):
-            log_dir = 'logs'
-            os.makedirs(log_dir, exist_ok=True)
-            log_file = os.path.join(log_dir, 'logs.csv')
-            prompt_file = os.path.join(log_dir, 'prompts.csv')
-            file_exists = os.path.isfile(log_file)
-            prompt_exists = os.path.isfile(prompt_file)
-
-            with open(log_file, 'a', newline='', encoding='utf-8') as csvfile:
-                fieldnames = [
-                    'id', 'timestamp', 'wh', 'ml', 'g_co2', 'usd_in', 'usd_cache', 'usd_out', 'tokens',
-                    'input_tokens', 'input_tokens_tokenizer', 'output_tokens', 'output_tokens_tokenizer', 'cached_tokens',
-                    'total_wh', 'total_ml', 'total_co2', 'total_usd', 'total_tokens', 'total_cached_tokens'
-                ]
-                writer_log = csv.DictWriter(csvfile, fieldnames=fieldnames, extrasaction='ignore')
-
-                if not file_exists:
-                    writer_log.writeheader()
-
-                writer_log.writerow(log_data)
-                
-            with open(prompt_file, 'a', newline='', encoding='utf-8') as csvfile:
-                fieldnames_prompt = ['id', 'timestamp', 'prompt', 'response']
-                writer_prompt = csv.DictWriter(csvfile, fieldnames=fieldnames_prompt)
-
-                if not prompt_exists:
-                    writer_prompt.writeheader()
-
-                writer_prompt.writerow({
-                    'id': log_data['id'],
-                    'timestamp': log_data['timestamp'],
-                    'prompt': log_data['prompt'],
-                    'response': log_data['response']
-                })
 
         log_data = {
-            'id': response.id,
-            'timestamp': response.created_at,
             'prompt': prompt,
             'response': output_text,
+            'id': response.id,
+            'timestamp': response.created_at,
             'wh': wh_cost,
             'ml': ml_cost,
             'g_co2': co2_cost,
@@ -145,8 +111,13 @@ def get_response(prompt):
             'total_tokens': session['total_tokens'],
             'total_cached_tokens': session['cached_tokens']
         }
+        
+        df = pd.DataFrame([log_data])
+        logs = df.iloc[:, 2:]
+        prompt = df[['id', 'timestamp', 'prompt', 'response']]
+        logs.to_csv('logs/logs.csv', index=False, mode='a', header=not os.path.exists('logs/logs.csv'))
+        prompt.to_csv('logs/prompts.csv', index=False, mode='a', header=not os.path.exists('logs/prompts.csv'))
     
-        log_csv(log_data)
 
     return {
         "response_text": output_text,
