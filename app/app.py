@@ -3,6 +3,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import pandas as pd
 import tiktoken
+import json
 import os
 
 load_dotenv()
@@ -82,12 +83,7 @@ def get_response(prompt):
     
     session['id'] = response.id
     
-    if not PROD:
-        import logging
-        logging.basicConfig(level=logging.INFO)
-        logging.info(f"Cached Tokens: {cached_tokens}, Aggregate Cached Tokens: {input_tokenizer + output_tokenizer}")
-
-        log_data = {
+    log_data = {
             'prompt': prompt,
             'response': output_text,
             'id': response.id,
@@ -111,10 +107,52 @@ def get_response(prompt):
             'total_tokens': session['total_tokens'],
             'total_cached_tokens': session['cached_tokens']
         }
+    
+    df = pd.DataFrame([log_data])
+    logs = df.iloc[:, 2:]
+    prompt = df[['id', 'timestamp', 'prompt', 'response']]
+    
+    if PROD:
+        import gspread
+        from google.oauth2.service_account import Credentials
         
-        df = pd.DataFrame([log_data])
-        logs = df.iloc[:, 2:]
-        prompt = df[['id', 'timestamp', 'prompt', 'response']]
+        def append_to_gsheet(logs_df, prompts_df, sheet_name='logs.csv'):
+            try:
+                scopes = [
+                    'https://www.googleapis.com/auth/spreadsheets',
+                    'https://www.googleapis.com/auth/drive'
+                ]
+                
+                creds_json_str = os.getenv('GOOGLE_API_CREDENTIALS')
+                if not creds_json_str:
+                    return False
+
+                creds_info = json.loads(creds_json_str)
+                creds = Credentials.from_service_account_info(creds_info, scopes=scopes)
+                client = gspread.authorize(creds)
+
+                sheet = client.open(sheet_name)
+                logs_sheet = sheet.worksheet('Logs')
+                prompts_sheet = sheet.worksheet('Prompts')
+
+                logs_row = logs_df.values.tolist()
+                prompt_row = prompts_df.values.tolist()
+
+                logs_sheet.append_rows(logs_row, value_input_option='RAW')
+                prompts_sheet.append_rows(prompt_row, value_input_option='RAW')
+
+                return True
+
+            except Exception as e:
+                return False
+
+        append_to_gsheet(logs, prompt, sheet_name='logs.csv')
+    
+    else:
+        import logging
+        logging.basicConfig(level=logging.INFO)
+        logging.info(f"Cached Tokens: {cached_tokens}, Aggregate Cached Tokens: {input_tokenizer + output_tokenizer}")
+        
         logs.to_csv('logs/logs.csv', index=False, mode='a', header=not os.path.exists('logs/logs.csv'))
         prompt.to_csv('logs/prompts.csv', index=False, mode='a', header=not os.path.exists('logs/prompts.csv'))
     
