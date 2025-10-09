@@ -50,15 +50,20 @@ def get_response(prompt):
             previous_response_id=current_response_id
         )
     
-    
-    enc = tiktoken.encoding_for_model("gpt-4o") # Tokenizer
-    input_tokenizer = len(enc.encode(prompt))
-    
     output_text = response.output_text
     usage = response.usage
     query_tokens = usage.total_tokens
-    cached_tokens= query_tokens - (input_tokenizer + usage.output_tokens)
-    session['cached_tokens'] = cached_tokens
+    
+    enc = tiktoken.encoding_for_model("gpt-4o") # Tokenizer
+    input_tokenizer = len(enc.encode(prompt))
+    output_tokenizer = len(enc.encode(output_text))
+    
+    cached_tokens = query_tokens - (input_tokenizer + usage.output_tokens)
+    session['cached_tokens'] += input_tokenizer + output_tokenizer if current_response_id else cached_tokens
+    
+    import logging
+    logging.basicConfig(level=logging.INFO)
+    logging.info(f"Cached Tokens: {cached_tokens}, Aggregate Cached Tokens: {input_tokenizer + output_tokenizer}")
 
     # Calculate metrics
     wh_cost = (input_tokenizer + usage.output_tokens) * WH_RATE
