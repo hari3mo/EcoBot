@@ -2,7 +2,11 @@ from flask import Flask, render_template, request, session, jsonify
 from openai import OpenAI
 from dotenv import load_dotenv
 import tiktoken
+import csv
 import os
+
+
+
 
 load_dotenv()
 app = Flask(__name__)
@@ -20,6 +24,39 @@ G_CO2_RATE = 0.00594
 USD_RATE_INPUT = 0.00000125
 USD_RATE_CACHE = 0.000000125
 USD_RATE_OUT = 0.00001
+
+def log_csv(log_data):
+    log_file = 'logs/logs.csv'  
+    prompt_file = 'logs/prompts.csv'
+    file_exists = os.path.isfile(log_file)
+    prompt_exists = os.path.isfile(prompt_file)
+
+    with open(log_file, 'a', newline='', encoding='utf-8') as csvfile:
+        fieldnames = [
+            'id', 'timestamp', 'wh', 'ml', 'g_co2', 'usd_in', 'usd_cache', 'usd_out', 'tokens',
+            'input_tokens', 'input_tokens_tokenizer', 'output_tokens', 'output_tokens_tokenizer', 'cached_tokens',
+            'total_wh', 'total_ml', 'total_co2', 'total_usd', 'total_tokens', 'total_cached_tokens'
+        ]
+        writer_log = csv.DictWriter(csvfile, fieldnames=fieldnames, extrasaction='ignore')
+
+        if not file_exists:
+            writer_log.writeheader()
+
+        writer_log.writerow(log_data)
+        
+    with open(prompt_file, 'a', newline='', encoding='utf-8') as csvfile:
+        fieldnames_prompt = ['id', 'timestamp', 'prompt', 'response']
+        writer_prompt = csv.DictWriter(csvfile, fieldnames=fieldnames_prompt)
+
+        if not prompt_exists:
+            writer_prompt.writeheader()
+
+        writer_prompt.writerow({
+            'id': log_data['id'],
+            'timestamp': log_data['timestamp'],
+            'prompt': log_data['prompt'],
+            'response': log_data['response']
+        })
 
 # Routes
 @app.route("/")
@@ -61,9 +98,9 @@ def get_response(prompt):
     cached_tokens = query_tokens - (input_tokenizer + usage.output_tokens)
     session['cached_tokens'] += input_tokenizer + usage.output_tokens if current_response_id else cached_tokens
     
-    # import logging
-    # logging.basicConfig(level=logging.INFO)
-    # logging.info(f"Cached Tokens: {cached_tokens}, Aggregate Cached Tokens: {input_tokenizer + output_tokenizer}")
+    import logging
+    logging.basicConfig(level=logging.INFO)
+    logging.info(f"Cached Tokens: {cached_tokens}, Aggregate Cached Tokens: {input_tokenizer + output_tokenizer}")
 
     # Calculate metrics
     wh_cost = (input_tokenizer + usage.output_tokens) * WH_RATE
@@ -82,6 +119,32 @@ def get_response(prompt):
     session['total_tokens'] = session.get('total_tokens', 0) + query_tokens
     
     session['id'] = response.id
+
+    log_data = {
+        'id': response.id,
+        'timestamp': response.created_at,
+        'prompt': prompt,
+        'response': output_text,
+        'wh': wh_cost,
+        'ml': ml_cost,
+        'g_co2': co2_cost,
+        'usd_in': usd_cost_in,
+        'usd_cache': usd_cost_cache,
+        'usd_out': usd_cost_out,
+        'tokens': query_tokens,
+        'input_tokens': usage.input_tokens,
+        'input_tokens_tokenizer': input_tokenizer,
+        'output_tokens': usage.output_tokens,
+        'output_tokens_tokenizer': output_tokenizer,
+        'cached_tokens': cached_tokens,
+        'total_wh': session['total_WH'],
+        'total_ml': session['total_ML'],
+        'total_co2': session['total_CO2'],
+        'total_usd': session['total_usd'],
+        'total_tokens': session['total_tokens'],
+        'total_cached_tokens': session['cached_tokens']
+    }
+    log_csv(log_data)
 
     return {
         "response_text": output_text,

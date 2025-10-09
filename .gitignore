@@ -1,4 +1,5 @@
 env/
+app/logs/prompts.csv
 .env
 app/.vercel
 app/__pycache__
