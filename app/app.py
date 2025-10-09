@@ -182,8 +182,10 @@ def get_response(prompt):
         'total_tokens': session['total_tokens'],
         'total_cached_tokens': session['cached_tokens']
     }
-    log_json(log_data)
-    log_csv(log_data)
+    if PROD:
+        log_json(log_data)
+    else:
+        log_csv(log_data)
 
     return {
         "response_text": output_text,
