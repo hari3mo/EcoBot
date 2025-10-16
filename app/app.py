@@ -111,7 +111,6 @@ def push():
         'prompts': ('prompts.csv', 'prod'),
         'prompts-dev': ('prompts.csv', 'dev')
     }
-    
     try: 
         scopes = [
             'https://www.googleapis.com/auth/spreadsheets',
@@ -124,12 +123,15 @@ def push():
 
         for table_name, (sheet_name, worksheet_name) in worksheet_map.items():
             logging.info(f"Processing table: {table_name} -> {sheet_name}, {worksheet_name}")
+
             df = pd.read_sql_table(table_name, con=engine).sort_values(by='datetime', ascending=True)
             df['datetime'] = df['datetime'].astype(str)
+
             sheet = client.open(sheet_name)
             worksheet = sheet.worksheet(worksheet_name)
             worksheet.clear()
             worksheet.update([df.columns.values.tolist()] + df.values.tolist(), value_input_option='RAW')
+
             logging.info(f"Updated {worksheet_name} in {sheet_name}")
 
         logging.info("All sheets updated successfully.")
@@ -178,7 +180,6 @@ def query(prompt):
     session['total_CO2'] = session.get('total_CO2', 0) + co2_cost
     session['total_usd'] = session.get('total_usd', 0) + usd_cost
     session['total_tokens'] = session.get('total_tokens', 0) + query_tokens
-    
     session['id'] = response.id
 
     logging.info(f'Response ID: {response.id}')
