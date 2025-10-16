@@ -111,7 +111,7 @@ def get_response(prompt):
             'previous_id': current_response_id,
             'datetime': datetime.fromtimestamp(response.created_at),
             'wh': wh_cost,
-            'mls': ml_cost,
+            'ml': ml_cost,
             'g_co2': co2_cost,
             'usd_in': usd_cost_in,
             'usd_cache': usd_cost_cache,
@@ -144,11 +144,17 @@ def get_response(prompt):
     
     with engine.connect() as connection:
         if PROD:
-            logs_df.to_sql('logs', con=connection, if_exists='append', index=False)
-            prompt_df.to_sql('prompts', con=connection, if_exists='append', index=False)
+            try:
+                logs_df.to_sql('logs', con=connection, if_exists='append', index=False)
+                prompt_df.to_sql('prompts', con=connection, if_exists='append', index=False)
+            except Exception as e:
+                logging.error(f"Error writing to production database: {e}")
         else:
-            logs_df.to_sql('logs_dev', con=connection, if_exists='append', index=False)
-            prompt_df.to_sql('prompts_dev', con=connection, if_exists='append', index=False)
+            try:
+                logs_df.to_sql('logs_dev', con=connection, if_exists='append', index=False)
+                prompt_df.to_sql('prompts_dev', con=connection, if_exists='append', index=False)
+            except Exception as e:
+                logging.error(f"Error writing to development database: {e}")
 
         connection.commit()
 

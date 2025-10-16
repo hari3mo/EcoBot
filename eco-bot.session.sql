@@ -19,7 +19,7 @@ CREATE TABLE logs (
     total_ml DECIMAL(18, 9),
     total_co2 DECIMAL(18, 9),
     total_usd DECIMAL(18, 9),
-    total_tokens INT,
+    total_tokens INT
 );
 
 --@block--
@@ -63,10 +63,10 @@ CREATE TABLE prompts_dev (
     datetime DATETIME,
     prompt TEXT,
     response TEXT,
-    FOREIGN KEY (id) REFERENCES logs(id)
+    FOREIGN KEY (id) REFERENCES logs_dev(id)
 );
 
--- --@block--
+--@block--
 -- DROP TABLE prompts;
 -- DROP TABLE logs;
 -- DROP TABLE prompts_dev;
