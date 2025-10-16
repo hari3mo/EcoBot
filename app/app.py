@@ -63,7 +63,7 @@ def logs():
 
 @app.route("/logs-dev", methods=["GET"])
 def logs_dev():
-    logs_dev = pd.read_sql_table('logs_dev', con=engine).sort_values(by='datetime', ascending=True) 
+    logs_dev = pd.read_sql_table('logs-dev', con=engine).sort_values(by='datetime', ascending=True) 
     return render_template("logs_dev.html", logs_dev=logs_dev)
 
 @app.route("/prompts", methods=["GET"])
@@ -73,7 +73,7 @@ def prompts():
 
 @app.route("/prompts-dev", methods=["GET"])
 def prompts_dev():
-    prompts_dev = pd.read_sql_table('prompts_dev', con=engine).sort_values(by='datetime', ascending=True)
+    prompts_dev = pd.read_sql_table('prompts-dev', con=engine).sort_values(by='datetime', ascending=True)
     return render_template("prompts_dev.html", prompts_dev=prompts_dev)
 
 @app.route("/push", methods=["GET"])
@@ -175,8 +175,8 @@ def query(prompt):
                 logging.error(f"Error writing to production database: {e}")
         else:
             try:
-                logs_df.to_sql('logs_dev', con=connection, if_exists='append', index=False)
-                prompt_df.to_sql('prompts_dev', con=connection, if_exists='append', index=False)
+                logs_df.to_sql('logs-dev', con=connection, if_exists='append', index=False)
+                prompt_df.to_sql('prompts-dev', con=connection, if_exists='append', index=False)
             except Exception as e:
                 logging.error(f"Error writing to development database: {e}")
 

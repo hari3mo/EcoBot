@@ -33,7 +33,7 @@ CREATE TABLE prompts (
 );
 
 --@block--
-CREATE TABLE logs_dev (
+CREATE TABLE `logs-dev` (
     id VARCHAR(255) PRIMARY KEY,
     previous_id VARCHAR(255),
     datetime DATETIME,
@@ -57,21 +57,24 @@ CREATE TABLE logs_dev (
 );
 
 --@block--
-CREATE TABLE prompts_dev (
+CREATE TABLE `prompts-dev` (
     id VARCHAR(255) PRIMARY KEY,
     previous_id VARCHAR(255),
     datetime DATETIME,
     prompt TEXT,
     response TEXT,
-    FOREIGN KEY (id) REFERENCES logs_dev(id)
+    FOREIGN KEY (id) REFERENCES `logs-dev`(id)
 );
+
 
 --@block--
 -- DROP TABLE prompts;
 -- DROP TABLE logs;
--- DROP TABLE prompts_dev;
--- DROP TABLE logs_dev;
+-- DROP TABLE `prompts-dev`;
+-- DROP TABLE `logs-dev`;
+
+--@block--
 -- DELETE FROM prompts;
 -- DELETE FROM logs;
--- DELETE FROM prompts_dev;
--- DELETE FROM logs_dev;
+-- DELETE FROM `prompts-dev`;
+-- DELETE FROM `logs-dev`;
