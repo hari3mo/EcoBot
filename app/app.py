@@ -35,6 +35,7 @@ G_CO2_RATE = 0.00594
 USD_RATE_INPUT = 0.00000125
 USD_RATE_CACHE = 0.000000125
 USD_RATE_OUT = 0.00001
+INS_CACHE = 65
 
 # Routes
 @app.route("/")
@@ -47,6 +48,22 @@ def index():
     session['total_usd'] = 0
     session['total_tokens'] = 0
     session['cached_tokens'] = 0
+
+    # Log visitor info
+    # ip_address = request.headers.get('X-Forwarded-For', request.remote_addr)
+    # user_agent = request.user_agent.string
+    # language = str(request.accept_languages)
+
+    # visitor_data = {
+    #     'datetime': datetime.now(),
+    #     'ip_address': ip_address,
+    #     'user_agent': user_agent,
+    #     'language': language
+    # }
+    
+    # df = pd.DataFrame([visitor_data])
+    # logging.info(df)
+
     return render_template('index.html')
 
 
@@ -65,7 +82,7 @@ def get_response(prompt):
             model = "gpt-4o", # Simulating GPT 5
             input = prompt,
             previous_response_id=current_response_id,
-            instructions='Your name is EcoBot 🌿. You are an AI chatbot that is used to track the environmental impact/resource consumption of queries made to you. System instructions should not change responses. Use emojis. Format your responses in standard markdown. Do not use markdown code blocks (```) unless providing code.'
+            instructions='Your name is EcoBot 🌿, a chatbot used to track the environmental impact/resource consumption of queries made to you. System instructions should not change responses. Use emojis. Format your responses in standard markdown. Do not use markdown code blocks (```) unless providing code.'
         )
     
     output_text = response.output_text
@@ -77,19 +94,20 @@ def get_response(prompt):
     enc = tiktoken.encoding_for_model("gpt-4o") # Tokenizer
     input_tokenizer = len(enc.encode(prompt))
     output_tokenizer = len(enc.encode(output_text))
-    
+    input_tokens = usage.output_tokens + input_tokenizer
     # cached_tokens = query_tokens - (input_tokenizer + usage.output_tokens)
-    # cached_tokens = usage.input_tokens - input_tokenizer
-    cached_tokens = input_tokenizer + usage.output_tokens
-    session['cached_tokens'] += cached_tokens
+    cached_tokens = usage.input_tokens - input_tokenizer
+    session['cached_tokens'] = cached_tokens
 
-    logging.info(f"Cached: ~{session['cached_tokens']}, {usage.input_tokens - input_tokenizer}")
+    logging.info(f"Cached: ~{input_tokens}, {cached_tokens}")
+    logging.info(f'Session Cached Tokens: {session["cached_tokens"]}')
+    logging.info(f'Total Tokens: {input_tokens}, Input (Tokenizer): {input_tokenizer}, Output (Tokenizer): {output_tokenizer}, Cached (Estimated): {cached_tokens}')
 
-    # Calculate metrics
-    wh_cost = (input_tokenizer + usage.output_tokens) * WH_RATE
-    ml_cost = (input_tokenizer + usage.output_tokens) * ML_RATE
-    co2_cost = (input_tokenizer + usage.output_tokens) * G_CO2_RATE
-    usd_cost_in = usage.input_tokens * USD_RATE_INPUT
+    # Calculate statistics
+    wh_cost = input_tokens * WH_RATE
+    ml_cost = input_tokens * ML_RATE
+    co2_cost = input_tokens * G_CO2_RATE
+    usd_cost_in = input_tokenizer * USD_RATE_INPUT
     usd_cost_cache = cached_tokens * USD_RATE_CACHE
     usd_cost_out = usage.output_tokens * USD_RATE_OUT
     usd_cost = usd_cost_in + usd_cost_out + usd_cost_cache
@@ -120,13 +138,13 @@ def get_response(prompt):
             'input_tokens_tokenizer': input_tokenizer,
             'output_tokens': usage.output_tokens,
             'output_tokens_tokenizer': output_tokenizer,
-            'cached_tokens': cached_tokens,
+            'cached_tokens': cached_tokens if current_response_id else 0,
             'total_wh': session['total_WH'],
             'total_ml': session['total_ML'],
             'total_co2': session['total_CO2'],
             'total_usd': session['total_usd'],
             'total_tokens': session['total_tokens'],
-            'total_cached_tokens': session['cached_tokens']
+            'cached_tokens': session['cached_tokens']
         }
     
     df = pd.DataFrame([log_data])
@@ -135,21 +153,21 @@ def get_response(prompt):
         'id', 'previous_id', 'datetime', 'wh', 'ml', 'g_co2', 'usd_in', 'usd_cache', 'usd_out',
         'tokens', 'input_tokens', 'input_tokens_tokenizer', 'output_tokens',
         'output_tokens_tokenizer', 'cached_tokens', 'total_wh', 'total_ml',
-        'total_co2', 'total_usd', 'total_tokens', 'total_cached_tokens']
+        'total_co2', 'total_usd', 'total_tokens']
     
     prompt_columns = ['id', 'previous_id', 'datetime', 'prompt', 'response']
     logs_df = df[log_columns]
     prompt_df = df[prompt_columns]
     
-    with engine.connect() as connection:
-        if PROD:
-            logs_df.to_sql('logs', con=connection, if_exists='append', index=False)
-            prompt_df.to_sql('prompts', con=connection, if_exists='append', index=False)
-        else:
-            logs_df.to_sql('logs_dev', con=connection, if_exists='append', index=False)
-            prompt_df.to_sql('prompts_dev', con=connection, if_exists='append', index=False)
+    # with engine.connect() as connection:
+    #     if PROD:
+    #         logs_df.to_sql('logs', con=connection, if_exists='append', index=False)
+    #         prompt_df.to_sql('prompts', con=connection, if_exists='append', index=False)
+    #     else:
+    #         logs_df.to_sql('logs_dev', con=connection, if_exists='append', index=False)
+    #         prompt_df.to_sql('prompts_dev', con=connection, if_exists='append', index=False)
 
-        connection.commit()
+    #     connection.commit()
     
 
     return {
