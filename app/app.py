@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, jsonify
+from flask import Flask, render_template, request, session, redirect, jsonify, url_for
 from google.oauth2.service_account import Credentials
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -26,7 +26,6 @@ PROD = os.getenv('PROD') == 'True'
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 client = OpenAI(api_key=OPENAI_API_KEY)
 
-
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('MYSQL_URI')
 db = SQLAlchemy(app)
 engine = create_engine(os.getenv('MYSQL_URI'))
@@ -40,6 +39,11 @@ USD_RATE_CACHE = 0.000000125
 USD_RATE_OUT = 0.00001
 
 # Routes
+
+@app.errorhandler(404)
+def not_found(e):
+    return redirect(url_for('index'))
+
 @app.route("/")
 def index():
     session['id'] = None
