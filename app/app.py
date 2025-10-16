@@ -161,7 +161,7 @@ def pull():
 
     except Exception as e:
         logging.error(f"Error pulling data: {e}")
-        return render_template("pull.html", success=False)
+        return render_template("pull.html", success=False, error=str(e))
 
     return render_template("pull.html", success=True)
 
