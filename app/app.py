@@ -66,13 +66,23 @@ def chat():
         session['admin'] = False
         return jsonify({'redirect': url_for('index')})
     
-    if session['admin']:
-        if prompt == "pull":
-            if PROD:
+    if session.get('admin'):
+        admin_commands = {
+            # command: {url_endpoint, allowed_in_prod}
+            "pull": {"endpoint": "pull", "prod": False},
+            "push": {"endpoint": "push", "prod": True},
+            "logs": {"endpoint": "logs", "prod": True},
+            "logs-dev": {"endpoint": "logs_dev", "prod": False},
+            "prompts": {"endpoint": "prompts", "prod": True},
+            "prompts-dev": {"endpoint": "prompts_dev", "prod": False}
+        }
+
+        if prompt in admin_commands:
+            command = admin_commands[prompt]
+            if PROD and not command["prod"]:
                 return jsonify({'redirect': url_for('index')})
-            return jsonify({'redirect': url_for('pull')})
-        elif prompt == "push":
-            return jsonify({'redirect': url_for('push')})
+            
+            return jsonify({'redirect': url_for(command["endpoint"])})
     
     response_data = query(prompt)
     return jsonify(response_data)
