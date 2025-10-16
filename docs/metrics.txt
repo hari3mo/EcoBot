@@ -9,7 +9,7 @@ OpenAI has not released official figures for the energy consumption of GPT-5.
 Researchers at the University of Rhode Island's AI lab estimate that ChatGPT-5 uses approximately 0.018 watt-hours (Wh) of energy per token for a medium-length response. This calculation is based on their finding that a response of about 1,000 tokens consumes around 18 Wh on average.
 
 ChatGPT-5 ~0.018 -> Estimated & displayed metrics
-GPT-4o	~0.0006 -> Actual backend to conserve resources
+GPT-4o	~0.0006 -> Actual backend to conserve resources (~30x more efficient)
 
 These figures highlight a trend of increasing energy requirements with the advancement of model capabilities.
 
@@ -31,7 +31,7 @@ With these figures, we can estimate the water consumption per token for ChatGPT-
 
 CO2 Emissions per Token (g CO2)
 
-OpenAI heavily utilizes Microsoft's Azure cloud infrastructure. In recent years, Microsoft has reported a carbon intensity for its operations, which is a measure of CO2 emissions per unit of energy consumed. A representative value for the electricity mix used by these data centers is approximately 0.33 kilograms of CO2 equivalent per kilowatt-hour (kg CO2e/kWh).
+OpenAI heavily utilizes Microsoft's Azure cloud infrastructure. In recent years, Microsoft has reported a carbon intensity for its operations, which is a measure of CO2 emissions per unit of energy consumed. A representative value for the electricity mix used by these data centers is approximately 0.33 kilograms of CO2 equivalent per kilowatt-hour (kg CO2/kWh).
 
 The calculation to arrive at the estimated CO2 emission per token is as follows:
 
