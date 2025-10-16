@@ -538,7 +538,6 @@ html {
 }
 
 .table-container {
-    max-height: 600px;
     overflow-y: auto;
 }
 
@@ -552,6 +551,7 @@ html {
     z-index: 10;
     color: white;
 }
+
 .table tbody tr:hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
@@ -564,6 +564,8 @@ html {
     text-align: right;
     font-size: 0.85rem;
     margin-top: 10px;
+    color: rgba(255, 255, 255, 0.7);
+    background-color: transparent;
 }
 
 .card-table {
@@ -573,6 +575,7 @@ html {
     flex-direction: column;
     background-color: rgba(0, 0, 0, 0.4) !important;
     border-radius: 17.43px !important;
+    margin-left: 30px;
 }
 
 .card-table .card-body {
