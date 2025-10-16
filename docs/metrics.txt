@@ -2,6 +2,8 @@ In the context of AI language models, a token is a piece of a word.
 
 Models break down text into these tokens to process and generate language. A token can be a whole word, a part of a word (like pre- or -ing), a single character, or a punctuation mark.
 
+Watt Hours of Energy per Token
+
 OpenAI has not released official figures for the energy consumption of GPT-5.
 
 Researchers at the University of Rhode Island's AI lab estimate that ChatGPT-5 uses approximately 0.018 watt-hours (Wh) of energy per token for a medium-length response. This calculation is based on their finding that a response of about 1,000 tokens consumes around 18 Wh on average.
