@@ -143,7 +143,7 @@ def push():
 
 @app.route("/pull", methods=["GET"])
 def pull():
-    if not session.get('admin'):
+    if PROD or not session.get('admin'):
         return redirect(url_for('index'))
     
     try:
@@ -161,7 +161,7 @@ def pull():
 
     except Exception as e:
         logging.error(f"Error pulling data: {e}")
-        return render_template("pull.html", success=False, error=str(e))
+        return render_template("pull.html", success=False)
 
     return render_template("pull.html", success=True)
 
