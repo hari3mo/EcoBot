@@ -59,14 +59,48 @@ def index():
 def chat():
     prompt = request.form["prompt"]
     if prompt == "admin":
-        session['admin'] = True
+        session['admin'] = True if not session['admin'] else False
         return jsonify({'redirect': url_for('index')})
+    
     elif prompt in ["exit", "quit"]:
         session['admin'] = False
         return jsonify({'redirect': url_for('index')})
     
+    if session['admin']:
+        if prompt == "pull" and not PROD:
+            return jsonify({'redirect': url_for('pull')})
+        elif prompt == "push":
+            return jsonify({'redirect': url_for('push')})
+    
     response_data = query(prompt)
     return jsonify(response_data)
+
+@app.route("/push", methods=["GET"])
+def push():
+    if not session.get('admin'):
+        return redirect(url_for('index'))
+    try:
+        push_sheets()
+        logging.info("All sheets updated successfully.")
+    except Exception as e:
+        logging.error(f"Error pushing to Google Sheets: {e}")
+        return render_template("push.html", success=False)
+
+    return render_template("push.html", success=True)
+
+@app.route("/pull", methods=["GET"])
+def pull():
+    if PROD or not session.get('admin'):
+        return redirect(url_for('index'))
+    
+    try:
+        pull_db()
+        logging.info("Database pulled successfully to local CSV files.")
+    except Exception as e:
+        logging.error(f"Error pulling database: {e}")
+        return render_template("pull.html", success=False)
+
+    return render_template("pull.html", success=True)
 
 @app.route("/logs", methods=["GET"])
 def logs():
@@ -81,7 +115,7 @@ def logs_dev():
     if not session.get('admin'):
         return redirect(url_for('index'))
     logs_dev = pd.read_sql_table('logs-dev', con=engine)\
-        .sort_values(by='datetime', ascending=False) 
+        .sort_values(by='datetime', ascending=False)
     return render_template("logs_dev.html", logs_dev=logs_dev)
 
 @app.route("/prompts", methods=["GET"])
@@ -100,70 +134,6 @@ def prompts_dev():
         .sort_values(by='datetime', ascending=False)
     return render_template("prompts_dev.html", prompts_dev=prompts_dev)
 
-@app.route("/push", methods=["GET"])
-def push():
-    if not session.get('admin'):
-        return redirect(url_for('index'))
-    
-    worksheet_map = {
-        'logs': ('logs.csv', 'prod'),
-        'logs-dev': ('logs.csv', 'dev'),
-        'prompts': ('prompts.csv', 'prod'),
-        'prompts-dev': ('prompts.csv', 'dev')
-    }
-    try: 
-        scopes = [
-            'https://www.googleapis.com/auth/spreadsheets',
-            'https://www.googleapis.com/auth/drive'
-        ]
-
-        creds_json = json.loads(os.getenv('GOOGLE_API_CREDENTIALS'))
-        creds = Credentials.from_service_account_info(creds_json, scopes=scopes)
-        gc = gspread.authorize(creds)
-
-        for table_name, (sheet_name, worksheet_name) in worksheet_map.items():
-            logging.info(f"Processing table: {table_name} -> {sheet_name}, {worksheet_name}")
-
-            df = pd.read_sql_table(table_name, con=engine).sort_values(by='datetime', ascending=False)
-            df['datetime'] = df['datetime'].astype(str)
-
-            sheet = gc.open(sheet_name)
-            worksheet = sheet.worksheet(worksheet_name)
-            set_with_dataframe(worksheet, df, resize=True, include_index=False)
-
-            logging.info(f"Updated {worksheet_name} in {sheet_name}")
-
-        logging.info("All sheets updated successfully.")
-
-    except Exception as e:
-        logging.error(f"Error pushing to Google Sheets: {e}")
-        return render_template("push.html", success=False)
-
-    return render_template("push.html", success=True)
-
-@app.route("/pull", methods=["GET"])
-def pull():
-    if PROD or not session.get('admin'):
-        return redirect(url_for('index'))
-    
-    try:
-        logs = pd.read_sql_table('logs', con=engine).sort_values(by='datetime', ascending=False)
-        logs_dev = pd.read_sql_table('logs-dev', con=engine).sort_values(by='datetime', ascending=False)
-        prompts = pd.read_sql_table('prompts', con=engine).sort_values(by='datetime', ascending=False)
-        prompts_dev = pd.read_sql_table('prompts-dev', con=engine).sort_values(by='datetime', ascending=False)
-
-        logs.to_csv('../logs/logs.csv', index=False)
-        logs_dev.to_csv('../logs/logs_dev.csv', index=False)
-        prompts.to_csv('../logs/prompts.csv', index=False)
-        prompts_dev.to_csv('../logs/prompts_dev.csv', index=False)
-
-        logging.info("Data pulled successfully to local CSV files.")
-
-    except Exception as e:
-        logging.error(f"Error pulling data: {e}")
-        return render_template("pull.html", success=False)
-
-    return render_template("pull.html", success=True)
 
 def query(prompt):
     db.session.commit()
@@ -287,5 +257,45 @@ def query(prompt):
         "cached_tokens": cached_tokens
     }
 
+def push_sheets():
+    worksheet_map = {
+        'logs': ('logs.csv', 'prod'),
+        'logs-dev': ('logs.csv', 'dev'),
+        'prompts': ('prompts.csv', 'prod'),
+        'prompts-dev': ('prompts.csv', 'dev')
+    }
+    scopes = [
+        'https://www.googleapis.com/auth/spreadsheets',
+        'https://www.googleapis.com/auth/drive'
+    ]
+
+    creds_json = json.loads(os.getenv('GOOGLE_API_CREDENTIALS'))
+    creds = Credentials.from_service_account_info(creds_json, scopes=scopes)
+    gc = gspread.authorize(creds)
+
+    for table_name, (sheet_name, worksheet_name) in worksheet_map.items():
+        logging.info(f"Processing table: {table_name} -> {sheet_name}, {worksheet_name}")
+
+        df = pd.read_sql_table(table_name, con=engine).sort_values(by='datetime', ascending=False)
+        df['datetime'] = df['datetime'].astype(str)
+
+        sheet = gc.open(sheet_name)
+        worksheet = sheet.worksheet(worksheet_name)
+        set_with_dataframe(worksheet, df, resize=True, include_index=False)
+
+        logging.info(f"Updated {worksheet_name} in {sheet_name}")
+
+def pull_db():
+    logs = pd.read_sql_table('logs', con=engine).sort_values(by='datetime', ascending=False)
+    logs_dev = pd.read_sql_table('logs-dev', con=engine).sort_values(by='datetime', ascending=False)
+    prompts = pd.read_sql_table('prompts', con=engine).sort_values(by='datetime', ascending=False)
+    prompts_dev = pd.read_sql_table('prompts-dev', con=engine).sort_values(by='datetime', ascending=False)
+
+    logs.to_csv('../logs/logs.csv', index=False)
+    logs_dev.to_csv('../logs/logs_dev.csv', index=False)
+    prompts.to_csv('../logs/prompts.csv', index=False)
+    prompts_dev.to_csv('../logs/prompts_dev.csv', index=False)
+
+    
 if __name__ == '__main__':
     app.run(debug=True)
