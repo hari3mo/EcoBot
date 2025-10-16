@@ -81,7 +81,6 @@ def chat():
             command = admin_commands[prompt]
             if PROD and not command["prod"]:
                 return jsonify({'redirect': url_for('index')})
-            
             return jsonify({'redirect': url_for(command["endpoint"])})
     
     response_data = query(prompt)
