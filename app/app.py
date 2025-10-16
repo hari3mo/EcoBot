@@ -99,10 +99,6 @@ def get_response(prompt):
     cached_tokens = usage.input_tokens - input_tokenizer
     session['cached_tokens'] = cached_tokens
 
-    logging.info(f"Cached: ~{input_tokens}, {cached_tokens}")
-    logging.info(f'Session Cached Tokens: {session["cached_tokens"]}')
-    logging.info(f'Total Tokens: {input_tokens}, Input (Tokenizer): {input_tokenizer}, Output (Tokenizer): {output_tokenizer}, Cached (Estimated): {cached_tokens}')
-
     # Calculate statistics
     wh_cost = input_tokens * WH_RATE
     ml_cost = input_tokens * ML_RATE
