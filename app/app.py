@@ -53,11 +53,35 @@ def index():
 @app.route("/chat", methods=["POST"])
 def chat():
     prompt = request.form["prompt"]
-    response_data = get_response(prompt)
+    response_data = query(prompt)
     return jsonify(response_data)
 
+@app.route("/logs", methods=["GET"])
+def logs():
+    logs = pd.read_sql_table('logs', con=engine).sort_values(by='datetime', ascending=True)
+    return render_template("logs.html", logs=logs)
 
-def get_response(prompt):
+@app.route("/logs-dev", methods=["GET"])
+def logs_dev():
+    logs_dev = pd.read_sql_table('logs_dev', con=engine).sort_values(by='datetime', ascending=True) 
+    return render_template("logs_dev.html", logs_dev=logs_dev)
+
+@app.route("/prompts", methods=["GET"])
+def prompts():
+    prompts = pd.read_sql_table('prompts', con=engine).sort_values(by='datetime', ascending=True)
+    return render_template("prompts.html", prompts=prompts)
+
+@app.route("/prompts-dev", methods=["GET"])
+def prompts_dev():
+    prompts_dev = pd.read_sql_table('prompts_dev', con=engine).sort_values(by='datetime', ascending=True)
+    return render_template("prompts_dev.html", prompts_dev=prompts_dev)
+
+@app.route("/push", methods=["GET"])
+def push():
+    return render_template("push.html")
+
+
+def query(prompt):
     db.session.commit()
     current_response_id = session.get('id', None)
     
@@ -129,7 +153,7 @@ def get_response(prompt):
             'total_tokens': session['total_tokens'],
         }
 
-    df = pd.DataFrame([log_data])
+    df = pd.DataFrame([log_data]).sort_values(by='datetime', ascending=True)
 
     log_columns = [
         'id', 'previous_id', 'datetime', 'wh', 'ml', 'g_co2', 'usd_in', 'usd_cache', 'usd_out',

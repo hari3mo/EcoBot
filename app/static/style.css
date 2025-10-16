@@ -536,3 +536,32 @@ html {
     padding-left: 10px;
     white-space: nowrap;
 }
+
+.table-container {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.table {
+    font-size: 0.85rem;
+}
+
+.table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    color: white;
+}
+.table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.table tbody tr {
+    color: white;
+}
+
+.table-info {
+    text-align: right;
+    font-size: 0.85rem;
+    margin-top: 10px;
+}
