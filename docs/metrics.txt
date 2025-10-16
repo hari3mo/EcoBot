@@ -2,7 +2,7 @@ In the context of AI language models, a token is a piece of a word.
 
 Models break down text into these tokens to process and generate language. A token can be a whole word, a part of a word (like pre- or -ing), a single character, or a punctuation mark.
 
-Watt Hours of Energy per Token
+Watt Hours of Energy per Token (Wh)
 
 OpenAI has not released official figures for the energy consumption of GPT-5.
 
@@ -13,7 +13,7 @@ GPT-4o	~0.0006 -> Actual backend to conserve resources
 
 These figures highlight a trend of increasing energy requirements with the advancement of model capabilities.
 
-Milliliters of Water per Token
+Milliliters of Water per Token (ml)
 
 The most common way to estimate the water usage of an AI model is to start with its energy consumption and determine the water usage effectiveness (WUE) of the data centers where these models are trained and run. Microsoft Azure, OpenAI's primary cloud partner, estimated that for every kilowatt-hour (kWh) of energy consumed by Microsoft Azure servers, OpenAI's cloud partner, approximately 1.8 liters of water is used for cooling.
 
@@ -29,7 +29,7 @@ With these figures, we can estimate the water consumption per token for ChatGPT-
 
     Convert Liters to Milliliters: 0.0000324 L * 1000 = 0.0324 mL
 
-CO2 Emissions per Token
+CO2 Emissions per Token (g CO2)
 
 OpenAI heavily utilizes Microsoft's Azure cloud infrastructure. In recent years, Microsoft has reported a carbon intensity for its operations, which is a measure of CO2 emissions per unit of energy consumed. A representative value for the electricity mix used by these data centers is approximately 0.33 kilograms of CO2 equivalent per kilowatt-hour (kg CO2e/kWh).
 
@@ -43,7 +43,7 @@ The calculation to arrive at the estimated CO2 emission per token is as follows:
 
         0.000018 kWh/token × 0.33 kg CO2/kWh = 0.00000594 kg CO2/token
 
-USD Cost per Token
+USD Cost per Token ($)
 The pricing per token for the ChatGPT 5 API is publicly available on the OpenAI API website.
 
 Price:
