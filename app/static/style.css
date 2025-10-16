@@ -400,9 +400,9 @@ html {
     color: white;
 }
 
-.stats_item {
-    /* margin-bottom: 23.58px; */
-}
+/* .stats_item {
+    margin-bottom: 23.58px;
+} */
 
 .stats_item h5 {
     font-size: 1.179em;

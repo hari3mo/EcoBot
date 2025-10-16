@@ -13,8 +13,6 @@ These figures highlight a trend of increasing energy requirements with the advan
 
 Milliliters of Water per Token
 
-While there are no official figures from OpenAI regarding the water consumption of their models, we can create an estimate based on broader research into the water footprint of AI data centers. The primary water usage associated with models like ChatGPT-5 is for cooling the servers they run on.
-
 The most common way to estimate the water usage of an AI model is to start with its energy consumption and determine the water usage effectiveness (WUE) of the data centers where these models are trained and run. Microsoft Azure, OpenAI's primary cloud partner, estimated that for every kilowatt-hour (kWh) of energy consumed by Microsoft Azure servers, OpenAI's cloud partner, approximately 1.8 liters of water is used for cooling.
 
 With these figures, we can estimate the water consumption per token for ChatGPT-5:
@@ -31,10 +29,7 @@ With these figures, we can estimate the water consumption per token for ChatGPT-
 
 CO2 Emissions per Token
 
-Answering the question of how many kilograms of CO2 are emitted per token for a model like "ChatGPT 5" requires combining estimates of energy consumption with data on the carbon intensity of the electricity used to power the data centers where the model runs.
-This figure is derived from the following estimations:
-Energy Consumption: A hypothetical "ChatGPT 5" is estimated to consume around 0.018 watt-hours (Wh) of electricity per token. This figure is based on projections of the increased computational power required for more advanced AI capabilities.
-Carbon Intensity: The electricity powering the advanced data centers for such models does not come without a carbon cost. OpenAI heavily utilizes Microsoft's Azure cloud infrastructure. In recent years, Microsoft has reported a carbon intensity for its operations, which is a measure of CO2 emissions per unit of energy consumed. A representative value for the electricity mix used by these data centers is approximately 0.33 kilograms of CO2 equivalent per kilowatt-hour (kg CO2e/kWh).
+OpenAI heavily utilizes Microsoft's Azure cloud infrastructure. In recent years, Microsoft has reported a carbon intensity for its operations, which is a measure of CO2 emissions per unit of energy consumed. A representative value for the electricity mix used by these data centers is approximately 0.33 kilograms of CO2 equivalent per kilowatt-hour (kg CO2e/kWh).
 
 The calculation to arrive at the estimated CO2 emission per token is as follows:
 
@@ -47,12 +42,15 @@ The calculation to arrive at the estimated CO2 emission per token is as follows:
         0.000018 kWh/token × 0.33 kg CO2/kWh = 0.00000594 kg CO2/token
 
 USD Cost per Token
-The pricing per token for the ChatGPT 5 API is available on OpenAIs website.
+The pricing per token for the ChatGPT 5 API is publicly available on the OpenAI API website.
 
 Price:
+
 Input:
 $1.250 / 1M tokens = $0.00000125 / token
+
 Cached input:
 $0.125 / 1M tokens = $0.000000125 / token
+
 Output:
 $10.000 / 1M tokens = $0.00001 / token
