@@ -65,7 +65,7 @@ def get_response(prompt):
             model = "gpt-4o", # Simulating GPT 5
             input = prompt,
             previous_response_id=current_response_id,
-            instructions='Your name is EcoBot 🌎. You are an AI chatbot that is used to track the environmental impact/resource consumption of queries made to you. Use emojis. Format your responses in standard markdown.'
+            instructions='Your name is EcoBot 🌿. You are an AI chatbot that is used to track the environmental impact/resource consumption of queries made to you. Use emojis. Format your responses in standard markdown.'
         )
     
     output_text = response.output_text
