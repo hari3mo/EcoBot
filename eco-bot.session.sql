@@ -66,15 +66,14 @@ CREATE TABLE `prompts-dev` (
     FOREIGN KEY (id) REFERENCES `logs-dev`(id)
 );
 
+--@block--
+-- DELETE FROM prompts;
+-- DELETE FROM logs;
+-- DELETE FROM `prompts-dev`;
+-- DELETE FROM `logs-dev`;
 
 --@block--
 -- DROP TABLE prompts;
 -- DROP TABLE logs;
 -- DROP TABLE `prompts-dev`;
 -- DROP TABLE `logs-dev`;
-
---@block--
--- DELETE FROM prompts;
--- DELETE FROM logs;
--- DELETE FROM `prompts-dev`;
--- DELETE FROM `logs-dev`;

@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, session, redirect, jsonify, url_for
 from google.oauth2.service_account import Credentials
+from gspread_dataframe import set_with_dataframe
 from openai import OpenAI
 from dotenv import load_dotenv
 from datetime import datetime
@@ -21,7 +22,7 @@ app = Flask(__name__)
 SECRET_KEY = os.getenv('SECRET_KEY')
 app.config['SECRET_KEY'] = SECRET_KEY
 
-PROD = os.getenv('PROD')
+PROD = os.getenv('PROD') == 'True'
 
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 client = OpenAI(api_key=OPENAI_API_KEY)
@@ -37,7 +38,6 @@ G_CO2_RATE = 0.00594
 USD_RATE_INPUT = 0.00000125
 USD_RATE_CACHE = 0.000000125
 USD_RATE_OUT = 0.00001
-
 
 # Routes
 @app.errorhandler(404)
@@ -61,12 +61,44 @@ def chat():
     if prompt == "admin":
         session['admin'] = True
         return jsonify({'redirect': url_for('index')})
-    elif prompt in ["logout", "exit", "quit"]:
+    elif prompt in ["exit", "quit"]:
         session['admin'] = False
         return jsonify({'redirect': url_for('index')})
     
     response_data = query(prompt)
     return jsonify(response_data)
+
+@app.route("/logs", methods=["GET"])
+def logs():
+    if not session.get('admin'):
+        return redirect(url_for('index'))
+    logs = pd.read_sql_table('logs', con=engine)\
+        .sort_values(by='datetime', ascending=False)
+    return render_template("logs.html", logs=logs)
+
+@app.route("/logs-dev", methods=["GET"])
+def logs_dev():
+    if not session.get('admin'):
+        return redirect(url_for('index'))
+    logs_dev = pd.read_sql_table('logs-dev', con=engine)\
+        .sort_values(by='datetime', ascending=False) 
+    return render_template("logs_dev.html", logs_dev=logs_dev)
+
+@app.route("/prompts", methods=["GET"])
+def prompts():
+    if not session.get('admin'):
+        return redirect(url_for('index'))
+    prompts = pd.read_sql_table('prompts', con=engine)\
+        .sort_values(by='datetime', ascending=False)
+    return render_template("prompts.html", prompts=prompts)
+
+@app.route("/prompts-dev", methods=["GET"])
+def prompts_dev():
+    if not session.get('admin'):
+        return redirect(url_for('index'))
+    prompts_dev = pd.read_sql_table('prompts-dev', con=engine)\
+        .sort_values(by='datetime', ascending=False)
+    return render_template("prompts_dev.html", prompts_dev=prompts_dev)
 
 @app.route("/push", methods=["GET"])
 def push():
@@ -87,60 +119,51 @@ def push():
 
         creds_json = json.loads(os.getenv('GOOGLE_API_CREDENTIALS'))
         creds = Credentials.from_service_account_info(creds_json, scopes=scopes)
-        client = gspread.authorize(creds)
+        gc = gspread.authorize(creds)
 
         for table_name, (sheet_name, worksheet_name) in worksheet_map.items():
             logging.info(f"Processing table: {table_name} -> {sheet_name}, {worksheet_name}")
 
-            df = pd.read_sql_table(table_name, con=engine).sort_values(by='datetime', ascending=True)
+            df = pd.read_sql_table(table_name, con=engine).sort_values(by='datetime', ascending=False)
             df['datetime'] = df['datetime'].astype(str)
 
-            sheet = client.open(sheet_name)
+            sheet = gc.open(sheet_name)
             worksheet = sheet.worksheet(worksheet_name)
-            worksheet.clear()
-            worksheet.update([df.columns.values.tolist()] + df.values.tolist(), value_input_option='RAW')
+            set_with_dataframe(worksheet, df, resize=True, include_index=False)
 
             logging.info(f"Updated {worksheet_name} in {sheet_name}")
 
         logging.info("All sheets updated successfully.")
 
     except Exception as e:
-        logging.error(f"Error with Google Sheets: {e}")
+        logging.error(f"Error pushing to Google Sheets: {e}")
         return render_template("push.html", success=False)
 
     return render_template("push.html", success=True)
 
-@app.route("/logs", methods=["GET"])
-def logs():
+@app.route("/pull", methods=["GET"])
+def pull():
     if not session.get('admin'):
         return redirect(url_for('index'))
-    logs = pd.read_sql_table('logs', con=engine)\
-        .sort_values(by='datetime', ascending=True)
-    return render_template("logs.html", logs=logs)
+    
+    try:
+        logs = pd.read_sql_table('logs', con=engine).sort_values(by='datetime', ascending=False)
+        logs_dev = pd.read_sql_table('logs-dev', con=engine).sort_values(by='datetime', ascending=False)
+        prompts = pd.read_sql_table('prompts', con=engine).sort_values(by='datetime', ascending=False)
+        prompts_dev = pd.read_sql_table('prompts-dev', con=engine).sort_values(by='datetime', ascending=False)
 
-@app.route("/logs-dev", methods=["GET"])
-def logs_dev():
-    if not session.get('admin'):
-        return redirect(url_for('index'))
-    logs_dev = pd.read_sql_table('logs-dev', con=engine)\
-        .sort_values(by='datetime', ascending=True) 
-    return render_template("logs_dev.html", logs_dev=logs_dev)
+        logs.to_csv('../logs/logs.csv', index=False)
+        logs_dev.to_csv('../logs/logs_dev.csv', index=False)
+        prompts.to_csv('../logs/prompts.csv', index=False)
+        prompts_dev.to_csv('../logs/prompts_dev.csv', index=False)
 
-@app.route("/prompts", methods=["GET"])
-def prompts():
-    if not session.get('admin'):
-        return redirect(url_for('index'))
-    prompts = pd.read_sql_table('prompts', con=engine)\
-        .sort_values(by='datetime', ascending=True)
-    return render_template("prompts.html", prompts=prompts)
+        logging.info("Data pulled successfully to local CSV files.")
 
-@app.route("/prompts-dev", methods=["GET"])
-def prompts_dev():
-    if not session.get('admin'):
-        return redirect(url_for('index'))
-    prompts_dev = pd.read_sql_table('prompts-dev', con=engine)\
-        .sort_values(by='datetime', ascending=True)
-    return render_template("prompts_dev.html", prompts_dev=prompts_dev)
+    except Exception as e:
+        logging.error(f"Error pulling data: {e}")
+        return render_template("pull.html", success=False)
+
+    return render_template("pull.html", success=True)
 
 def query(prompt):
     db.session.commit()
@@ -213,7 +236,8 @@ def query(prompt):
             'total_tokens': session['total_tokens'],
         }
 
-    df = pd.DataFrame([log_data]).sort_values(by='datetime', ascending=True)
+    df = pd.DataFrame([log_data]).sort_values(by='datetime', ascending=False)\
+        .astype({'datetime': 'datetime64[ns]'})
 
     log_columns = [
         'id', 'previous_id', 'datetime', 'wh', 'ml', 'g_co2', 'usd_in', 'usd_cache', 'usd_out',
