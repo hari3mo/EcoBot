@@ -236,8 +236,8 @@ def query(prompt):
             'total_tokens': session['total_tokens'],
         }
 
-    df = pd.DataFrame([log_data]).sort_values(by='datetime', ascending=False)\
-        .astype({'datetime': 'datetime64[ns]'})
+    df = pd.DataFrame([log_data]).astype({'datetime': 'datetime64[ns]'})\
+        .sort_values(by='datetime', ascending=False)
 
     log_columns = [
         'id', 'previous_id', 'datetime', 'wh', 'ml', 'g_co2', 'usd_in', 'usd_cache', 'usd_out',
