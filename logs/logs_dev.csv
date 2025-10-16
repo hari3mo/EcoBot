@@ -1,0 +1,2 @@
+id,previous_id,datetime,wh,ml,g_co2,usd_in,usd_cache,usd_out,tokens,input_tokens,input_tokens_tokenizer,output_tokens,output_tokens_tokenizer,cached_tokens,total_tokens,total_wh,total_ml,total_co2,total_usd
+resp_0d3bece525d7348f0068f0e099206481a3bf33c1c1b6bd39d1,,2025-10-16 05:10:01,0.252,0.4536,0.08316,2.5e-06,8.125e-06,0.00012,79,67,2,12,11,65,79,0.252,0.4536,0.08316,0.000130625

@@ -7,11 +7,11 @@ __pycache__/
 app/env
 app/logs
 docs/reading*.txt
-notebook.ipynb
 credentials.json
-chatbot.py
-test.py
 .DS_Store
 .vercel
 .vscode/
-chartcopy.ipynb
+chatbot.py
+test.py
+charts.ipynb
+logs.ipynb
