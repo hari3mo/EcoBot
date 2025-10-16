@@ -111,7 +111,7 @@ def get_response(prompt):
             'previous_id': current_response_id,
             'datetime': datetime.fromtimestamp(response.created_at),
             'wh': wh_cost,
-            'ml': ml_cost,
+            'mls': ml_cost,
             'g_co2': co2_cost,
             'usd_in': usd_cost_in,
             'usd_cache': usd_cost_cache,
@@ -142,15 +142,15 @@ def get_response(prompt):
     logs_df = df[log_columns]
     prompt_df = df[prompt_columns]
     
-    # with engine.connect() as connection:
-    #     if PROD:
-    #         logs_df.to_sql('logs', con=connection, if_exists='append', index=False)
-    #         prompt_df.to_sql('prompts', con=connection, if_exists='append', index=False)
-    #     else:
-    #         logs_df.to_sql('logs_dev', con=connection, if_exists='append', index=False)
-    #         prompt_df.to_sql('prompts_dev', con=connection, if_exists='append', index=False)
+    with engine.connect() as connection:
+        if PROD:
+            logs_df.to_sql('logs', con=connection, if_exists='append', index=False)
+            prompt_df.to_sql('prompts', con=connection, if_exists='append', index=False)
+        else:
+            logs_df.to_sql('logs_dev', con=connection, if_exists='append', index=False)
+            prompt_df.to_sql('prompts_dev', con=connection, if_exists='append', index=False)
 
-    #     connection.commit()
+        connection.commit()
 
     return {
         "response_text": output_text,
