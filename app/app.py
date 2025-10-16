@@ -48,23 +48,7 @@ def index():
     session['total_tokens'] = 0
     session['cached_tokens'] = 0
 
-    # Log visitor info
-    # ip_address = request.headers.get('X-Forwarded-For', request.remote_addr)
-    # user_agent = request.user_agent.string
-    # language = str(request.accept_languages)
-
-    # visitor_data = {
-    #     'datetime': datetime.now(),
-    #     'ip_address': ip_address,
-    #     'user_agent': user_agent,
-    #     'language': language
-    # }
-    
-    # df = pd.DataFrame([visitor_data])
-    # logging.info(df)
-
     return render_template('index.html')
-
 
 @app.route("/chat", methods=["POST"])
 def chat():
@@ -87,8 +71,6 @@ def get_response(prompt):
     output_text = response.output_text
     usage = response.usage
     query_tokens = usage.total_tokens
-
-    logging.info(f'Query Tokens: {query_tokens}, Input Tokens: {usage.input_tokens}, Output Tokens: {usage.output_tokens}')
 
     enc = tiktoken.encoding_for_model("gpt-4o") # Tokenizer
     input_tokenizer = len(enc.encode(prompt))
@@ -114,6 +96,14 @@ def get_response(prompt):
     session['total_tokens'] = session.get('total_tokens', 0) + query_tokens
     
     session['id'] = response.id
+
+    logging.info(f'Response ID: {response.id}')
+    logging.info(f'Output Tokens (API): {usage.output_tokens} = ${usd_cost_out:.6f}')
+    logging.info(f'Input Tokens (API): {usage.input_tokens} = ${usd_cost_in + usd_cost_cache:.6f}')
+    logging.info(f'Input Tokens (Tokenizer): {input_tokenizer} = ${usd_cost_in:.6f}')
+    logging.info(f'Cached Tokens: {cached_tokens} = ${usd_cost_cache:.6f}')
+    logging.info(f'Query Tokens: {query_tokens} = ${usd_cost:.6f}')
+
     
     log_data = {
             'prompt': prompt,
@@ -138,7 +128,6 @@ def get_response(prompt):
             'total_co2': session['total_CO2'],
             'total_usd': session['total_usd'],
             'total_tokens': session['total_tokens'],
-        
         }
     
     df = pd.DataFrame([log_data])
