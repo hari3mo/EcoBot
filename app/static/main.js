@@ -41,6 +41,12 @@ $(document).ready(function () {
             type: "POST",
             url: "/chat",
         }).done(function (data) {
+            // Handle redirect for admin login/logout
+            if (data.redirect) {
+                window.location.href = data.redirect;
+                return;
+            }
+
             // Remove loading animation
             $("#loading-indicator").remove();
 

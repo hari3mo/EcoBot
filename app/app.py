@@ -39,7 +39,6 @@ USD_RATE_CACHE = 0.000000125
 USD_RATE_OUT = 0.00001
 
 # Routes
-
 @app.errorhandler(404)
 def not_found(e):
     return redirect(url_for('index'))
@@ -58,70 +57,47 @@ def index():
 @app.route("/chat", methods=["POST"])
 def chat():
     prompt = request.form["prompt"]
+    if prompt == "admin":
+        session['admin'] = True
+        return jsonify({'redirect': url_for('index')})
+    elif prompt in ["logout", "exit", "quit"]:
+        session['admin'] = False
+        return jsonify({'redirect': url_for('index')})
+    
     response_data = query(prompt)
     return jsonify(response_data)
 
 @app.route("/logs", methods=["GET"])
 def logs():
+    if not session.get('admin'):
+        return redirect(url_for('index'))
     logs = pd.read_sql_table('logs', con=engine)\
         .sort_values(by='datetime', ascending=True)
     return render_template("logs.html", logs=logs)
 
 @app.route("/logs-dev", methods=["GET"])
 def logs_dev():
+    if not session.get('admin'):
+        return redirect(url_for('index'))
     logs_dev = pd.read_sql_table('logs-dev', con=engine)\
         .sort_values(by='datetime', ascending=True) 
     return render_template("logs_dev.html", logs_dev=logs_dev)
 
 @app.route("/prompts", methods=["GET"])
 def prompts():
+    if not session.get('admin'):
+        return redirect(url_for('index'))
     prompts = pd.read_sql_table('prompts', con=engine)\
         .sort_values(by='datetime', ascending=True)
     return render_template("prompts.html", prompts=prompts)
 
 @app.route("/prompts-dev", methods=["GET"])
 def prompts_dev():
+    if not session.get('admin'):
+        return redirect(url_for('index'))
     prompts_dev = pd.read_sql_table('prompts-dev', con=engine)\
         .sort_values(by='datetime', ascending=True)
     return render_template("prompts_dev.html", prompts_dev=prompts_dev)
-
-@app.route("/push", methods=["GET"])
-def push():
-    worksheet_map = {
-        'logs': ('logs.csv', 'prod'),
-        'logs-dev': ('logs.csv', 'dev'),
-        'prompts': ('prompts.csv', 'prod'),
-        'prompts-dev': ('prompts.csv', 'dev')
-    }
-
-    try: 
-        scopes = [
-            'https://www.googleapis.com/auth/spreadsheets',
-            'https://www.googleapis.com/auth/drive'
-        ]
-
-        creds_json = json.loads(os.getenv('GOOGLE_API_CREDENTIALS'))
-        creds = Credentials.from_service_account_info(creds_json, scopes=scopes)
-        client = gspread.authorize(creds)
-
-        for table_name, (sheet_name, worksheet_name) in worksheet_map.items():
-            logging.info(f"Processing table: {table_name} -> {sheet_name}, {worksheet_name}")
-            df = pd.read_sql_table(table_name, con=engine).sort_values(by='datetime', ascending=True)
-            df['datetime'] = df['datetime'].astype(str)
-            sheet = client.open(sheet_name)
-            worksheet = sheet.worksheet(worksheet_name)
-            worksheet.clear()
-            worksheet.update([df.columns.values.tolist()] + df.values.tolist(), value_input_option='RAW')
-            logging.info(f"Updated {worksheet_name} in {sheet_name}")
-
-        logging.info("All sheets updated successfully.")
-
-    except Exception as e:
-        logging.error(f"Error with Google Sheets: {e}")
-        return render_template("push.html", success=False)
-
-    return render_template("push.html", success=True)
-
 
 def query(prompt):
     db.session.commit()

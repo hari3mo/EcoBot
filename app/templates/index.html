@@ -22,6 +22,9 @@
           <span>EcoGPT 5 🌿</span>
           <p>Ask me anything and see the environmental impact your query has!</p>
         </div>
+        {% if session.admin %}
+        <div class="admin-badge">Admin</div>
+        {% endif %}
       </div>
     </div>
     <div id="messageFormeight" class="card-body msg_card_body"></div>
