@@ -79,10 +79,11 @@ def get_response(prompt):
     output_tokenizer = len(enc.encode(output_text))
     
     # cached_tokens = query_tokens - (input_tokenizer + usage.output_tokens)
-    cached_tokens = usage.input_tokens - input_tokenizer
-    session['cached_tokens'] = cached_tokens
+    # cached_tokens = usage.input_tokens - input_tokenizer
+    cached_tokens = input_tokenizer + usage.output_tokens
+    session['cached_tokens'] += cached_tokens
 
-    logging.info(f"Cached: {cached_tokens}, {query_tokens - (input_tokenizer + usage.output_tokens)}")
+    logging.info(f"Cached: {session['cached_tokens']}, {usage.input_tokens - input_tokenizer}")
 
     # Calculate metrics
     wh_cost = (input_tokenizer + usage.output_tokens) * WH_RATE
