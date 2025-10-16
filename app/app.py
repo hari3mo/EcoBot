@@ -83,7 +83,7 @@ def get_response(prompt):
     cached_tokens = input_tokenizer + usage.output_tokens
     session['cached_tokens'] += cached_tokens
 
-    logging.info(f"Cached: {session['cached_tokens']}, {usage.input_tokens - input_tokenizer}")
+    logging.info(f"Cached: ~{session['cached_tokens']}, {usage.input_tokens - input_tokenizer}")
 
     # Calculate metrics
     wh_cost = (input_tokenizer + usage.output_tokens) * WH_RATE
