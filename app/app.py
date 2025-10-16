@@ -35,7 +35,6 @@ G_CO2_RATE = 0.00594
 USD_RATE_INPUT = 0.00000125
 USD_RATE_CACHE = 0.000000125
 USD_RATE_OUT = 0.00001
-INS_CACHE = 65
 
 # Routes
 @app.route("/")
@@ -134,13 +133,13 @@ def get_response(prompt):
             'input_tokens_tokenizer': input_tokenizer,
             'output_tokens': usage.output_tokens,
             'output_tokens_tokenizer': output_tokenizer,
-            'cached_tokens': cached_tokens if current_response_id else 0,
+            'cached_tokens': session['cached_tokens'],
             'total_wh': session['total_WH'],
             'total_ml': session['total_ML'],
             'total_co2': session['total_CO2'],
             'total_usd': session['total_usd'],
             'total_tokens': session['total_tokens'],
-            'cached_tokens': session['cached_tokens']
+        
         }
     
     df = pd.DataFrame([log_data])
