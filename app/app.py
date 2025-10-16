@@ -67,7 +67,9 @@ def chat():
         return jsonify({'redirect': url_for('index')})
     
     if session['admin']:
-        if prompt == "pull" and not PROD:
+        if prompt == "pull":
+            if PROD:
+                return jsonify({'redirect': url_for('index')})
             return jsonify({'redirect': url_for('pull')})
         elif prompt == "push":
             return jsonify({'redirect': url_for('push')})
