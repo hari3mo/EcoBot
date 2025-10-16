@@ -5,8 +5,8 @@ app/.vercel
 app/__pycache__
 __pycache__/
 app/env
-app/logs
 docs/reading*.txt
+logs/*-dev.csv
 credentials.json
 .DS_Store
 .vercel
