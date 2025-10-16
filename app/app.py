@@ -104,7 +104,6 @@ def get_response(prompt):
     logging.info(f'Cached Tokens: {cached_tokens} = ${usd_cost_cache:.6f}')
     logging.info(f'Query Tokens: {query_tokens} = ${usd_cost:.6f}')
 
-    
     log_data = {
             'prompt': prompt,
             'response': output_text,
@@ -129,9 +128,9 @@ def get_response(prompt):
             'total_usd': session['total_usd'],
             'total_tokens': session['total_tokens'],
         }
-    
+
     df = pd.DataFrame([log_data])
-    
+
     log_columns = [
         'id', 'previous_id', 'datetime', 'wh', 'ml', 'g_co2', 'usd_in', 'usd_cache', 'usd_out',
         'tokens', 'input_tokens', 'input_tokens_tokenizer', 'output_tokens',
@@ -152,7 +151,6 @@ def get_response(prompt):
     #         prompt_df.to_sql('prompts_dev', con=connection, if_exists='append', index=False)
 
     #     connection.commit()
-    
 
     return {
         "response_text": output_text,
