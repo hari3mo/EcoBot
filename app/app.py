@@ -1,9 +1,12 @@
 from flask import Flask, render_template, request, session, jsonify
+from google.oauth2.service_account import Credentials
 from openai import OpenAI
 from dotenv import load_dotenv
 from datetime import datetime
 import pandas as pd
+import gspread
 import tiktoken
+import json
 import os
 
 from flask_sqlalchemy import SQLAlchemy
@@ -78,6 +81,32 @@ def prompts_dev():
 
 @app.route("/push", methods=["GET"])
 def push():
+    scopes = [
+        'https://www.googleapis.com/auth/spreadsheets',
+        'https://www.googleapis.com/auth/drive'
+    ]
+
+    creds_file = json.loads(os.getenv('GOOGLE_API_CREDENTIALS'))
+    creds = Credentials.from_service_account_info(creds_file, scopes=scopes)
+    client = gspread.authorize(creds)
+
+    worksheet_map = {
+        'logs': ('logs.csv', 'prod'),
+        'logs-dev': ('logs.csv', 'dev'),
+        'prompts': ('prompts.csv', 'prod'),
+        'prompts-dev': ('prompts.csv', 'dev')
+    }
+
+    for table_name, (sheet_name, worksheet_name) in worksheet_map.items():
+        logging.info(f"Processing table: {table_name} -> {sheet_name}, {worksheet_name}")
+        df = pd.read_sql_table(table_name, con=engine).sort_values(by='datetime', ascending=True)
+        df['datetime'] = df['datetime'].astype(str)
+        sheet = client.open(sheet_name)
+        worksheet = sheet.worksheet(worksheet_name)
+        worksheet.clear()
+        worksheet.update([df.columns.values.tolist()] + df.values.tolist(), value_input_option='RAW')
+        logging.info(f"Updated {worksheet_name} in {sheet_name}")
+
     return render_template("push.html")
 
 
