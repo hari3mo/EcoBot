@@ -15,11 +15,11 @@ CREATE TABLE logs (
     output_tokens INT,
     output_tokens_tokenizer INT,
     cached_tokens INT,
-    total_tokens INT
+    total_tokens INT,
     total_wh DECIMAL(18, 9),
     total_ml DECIMAL(18, 9),
     total_co2 DECIMAL(18, 9),
-    total_usd DECIMAL(18, 9),
+    total_usd DECIMAL(18, 9)
 );
 
 --@block--
@@ -49,11 +49,11 @@ CREATE TABLE logs_dev (
     output_tokens INT,
     output_tokens_tokenizer INT,
     cached_tokens INT,
-    total_tokens INT
+    total_tokens INT,
     total_wh DECIMAL(18, 9),
     total_ml DECIMAL(18, 9),
     total_co2 DECIMAL(18, 9),
-    total_usd DECIMAL(18, 9),
+    total_usd DECIMAL(18, 9)
 );
 
 --@block--
@@ -71,3 +71,7 @@ CREATE TABLE prompts_dev (
 -- DROP TABLE logs;
 -- DROP TABLE prompts_dev;
 -- DROP TABLE logs_dev;
+-- DELETE FROM prompts;
+-- DELETE FROM logs;
+-- DELETE FROM prompts_dev;
+-- DELETE FROM logs_dev;
