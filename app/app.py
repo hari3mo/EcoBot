@@ -1,4 +1,3 @@
-from operator import index
 from flask import Flask, render_template, request, session, jsonify
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -72,13 +71,18 @@ def get_response(prompt):
     output_text = response.output_text
     usage = response.usage
     query_tokens = usage.total_tokens
-    
+
+    logging.info(f'Query Tokens: {query_tokens}, Input Tokens: {usage.input_tokens}, Output Tokens: {usage.output_tokens}')
+
     enc = tiktoken.encoding_for_model("gpt-4o") # Tokenizer
     input_tokenizer = len(enc.encode(prompt))
     output_tokenizer = len(enc.encode(output_text))
     
-    cached_tokens = query_tokens - (input_tokenizer + usage.output_tokens)
-    session['cached_tokens'] += input_tokenizer + usage.output_tokens
+    # cached_tokens = query_tokens - (input_tokenizer + usage.output_tokens)
+    cached_tokens = usage.input_tokens - input_tokenizer
+    session['cached_tokens'] = cached_tokens
+
+    logging.info(f"Cached: {cached_tokens}, {query_tokens - (input_tokenizer + usage.output_tokens)}")
 
     # Calculate metrics
     wh_cost = (input_tokenizer + usage.output_tokens) * WH_RATE
@@ -96,9 +100,7 @@ def get_response(prompt):
     session['total_usd'] = session.get('total_usd', 0) + usd_cost
     session['total_tokens'] = session.get('total_tokens', 0) + query_tokens
     
-    
     session['id'] = response.id
-    logging.info(f"Response ID: {response.id}, Previous ID: {current_response_id}")
     
     log_data = {
             'prompt': prompt,
@@ -143,7 +145,6 @@ def get_response(prompt):
             logs_df.to_sql('logs', con=connection, if_exists='append', index=False)
             prompt_df.to_sql('prompts', con=connection, if_exists='append', index=False)
         else:
-            logging.info(f"Cached: {cached_tokens}, Aggregate: {input_tokenizer + output_tokenizer}")
             logs_df.to_sql('logs_dev', con=connection, if_exists='append', index=False)
             prompt_df.to_sql('prompts_dev', con=connection, if_exists='append', index=False)
 
@@ -173,7 +174,5 @@ def get_response(prompt):
     }
 
 
-
-    
 if __name__ == '__main__':
     app.run(debug=True)

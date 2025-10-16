@@ -5,6 +5,7 @@ app/.vercel
 app/__pycache__
 __pycache__/
 app/env
+app/logs
 docs/reading*.txt
 notebook.ipynb
 credentials.json
@@ -12,3 +13,5 @@ chatbot.py
 test.py
 .DS_Store
 .vercel
+.vscode/
+
