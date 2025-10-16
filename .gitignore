@@ -5,12 +5,12 @@ app/.vercel
 app/__pycache__
 __pycache__/
 app/env
-docs/reading*.txt
-logs/*-dev.csv
 credentials.json
 .DS_Store
 .vercel
 .vscode/
 chatbot.py
 notebooks/notebook.ipynb
-charts.ipynb
+notebooks/charts.ipynb
+docs/reading*.txt
+logs/*_dev.csv
