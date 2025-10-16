@@ -94,9 +94,8 @@ def get_response(prompt):
     input_tokenizer = len(enc.encode(prompt))
     output_tokenizer = len(enc.encode(output_text))
     input_tokens = usage.output_tokens + input_tokenizer
-    # cached_tokens = query_tokens - (input_tokenizer + usage.output_tokens)
     cached_tokens = usage.input_tokens - input_tokenizer
-    session['cached_tokens'] = cached_tokens
+    # cached_tokens = query_tokens - (input_tokenizer + usage.output_tokens)
 
     # Calculate statistics
     wh_cost = input_tokens * WH_RATE
@@ -133,7 +132,7 @@ def get_response(prompt):
             'input_tokens_tokenizer': input_tokenizer,
             'output_tokens': usage.output_tokens,
             'output_tokens_tokenizer': output_tokenizer,
-            'cached_tokens': session['cached_tokens'],
+            'cached_tokens': cached_tokens,
             'total_wh': session['total_WH'],
             'total_ml': session['total_ML'],
             'total_co2': session['total_CO2'],
@@ -151,6 +150,7 @@ def get_response(prompt):
         'total_co2', 'total_usd', 'total_tokens']
     
     prompt_columns = ['id', 'previous_id', 'datetime', 'prompt', 'response']
+
     logs_df = df[log_columns]
     prompt_df = df[prompt_columns]
     
@@ -181,10 +181,9 @@ def get_response(prompt):
         "inc_co2": f"{co2_cost:.4f}",
         "inc_usd": f"{usd_cost:.5f}",
         "inc_tokens": query_tokens,
-        
         "input_tokens": input_tokenizer,
         "output_tokens": usage.output_tokens,
-        "cached_tokens": session['cached_tokens']
+        "cached_tokens": cached_tokens
     }
 
 
