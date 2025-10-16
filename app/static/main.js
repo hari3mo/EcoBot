@@ -6,14 +6,6 @@ function scrollToBottom() {
 $(document).ready(function () {
     $("#messageArea").on("submit", function (event) {
         event.preventDefault();
-        const date = new Date();
-        let hours = date.getHours();
-        let minutes = date.getMinutes();
-        const ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12;
-        hours = hours ? hours : 12;
-        minutes = minutes < 10 ? '0' + minutes : minutes;
-        const str_time = hours + ':' + minutes + ' ' + ampm;
         var rawText = $("#text").val();
 
         if (rawText.trim() === "") {
@@ -26,9 +18,7 @@ $(document).ready(function () {
             userContainerId +
             '">' +
             rawText +
-            /*'<span class="msg_time_send">' +
-            str_time +
-            '</span>*/'</div><div class="img_cont_msg"><img src="/static/images/Seventh_College_logo2.png" class="rounded-circle user_img_msg"></div></div>';
+            '</div><div class="img_cont_msg"><img src="/static/images/Seventh_College_logo2.png" class="rounded-circle user_img_msg"></div></div>';
 
         $("#text").val("");
         $("#messageFormeight").append(userHtml);
@@ -72,36 +62,51 @@ $(document).ready(function () {
             $("#messageFormeight").append($.parseHTML(botHtml));
             scrollToBottom();
 
-            const words = data.response_text.split(" ");
-            let i = 0;
-            const interval = setInterval(function () {
-                if (i < words.length) {
-                    $("#" + botContainerId).append(words[i] + " ");
-                    i++;
-                    scrollToBottom();
-                } else {
-                    clearInterval(interval);
-                    // Add output tokens with fade-in effect
-                    const outputTokensSpan = $('<span class="msg_tokens" style="display: none;">' + data.output_tokens + ' tokens</span>');
-                    $("#" + botContainerId).append(outputTokensSpan);
-                    outputTokensSpan.fadeIn(400);
-                    scrollToBottom();
+            // Function to stream text word-by-word
+            function typeStream(element, text, callback) {
+                const words = text.split(' ');
+                let i = 0;
+                const interval = setInterval(function () {
+                    if (i < words.length) {
+                        element.append(words[i] + ' ');
+                        i++;
+                        scrollToBottom();
+                    } else {
+                        clearInterval(interval);
+                        if (callback) {
+                            callback();
+                        }
+                    }
+                }, 30);
+            }
 
-                    // Update stats with totals
-                    $("#total_wh").text(data.total_wh);
-                    $("#total_ml").text(data.total_ml);
-                    $("#total_co2").text(data.total_co2);
-                    $("#total_usd").text(data.total_usd);
-                    $("#total_tokens").text(data.total_tokens);
+            const $botContainer = $("#" + botContainerId);
+            typeStream($botContainer, data.response_text, function () {
+                // Once streaming is complete, render the markdown
+                const renderedHtml = marked.parse(data.response_text);
+                $botContainer.html(renderedHtml);
 
-                    // Update incremental values with animation and units
-                    updateIncrement("#inc_wh", data.inc_wh, " Wh");
-                    updateIncrement("#inc_ml", data.inc_ml, " ml");
-                    updateIncrement("#inc_co2", data.inc_co2, " g");
-                    updateIncrement("#inc_usd", data.inc_usd, "", "$");
-                    updateIncrement("#inc_tokens", data.inc_tokens, " tokens");
-                }
-            }, 30);
+                // Add output tokens with fade-in effect
+                const outputTokensSpan = $('<span class="msg_tokens" style="display: none;">' + data.output_tokens + ' tokens</span>');
+                $botContainer.append(outputTokensSpan);
+                outputTokensSpan.fadeIn(400);
+                scrollToBottom();
+            });
+
+
+            // Update stats with totals
+            $("#total_wh").text(data.total_wh);
+            $("#total_ml").text(data.total_ml);
+            $("#total_co2").text(data.total_co2);
+            $("#total_usd").text(data.total_usd);
+            $("#total_tokens").text(data.total_tokens);
+
+            // Update incremental values with animation and units
+            updateIncrement("#inc_wh", data.inc_wh, " Wh");
+            updateIncrement("#inc_ml", data.inc_ml, " ml");
+            updateIncrement("#inc_co2", data.inc_co2, " g");
+            updateIncrement("#inc_usd", data.inc_usd, "", "$");
+            updateIncrement("#inc_tokens", data.inc_tokens, " tokens");
         });
 
         // Function to update and animate increment display
@@ -111,7 +116,7 @@ $(document).ready(function () {
             $element.addClass("increment-flash");
             setTimeout(function () {
                 $element.removeClass("increment-flash");
-            }, 750);
+            }, 1000);
         }
     });
 });
