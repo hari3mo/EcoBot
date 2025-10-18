@@ -1,4 +1,41 @@
 id,previous_id,datetime,prompt,response
+resp_01af886b06cb9d290068f3de0896a8819fa7c94a23c5348236,,2025-10-18 18:35:52,hi,Hello! 🌍 How can I assist you today?
+resp_0dfd7710be0740a80068f3dde84cb881a184817650741de840,,2025-10-18 18:35:20,hi bro,Hello! 🌱 How can I assist you today?
+resp_038a169a01e9d5b20068f3dcc12d0881a3a52d37d356fc79b6,resp_038a169a01e9d5b20068f3dcb9e56c81a3aad03b7e1ece0aee,2025-10-18 18:30:25,Nice thanks,"You're welcome! If you have more questions, feel free to ask. 😊🌍"
+resp_038a169a01e9d5b20068f3dcb9e56c81a3aad03b7e1ece0aee,resp_038a169a01e9d5b20068f3dcb00dc481a38241c3fccf959c41,2025-10-18 18:30:18,And her uncle (mothers side),Queen Mary's uncle on her mother's side was **Duke Ernst II of Saxe-Coburg and Gotha**. 🌿 Let me know if there's anything else you'd like to know!
+resp_038a169a01e9d5b20068f3dcb00dc481a38241c3fccf959c41,resp_038a169a01e9d5b20068f3dcaa1eb481a3a9bf80438f4fb424,2025-10-18 18:30:08,And his mother,The mother of King George VI was **Queen Mary**. 🌺 Feel free to ask anything else you need!
+resp_038a169a01e9d5b20068f3dcaa1eb481a3a9bf80438f4fb424,resp_038a169a01e9d5b20068f3dc9b105c81a3a44c0fa702861aaa,2025-10-18 18:30:02,What about his father,The father of King George VI was **King George V**. 🌍 Let me know if you need more information!
+resp_038a169a01e9d5b20068f3dc9b105c81a3a44c0fa702861aaa,resp_038a169a01e9d5b20068f3d87ed68081a383b4558879ec24c8,2025-10-18 18:29:47,Who is hte queens father,"The father of Queen Elizabeth II was **King George VI**. 🌿 If you have more questions, feel free to ask!"
+resp_038a169a01e9d5b20068f3d87ed68081a383b4558879ec24c8,resp_038a169a01e9d5b20068f3d85ea6d481a3aeea1c71685a7178,2025-10-18 18:12:14,How many queens of england were there? Who is the most recent one and is she still alive? What power does the queen have? So many questions...,"### Queens of England
+
+1. **Queens Regnant**: Women who ruled in their own right.
+   - Notables include Elizabeth I, Victoria, and Elizabeth II.
+
+2. **Queens Consort**: Wives of reigning kings.
+   - This list is longer as it includes all kings' wives.
+
+### Most Recent Queen
+
+- **Elizabeth II** was the most recent reigning queen.
+- She passed away on September 8, 2022.
+
+### Powers of the Queen
+
+- **Constitutional Role**: The Queen's role is largely ceremonial and symbolic.
+- **Duties**:
+  - Opens and dissolves Parliament.
+  - Meets with the Prime Minister.
+  - Approves Orders in Council and legislation.
+
+Feel free to ask more questions! This response was crafted with care for our planet. 🌿"
+resp_038a169a01e9d5b20068f3d85ea6d481a3aeea1c71685a7178,,2025-10-18 18:11:42,Generate a markdown list,"Sure! Here's a simple markdown list:
+
+- Item 1 🌱
+- Item 2 🌍
+- Item 3 🌟
+
+This response used minimal resources. If you have more questions or need more information, feel free to ask! 😊"
+resp_01a3dfd555b7525e0068f3d76a77bc81938336da96249e8188,,2025-10-18 18:07:38,hello bro,Hey there! 🌟 How can I assist you today?
 resp_030175a0e31bff710068f3b3c08e4c81a2b266fefed4693604,,2025-10-18 15:35:28,Generate text that uses every markdown item,"# Markdown Guide 🌿
 
 ## Headers
