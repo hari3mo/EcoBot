@@ -1,37 +1,33 @@
 {% extends "base.html" %}
 
 {% block extra_scripts %}
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% endblock %}
 
 {% block content %}
 <div class="container">
   <div class="chat-section">
-    <!-- Added course title header matching dashboard style -->
     <div class="course-header">
       <h1>SYN 100 - Artificial Intelligence: Climate Applications & Ethical Implications</h1>
+      <div class="course-actions">
+        <button class="dashboard-link-button" onclick="window.open('{{ url_for('dashboard') }}', '_blank')">📊 Dashboard</button>
+        <button class="new-chat-button" onclick="window.open('{{ url_for('index') }}')">🔄 New Chat</button>
+      </div>
     </div>
-    
+          
     <div class="chat-header">
       <div class="chat-header-left">
         <span>🌿 EcoBot 5</span>
         {% if session['admin'] %}
         <button class="admin-button">Admin</button>
         {% endif %}
+
+        <div class="cached-tokens-display" id="cachedTokensDisplay" style="display:none;">
+          <span class="cached-label">💾 Cache:</span>
+          <span class="cached-value" id="cachedTokensValue">0 tokens</span>
+        </div>
       </div>
-      <div class="chat-header-right">
-        <button class="dashboard-link-button" onclick="window.open('{{ url_for('dashboard') }}', '_blank')">📊 Dashboard</button>
-        <button class="new-chat-button" onclick="window.open('{{ url_for('index') }}')">
-          🔄 New Chat
-        </button>
-      </div>
-    </div>
-    
-    <!-- Added cached tokens display area -->
-    <div class="cached-tokens-display" id="cachedTokensDisplay" style="display: none;">
-      <span class="cached-label">💾 Cached Tokens:</span>
-      <span class="cached-value" id="cachedTokensValue">0</span>
     </div>
     
     <div class="chat-messages" id="chatMessages">
@@ -42,15 +38,15 @@
         </div>
       </div>
     </div>
+    
     <div class="chat-input-container">
       <div class="chat-input-wrapper">
         <input 
           type="text" 
           class="chat-input" 
           id="chatInput" 
-          placeholder="Type your message..."
-          onkeypress="if(event.key === 'Enter') sendMessage()"
-        >
+          placeholder="Type your message..." 
+          onkeypress="if(event.key === 'Enter') sendMessage()">
         <button class="send-button" onclick="sendMessage()" id="sendButton">
           Send
         </button>
@@ -59,8 +55,7 @@
   </div>
 
   <div class="stats-section">
-    
-    <div class="stat-card stat-card">
+    <div class="stat-card">
       <div class="stat-title">💬 Query Count</div>
       <div class="stat-values stat-values-center">
         <div class="stat-value-group">
@@ -135,12 +130,12 @@
       <div class="stat-values">
         <div class="stat-value-group">
           <div class="stat-label">Total</div>
-          <div class="stat-number" id="totalTokens">0</div>
+          <div class="stat-number" id="totalTokens">0<span class="stat-unit">tokens</span></div>
         </div>
         <div class="stat-divider"></div>
         <div class="stat-value-group">
           <div class="stat-label">Last Query</div>
-          <div class="stat-number" id="marginalTokens">0</div>
+          <div class="stat-number" id="marginalTokens">0<span class="stat-unit">tokens</span></div>
         </div>
       </div>
     </div>

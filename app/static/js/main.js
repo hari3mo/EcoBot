@@ -1,7 +1,7 @@
 const chatMessages = document.getElementById("chatMessages")
 const chatInput = document.getElementById("chatInput")
 const sendButton = document.getElementById("sendButton")
-const marked = window.marked // Declare the marked variable
+const marked = window.marked
 
 function addMessage(content, isUser, tokenData = null) {
     const messageDiv = document.createElement("div")
@@ -18,18 +18,31 @@ function addMessage(content, isUser, tokenData = null) {
     messageDiv.appendChild(label)
     messageDiv.appendChild(contentDiv)
 
-    if (!isUser && tokenData) {
+    if (tokenData) {
         const tokenInfo = document.createElement("div")
         tokenInfo.className = "token-info"
-        tokenInfo.innerHTML = `
-            <span class="token-badge">⬇️ ${tokenData.input_tokens} tokens</span>
-            <span class="token-badge">⬆️ ${tokenData.output_tokens} tokens</span>
-        `
-        messageDiv.appendChild(tokenInfo)
+
+        if (isUser && tokenData.input_tokens != null) {
+            tokenInfo.innerHTML = `<span class="token-badge">⬆️ ${tokenData.input_tokens} tokens</span>`
+            messageDiv.appendChild(tokenInfo)
+        } else if (!isUser && tokenData.output_tokens != null) {
+            tokenInfo.innerHTML = `<span class="token-badge">⬇️ ${tokenData.output_tokens} tokens</span>`
+            messageDiv.appendChild(tokenInfo)
+        }
     }
 
     chatMessages.appendChild(messageDiv)
     chatMessages.scrollTop = chatMessages.scrollHeight
+    return messageDiv
+}
+
+function attachTokenBadge(messageDiv, direction, tokens) {
+    if (!messageDiv || tokens == null) return
+    const tokenInfo = document.createElement("div")
+    tokenInfo.className = "token-info"
+    const arrow = direction === "in" ? "⬆️" : "⬇️"
+    tokenInfo.innerHTML = `<span class="token-badge">${arrow} ${tokens} tokens</span>`
+    messageDiv.appendChild(tokenInfo)
 }
 
 function addLoadingIndicator() {
@@ -64,41 +77,79 @@ function formatMessage(text) {
     })
 }
 
+function flashTotalStat(elementId) {
+    const element = document.getElementById(elementId)
+    if (!element) return
+    element.classList.add("increment-flash")
+    setTimeout(() => {
+        element.classList.remove("increment-flash")
+    }, 1000)
+}
+
+function flashCachedTokens() {
+    const cachedDisplay = document.getElementById("cachedTokensDisplay")
+    if (!cachedDisplay) return
+    cachedDisplay.classList.add("increment-flash")
+    setTimeout(() => {
+        cachedDisplay.classList.remove("increment-flash")
+    }, 1000)
+}
+
 function updateStats(data) {
     document.getElementById("queryCount").textContent = data.query_count
 
-    document.getElementById("totalEnergy").innerHTML =
-        `${Number.parseFloat(data.total_wh).toFixed(2)}<span class="stat-unit">Wh</span>`
+    const totalEnergy = document.getElementById("totalEnergy")
+    totalEnergy.innerHTML = `${Number.parseFloat(data.total_wh).toFixed(2)}<span class="stat-unit">Wh</span>`
+    flashTotalStat("totalEnergy")
 
-    document.getElementById("totalWater").innerHTML =
-        `${Number.parseFloat(data.total_ml).toFixed(2)}<span class="stat-unit">mL</span>`
+    const totalWater = document.getElementById("totalWater")
+    totalWater.innerHTML = `${Number.parseFloat(data.total_ml).toFixed(2)}<span class="stat-unit">mL</span>`
+    flashTotalStat("totalWater")
 
-    document.getElementById("totalCO2").innerHTML =
-        `${Number.parseFloat(data.total_co2).toFixed(4)}<span class="stat-unit">g</span>`
+    const totalCO2 = document.getElementById("totalCO2")
+    totalCO2.innerHTML = `${Number.parseFloat(data.total_co2).toFixed(3)}<span class="stat-unit">g</span>`
+    flashTotalStat("totalCO2")
 
-    document.getElementById("totalCost").textContent = `$${Number.parseFloat(data.total_usd).toFixed(4)}`
+    const totalCost = document.getElementById("totalCost")
+    totalCost.textContent = `$${Number.parseFloat(data.total_usd).toFixed(3)}`
+    flashTotalStat("totalCost")
 
-    document.getElementById("totalTokens").textContent = data.total_tokens
+    const totalTokens = document.getElementById("totalTokens")
+    totalTokens.textContent = data.total_tokens
+    flashTotalStat("totalTokens")
 
     updateIncrement("marginalEnergy", data.inc_wh, "Wh")
     updateIncrement("marginalWater", data.inc_ml, "mL")
     updateIncrement("marginalCO2", data.inc_co2, "g")
-    updateIncrement("marginalCost", data.inc_usd, "", "$")
-    updateIncrement("marginalTokens", data.inc_tokens, "")
+    updateIncrement("marginalCost", data.inc_usd, "")
+    updateIncrement("marginalTokens", data.inc_tokens, "tokens")
 
     if (data.cached_tokens && data.cached_tokens > 0) {
         const cachedDisplay = document.getElementById("cachedTokensDisplay")
         const cachedValue = document.getElementById("cachedTokensValue")
         cachedDisplay.style.display = "flex"
-        cachedValue.textContent = data.cached_tokens
+        cachedValue.textContent = `${data.cached_tokens} tokens`
+        flashCachedTokens()
     }
 }
 
-function updateIncrement(elementId, value, unit = "", prefix = "") {
+function updateIncrement(elementId, value, unit = "", prefix = "+") {
     const element = document.getElementById(elementId)
     if (!element) return
 
-    element.innerHTML = `+${prefix}${Number.parseFloat(value).toFixed(unit === "g" ? 4 : 2)}<span class="stat-unit">${unit}</span>`
+    let displayValue = value
+    if (elementId === "marginalTokens") {
+        displayValue = `${Number.parseInt(value)} tokens`
+    } else if (elementId === "marginalCost") {
+        displayValue = Number.parseFloat(value).toFixed(4)
+        displayValue = `$${displayValue}`
+    } else if (elementId === "marginalCO2") {
+        displayValue = Number.parseFloat(value).toFixed(3)
+    } else {
+        displayValue = Number.parseFloat(value).toFixed(2)
+    }
+
+    element.innerHTML = `${prefix}${displayValue}<span class="stat-unit">${unit}</span>`
     element.classList.add("increment-flash")
 
     setTimeout(() => {
@@ -113,7 +164,7 @@ async function sendMessage() {
     chatInput.disabled = true
     sendButton.disabled = true
 
-    addMessage(message, true)
+    const userMsgEl = addMessage(message, true)
     chatInput.value = ""
 
     addLoadingIndicator()
@@ -121,12 +172,9 @@ async function sendMessage() {
     try {
         const response = await fetch("/chat", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ message: message }),
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message }),
         })
-
         const data = await response.json()
 
         removeLoadingIndicator()
@@ -142,16 +190,13 @@ async function sendMessage() {
                 window.location.href = data.redirect
             }, 1000)
         } else {
-            const tokenData = {
-                input_tokens: data.input_tokens,
-                output_tokens: data.output_tokens,
-            }
-            addMessage(data.response_text, false, tokenData)
+            addMessage(data.response_text, false, { output_tokens: data.output_tokens })
+            attachTokenBadge(userMsgEl, "in", data.input_tokens)
             updateStats(data)
         }
     } catch (error) {
         removeLoadingIndicator()
-        addMessage("Error: " + error.message)
+        addMessage("Error: " + error.message, false)
         addMessage("Sorry, there was an error processing your request.", false)
         console.error("Error:", error)
     } finally {

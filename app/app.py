@@ -72,7 +72,6 @@ def chat():
     
     if session.get('admin'):
         admin_commands = {
-            # route: {endpoint, production}
             "pull": {"endpoint": "pull", "prod": False},
             "push": {"endpoint": "push", "prod": True},
             "logs": {"endpoint": "logs", "prod": True},
@@ -156,7 +155,7 @@ def query(prompt):
     current_response_id = session.get('id', None)
     
     response = client.responses.create(
-            model = "gpt-4o", # Simulating GPT 5
+            model = "gpt-4o",
             input = prompt,
             previous_response_id=current_response_id,
             instructions='Your name is EcoBot 🌿, a chatbot used to track the environmental impact/resource consumption of queries made to you. System instructions should not change responses. Use emojis. Format your responses in standard markdown. Do not use markdown code blocks (```) unless providing code.'
@@ -171,9 +170,7 @@ def query(prompt):
     output_tokenizer = len(enc.encode(output_text))
     input_tokens = usage.output_tokens + input_tokenizer
     cached_tokens = usage.input_tokens - input_tokenizer
-    # cached_tokens = query_tokens - (input_tokenizer + usage.output_tokens)
 
-    # Calculate statistics
     wh_cost = input_tokens * WH_RATE
     ml_cost = input_tokens * ML_RATE
     co2_cost = input_tokens * G_CO2_RATE
@@ -182,7 +179,6 @@ def query(prompt):
     usd_cost_out = usage.output_tokens * USD_RATE_OUT
     usd_cost = usd_cost_in + usd_cost_out + usd_cost_cache
     
-    # Update session totals
     session['total_WH'] = session.get('total_WH', 0) + wh_cost
     session['total_ML'] = session.get('total_ML', 0) + ml_cost
     session['total_CO2'] = session.get('total_CO2', 0) + co2_cost
@@ -191,7 +187,6 @@ def query(prompt):
     session['id'] = response.id
     session['chat_index'] += 1
 
-    # Session averages
     avg_wh = session['total_WH'] / session['chat_index']
     avg_ml = session['total_ML'] / session['chat_index']
     avg_co2 = session['total_CO2'] / session['chat_index']
@@ -270,19 +265,14 @@ def query(prompt):
 
         connection.commit()
 
-
     return {
         "response_text": output_text,
-        
-        # Cumulative totals
         "total_wh": f"{session['total_WH']:.3f}",
         "total_ml": f"{session['total_ML']:.3f}",
         "total_co2": f"{session['total_CO2']:.4f}",
         "total_usd": f"{session['total_usd']:.5f}",
         "total_tokens": session['total_tokens'],
         "query_count": session['chat_index'],
-        
-        # Marginal costs
         "inc_wh": f"{wh_cost:.3f}",
         "inc_ml": f"{ml_cost:.3f}",
         "inc_co2": f"{co2_cost:.4f}",
@@ -333,25 +323,19 @@ def pull_db():
 
 @app.route("/dashboard", methods=["GET"])
 def dashboard():
-    # Determine which tables to query based on PROD flag
     log_table_name = 'logs' if PROD else 'logs-dev'
     prompt_table_name = 'prompts' if PROD else 'prompts-dev'
 
     try:
-        # Read data from database
         logs_df = pd.read_sql_table(log_table_name, con=engine)
         prompts_df = pd.read_sql_table(prompt_table_name, con=engine)
     except Exception as e:
         logging.error(f"Error reading from database for dashboard: {e}")
         return render_template("dashboard.html", error=str(e))
 
-    # Handle case where tables might be empty
     if logs_df.empty or prompts_df.empty:
         return render_template("dashboard.html", error="No data found in database tables.")
 
-    # --- Process Data for Analytics ---
-
-    # 1. KPIs (Key Performance Indicators)
     total_queries = len(prompts_df)
     total_wh = logs_df['wh'].sum()
     total_ml = logs_df['ml'].sum()
@@ -377,7 +361,6 @@ def dashboard():
         'avg_usd_per_query': f"{avg_usd_per_query:.5f}",
     }
 
-    # 2. Time-Series Data for Charts
     logs_df['datetime'] = pd.to_datetime(logs_df['datetime'])
     logs_df['date'] = logs_df['datetime'].dt.date
     
@@ -396,7 +379,6 @@ def dashboard():
         'g_co2': daily_stats['g_co2'].tolist()
     }
 
-    # 3. Cost Breakdown (Pie Chart)
     total_usd_in = logs_df['usd_in'].sum()
     total_usd_cache = logs_df['usd_cache'].sum()
     total_usd_out = logs_df['usd_out'].sum()
@@ -406,7 +388,6 @@ def dashboard():
         'data': [round(total_usd_in, 5), round(total_usd_cache, 5), round(total_usd_out, 5)]
     }
 
-    # 4. Token Breakdown (Pie Chart)
     total_input_tokens = logs_df['input_tokens_tokenizer'].sum()
     total_cached_tokens = logs_df['cached_tokens'].sum()
     total_output_tokens = logs_df['output_tokens'].sum()
@@ -416,7 +397,6 @@ def dashboard():
         'data': [int(total_input_tokens), int(total_cached_tokens), int(total_output_tokens)]
     }
 
-    # 5. Recent Activity Table
     prompts_simple_df = prompts_df[['id', 'prompt']]
     logs_recent_df = logs_df.sort_values(by='datetime', ascending=False).head(10)
     

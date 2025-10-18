@@ -10,13 +10,10 @@
 <body>
     <div class="page-container">
         <!--<a href="/" class="back-button">← Back to Chat</a>-->
-
         {% block content %}
-        <!-- Page content goes here -->
         {% endblock %}
     </div>
     
-    <!-- Added extra_scripts block so child templates can inject scripts -->
     {% block extra_scripts %}{% endblock %}
 </body>
 </html>
