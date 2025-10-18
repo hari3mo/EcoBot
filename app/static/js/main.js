@@ -145,7 +145,7 @@ function updateIncrement(elementId, value, unit = "", prefix = "+") {
     displayValue = Number.parseInt(value)
   } else if (elementId === "marginalCost") {
     displayValue = Number.parseFloat(value).toFixed(4)
-    displayValue = `${displayValue} USD`
+    displayValue = `${displayValue}`
   } else if (elementId === "marginalCO2") {
     displayValue = Number.parseFloat(value).toFixed(3)
   } else {
