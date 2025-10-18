@@ -13,4 +13,5 @@ chatbot.py
 notebooks/notebook.ipynb
 notebooks/charts.ipynb
 docs/reading*.txt
-logs/*_dev.csv
+logs/*-dev.csv
+**/*-old*

@@ -1,100 +1,119 @@
 {% extends "base.html" %}
 
-{% block content %}
 
-<div class="col-12">
-  <h2 class="text-center">
-    SYN 100 - Artificial Intelligence: Climate Applications & Ethical Implications
-  </h2>
-</div>
-
-<div class="col-md-8 col-xl-6 chat">
-  <div class="card">
-    <div class="card-header msg_head">
-      <div class="d-flex bd-highlight">
-        <div class="img_cont">
-          <img
-            src={{url_for('static', filename='images/placeholder.png')}}
-            class="rounded-circle user_img"/>
-          <span class="online_icon"></span>
-        </div>
-        <div class="user_info">
-          <span>EcoGPT 5 🌿</span>
-          <p>Ask me anything and see the environmental impact your query has!</p>
-        </div>
-        {% if session.admin %}
-        <div class="admin-badge">Admin</div>
+  <body>
+  {% block content %}
+  <div class="container">
+    <div class="chat-section">
+      <div class="chat-header">
+        🌿 EcoBot - Environmental Impact Chat
+        {% if session['admin'] %}
+        <button class="admin-button" onclick="window.location.href='/admin'">Admin</button>
         {% endif %}
-        
       </div>
-    </div>
-    <div id="messageFormeight" class="card-body msg_card_body"></div>
-    <div class="card-footer">
-      <div id="cached-tokens-display" style="text-align: right; color: rgba(255, 255, 255, 0.6); font-size: 12px; margin-bottom: 5px; padding-right: 10px; display: none;">
-        ~<span id="cached-tokens-count">0</span> tokens cached
+      <div class="chat-messages" id="chatMessages">
+        <div class="message bot-message">
+          <div class="message-label">EcoBot</div>
+          <div class="message-content">
+            Hello! I'm EcoBot 🌿. I track the environmental impact of our conversation. Ask me anything!
+          </div>
+        </div>
       </div>
-      <form id="messageArea" class="input-group">
-        <input
-          type="text"
-          id="text"
-          name="msg"
-          placeholder="Type your message..."
-          autocomplete="off"
-          class="form-control type_msg"
-          required
-        />
-        <div class="input-group-append">
-          <button
-            type="submit"
-            id="send"
-            class="input-group-text send_btn">
-            <i class="fas fa-location-arrow"></i>
+      <div class="chat-input-container">
+        <div class="chat-input-wrapper">
+          <input 
+            type="text" 
+            class="chat-input" 
+            id="chatInput" 
+            placeholder="Type your message..."
+            onkeypress="if(event.key === 'Enter') sendMessage()"
+          >
+          <button class="send-button" onclick="sendMessage()" id="sendButton">
+            Send
           </button>
         </div>
-      </form>
-    </div>
-  </div>
-</div>
-<div class="col-md-4 col-xl-3 stats">
-  <div class="card">
-    <div class="card-body">
-      <div class="stats_item">
-          <h5>Energy Cost (Wh)</h5>
-          <div class="stats_row">
-              <p><span id="total_wh">0.000</span> ⚡️</p>
-              <span class="increment" id="inc_wh"></span>
-          </div>
-      </div>
-      <div class="stats_item">
-          <h5>Water Cost (ml)</h5>
-          <div class="stats_row">
-              <p><span id="total_ml">0.000</span> 💧</p>
-              <span class="increment" id="inc_ml"></span>
-          </div>
-      </div>
-      <div class="stats_item">
-          <h5>Emissions (g CO2)</h5>
-          <div class="stats_row">
-              <p><span id="total_co2">0.000</span> 💨</p>
-              <span class="increment" id="inc_co2"></span>
-          </div>
-      </div>
-      <div class="stats_item">
-          <h5>Money (USD)</h5>
-          <div class="stats_row">
-              <p>$<span id="total_usd">0.00</span> 💵</p>
-              <span class="increment" id="inc_usd"></span>
-          </div>
-      </div>
-      <div class="stats_item">
-          <h5>Tokens</h5>
-          <div class="stats_row">
-              <p><span id="total_tokens">0</span> 🪙</p>
-              <span class="increment" id="inc_tokens"></span>
-          </div>
       </div>
     </div>
-  </div>
-</div>
 
-{% endblock %}
+    <div class="stats-section">
+      <div class="stats-header">Environmental Impact</div>
+      
+      <div class="stat-card">
+        <div class="stat-title">⚡ Energy Consumption</div>
+        <div class="stat-values">
+          <div class="stat-value-group">
+            <div class="stat-label">Total</div>
+            <div class="stat-number" id="totalEnergy">0<span class="stat-unit">Wh</span></div>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-value-group">
+            <div class="stat-label">Last Query</div>
+            <div class="stat-number" id="marginalEnergy">0<span class="stat-unit">Wh</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-title">💧 Water Usage</div>
+        <div class="stat-values">
+          <div class="stat-value-group">
+            <div class="stat-label">Total</div>
+            <div class="stat-number" id="totalWater">0<span class="stat-unit">mL</span></div>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-value-group">
+            <div class="stat-label">Last Query</div>
+            <div class="stat-number" id="marginalWater">0<span class="stat-unit">mL</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-title">🌍 CO₂ Emissions</div>
+        <div class="stat-values">
+          <div class="stat-value-group">
+            <div class="stat-label">Total</div>
+            <div class="stat-number" id="totalCO2">0<span class="stat-unit">g</span></div>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-value-group">
+            <div class="stat-label">Last Query</div>
+            <div class="stat-number" id="marginalCO2">0<span class="stat-unit">g</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-title">💰 Cost</div>
+        <div class="stat-values">
+          <div class="stat-value-group">
+            <div class="stat-label">Total</div>
+            <div class="stat-number" id="totalCost">$0.00</div>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-value-group">
+            <div class="stat-label">Last Query</div>
+            <div class="stat-number" id="marginalCost">$0.00</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-title">🔢 Tokens Used</div>
+        <div class="stat-values">
+          <div class="stat-value-group">
+            <div class="stat-label">Total</div>
+            <div class="stat-number" id="totalTokens">0</div>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-value-group">
+            <div class="stat-label">Last Query</div>
+            <div class="stat-number" id="marginalTokens">0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock %}
+</body>
+</html>

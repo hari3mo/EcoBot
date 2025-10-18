@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoBot Dashboard - Environmental Impact Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .kpi-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(16, 185, 129, 0.3);
+            box-shadow: 0 8px 32px rgba(16, 185, 129, 0.15);
+        }
+
+        .kpi-label {
+            font-size: 0.875rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.25rem;
+        }
+
+        .kpi-subtitle {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .chart-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+
+        .chart-card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        .chart-container.tall {
+            height: 400px;
+        }
+
+        .recent-activity {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+
+        .activity-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 1.5rem;
+        }
+
+        .activity-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .activity-table th {
+            text-align: left;
+            padding: 1rem;
+            font-size: 0.875rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .activity-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.05);
+            color: #cbd5e1;
+        }
+
+        .activity-table tr:hover {
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .prompt-text {
+            max-width: 400px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .metric-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #10b981;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            color: #fca5a5;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-bottom: 2rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            color: #10b981;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(16, 185, 129, 0.2);
+            transform: translateX(-4px);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .activity-table {
+                font-size: 0.875rem;
+            }
+
+            .activity-table th,
+            .activity-table td {
+                padding: 0.75rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <a href="/" class="back-button">← Back to Chat</a>
+
+        <div class="header">
+            <h1>🌿 EcoBot Dashboard</h1>
+            <p>Environmental Impact & Resource Analytics</p>
+        </div>
+
+        {% if error %}
+        <div class="error-message">
+            <h2>Error Loading Dashboard</h2>
+            <p>{{ error }}</p>
+        </div>
+        {% else %}
+
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-label">Total Queries</div>
+                <div class="kpi-value">{{ kpis.total_queries }}</div>
+                <div class="kpi-subtitle">Conversations tracked</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-label">Energy Used</div>
+                <div class="kpi-value">{{ kpis.total_wh }}</div>
+                <div class="kpi-subtitle">Watt-hours (Wh)</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-label">Water Used</div>
+                <div class="kpi-value">{{ kpis.total_ml }}</div>
+                <div class="kpi-subtitle">Milliliters (mL)</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-label">CO₂ Emissions</div>
+                <div class="kpi-value">{{ kpis.total_g_co2 }}</div>
+                <div class="kpi-subtitle">Grams (g)</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-label">Total Cost</div>
+                <div class="kpi-value">${{ kpis.total_usd }}</div>
+                <div class="kpi-subtitle">USD spent</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-label">Total Tokens</div>
+                <div class="kpi-value">{{ kpis.total_tokens }}</div>
+                <div class="kpi-subtitle">Tokens processed</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-label">Avg Energy/Query</div>
+                <div class="kpi-value">{{ kpis.avg_wh_per_query }}</div>
+                <div class="kpi-subtitle">Wh per query</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-label">Avg CO₂/Query</div>
+                <div class="kpi-value">{{ kpis.avg_co2_per_query }}</div>
+                <div class="kpi-subtitle">g per query</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-label">Avg Cost/Query</div>
+                <div class="kpi-value">${{ kpis.avg_usd_per_query }}</div>
+                <div class="kpi-subtitle">USD per query</div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-grid">
+            <!-- Time Series Chart -->
+            <div class="chart-card full-width">
+                <h2 class="chart-title">Daily Activity Trends</h2>
+                <div class="chart-container tall">
+                    <canvas id="timeseriesChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Cost Breakdown Pie Chart -->
+            <div class="chart-card">
+                <h2 class="chart-title">Cost Breakdown</h2>
+                <div class="chart-container">
+                    <canvas id="costChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Token Breakdown Pie Chart -->
+            <div class="chart-card">
+                <h2 class="chart-title">Token Distribution</h2>
+                <div class="chart-container">
+                    <canvas id="tokenChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Table -->
+        <div class="recent-activity">
+            <h2 class="activity-title">Recent Activity</h2>
+            <table class="activity-table">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Prompt</th>
+                        <th>Energy (Wh)</th>
+                        <th>CO₂ (g)</th>
+                        <th>Tokens</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in recent_logs %}
+                    <tr>
+                        <td>{{ log.datetime }}</td>
+                        <td class="prompt-text">{{ log.prompt }}</td>
+                        <td><span class="metric-badge">{{ log.wh }}</span></td>
+                        <td><span class="metric-badge">{{ log.g_co2 }}</span></td>
+                        <td><span class="metric-badge">{{ log.tokens }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% endif %}
+    </div>
+
+    <script>
+        // Parse chart data from Flask
+        const chartData = {{ chart_data | safe }};
+
+        // Chart.js default configuration
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.borderColor = 'rgba(148, 163, 184, 0.1)';
+        Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+
+        // Time Series Chart
+        const timeseriesCtx = document.getElementById('timeseriesChart').getContext('2d');
+        new Chart(timeseriesCtx, {
+            type: 'line',
+            data: {
+                labels: chartData.timeseries.labels,
+                datasets: [
+                    {
+                        label: 'Queries',
+                        data: chartData.timeseries.queries,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Energy (Wh)',
+                        data: chartData.timeseries.wh,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        yAxisID: 'y1'
+                    },
+                    {
+                        label: 'CO₂ (g)',
+                        data: chartData.timeseries.g_co2,
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            padding: 15,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        padding: 12,
+                        borderColor: 'rgba(16, 185, 129, 0.3)',
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Queries'
+                        },
+                        grid: {
+                            color: 'rgba(148, 163, 184, 0.05)'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Resources (Wh / g CO₂)'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Cost Breakdown Pie Chart
+        const costCtx = document.getElementById('costChart').getContext('2d');
+        new Chart(costCtx, {
+            type: 'doughnut',
+            data: {
+                labels: chartData.cost_breakdown.labels,
+                datasets: [{
+                    data: chartData.cost_breakdown.data,
+                    backgroundColor: [
+                        'rgba(16, 185, 129, 0.8)',
+                        'rgba(59, 130, 246, 0.8)',
+                        'rgba(245, 158, 11, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(16, 185, 129, 1)',
+                        'rgba(59, 130, 246, 1)',
+                        'rgba(245, 158, 11, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        padding: 12,
+                        borderColor: 'rgba(16, 185, 129, 0.3)',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': $' + context.parsed.toFixed(5);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Token Breakdown Pie Chart
+        const tokenCtx = document.getElementById('tokenChart').getContext('2d');
+        new Chart(tokenCtx, {
+            type: 'doughnut',
+            data: {
+                labels: chartData.token_breakdown.labels,
+                datasets: [{
+                    data: chartData.token_breakdown.data,
+                    backgroundColor: [
+                        'rgba(16, 185, 129, 0.8)',
+                        'rgba(139, 92, 246, 0.8)',
+                        'rgba(236, 72, 153, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(16, 185, 129, 1)',
+                        'rgba(139, 92, 246, 1)',
+                        'rgba(236, 72, 153, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        padding: 12,
+                        borderColor: 'rgba(16, 185, 129, 0.3)',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed.toLocaleString() + ' tokens';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

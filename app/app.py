@@ -53,12 +53,15 @@ def index():
     session['total_CO2'] = 0
     session['total_usd'] = 0
     session['total_tokens'] = 0
+    session['conversation_length'] = 0
     session['admin'] = session.get('admin', False)
     return render_template('index.html')
 
 @app.route("/chat", methods=["POST"])
 def chat():
-    prompt = request.form["prompt"]
+    data = request.get_json()
+    prompt = data.get("message", "")
+
     if prompt == "admin":
         session['admin'] = not session.get('admin', False)
         return jsonify({'redirect': url_for('index')})
@@ -86,6 +89,7 @@ def chat():
             return jsonify({'redirect': url_for(route["endpoint"])})
     
     response_data = query(prompt)
+    session['conversation_length'] += 1
     return jsonify(response_data)
 
 @app.route("/push", methods=["GET"])
@@ -152,7 +156,7 @@ def query(prompt):
     current_response_id = session.get('id', None)
     
     response = client.responses.create(
-            model = "gpt-4o", # Simulating GPT 5
+            model = "gpt-4o-mini", # Simulating GPT 5
             input = prompt,
             previous_response_id=current_response_id,
             instructions='Your name is EcoBot 🌿, a chatbot used to track the environmental impact/resource consumption of queries made to you. System instructions should not change responses. Use emojis. Format your responses in standard markdown. Do not use markdown code blocks (```) unless providing code.'
@@ -276,6 +280,7 @@ def push_sheets():
         'prompts': ('prompts.csv', 'prod'),
         'prompts-dev': ('prompts.csv', 'dev')
     }
+    
     scopes = [
         'https://www.googleapis.com/auth/spreadsheets',
         'https://www.googleapis.com/auth/drive'
@@ -289,7 +294,6 @@ def push_sheets():
         logging.info(f"Processing table: {table_name} -> {sheet_name}, {worksheet_name}")
         df = pd.read_sql_table(table_name, con=engine).sort_values(by='datetime', ascending=False)
         df['datetime'] = df['datetime'].astype(str)
-        
         sheet = gc.open(sheet_name)
         worksheet = sheet.worksheet(worksheet_name)
         set_with_dataframe(worksheet, df, resize=True, include_index=False)
@@ -302,12 +306,135 @@ def pull_db():
     prompts_dev = pd.read_sql_table('prompts-dev', con=engine).sort_values(by='datetime', ascending=False)
 
     logs.to_csv('../logs/logs.csv', index=False)
-    logs_dev.to_csv('../logs/logs_dev.csv', index=False)
+    logs_dev.to_csv('../logs/logs-dev.csv', index=False)
     prompts.to_csv('../logs/prompts.csv', index=False)
-    prompts_dev.to_csv('../logs/prompts_dev.csv', index=False)
+    prompts_dev.to_csv('../logs/prompts-dev.csv', index=False)
 
 
+@app.route("/dashboard", methods=["GET"])
+def dashboard():
+    if not session.get('admin'):
+        return redirect(url_for('index'))
 
+    # Determine which tables to query based on PROD flag
+    log_table_name = 'logs' if PROD else 'logs-dev'
+    prompt_table_name = 'prompts' if PROD else 'prompts-dev'
+
+    try:
+        # Read data from database
+        logs_df = pd.read_sql_table(log_table_name, con=engine)
+        prompts_df = pd.read_sql_table(prompt_table_name, con=engine)
+    except Exception as e:
+        logging.error(f"Error reading from database for dashboard: {e}")
+        # Render the dashboard with an error message
+        return render_template("dashboard.html", error=str(e))
+
+    # Handle case where tables might be empty
+    if logs_df.empty or prompts_df.empty:
+        return render_template("dashboard.html", error="No data found in database tables.")
+
+    # --- Process Data for Analytics ---
+
+    # 1. KPIs (Key Performance Indicators)
+    total_queries = len(prompts_df)
+    total_wh = logs_df['wh'].sum()
+    total_ml = logs_df['ml'].sum()
+    total_g_co2 = logs_df['g_co2'].sum()
+    total_usd = (logs_df['usd_in'] + logs_df['usd_cache'] + logs_df['usd_out']).sum()
+    total_tokens = logs_df['tokens'].sum()
+    
+    avg_wh_per_query = logs_df['wh'].mean()
+    avg_co2_per_query = logs_df['g_co2'].mean()
+    avg_usd_per_query = (logs_df['usd_in'] + logs_df['usd_cache'] + logs_df['usd_out']).mean()
+
+    kpis = {
+        'total_queries': int(total_queries),
+        'total_wh': f"{total_wh:.2f}",
+        'total_ml': f"{total_ml:.2f}",
+        'total_g_co2': f"{total_g_co2:.2f}",
+        'total_usd': f"{total_usd:.4f}",
+        'total_tokens': int(total_tokens),
+        'avg_wh_per_query': f"{avg_wh_per_query:.3f}",
+        'avg_co2_per_query': f"{avg_co2_per_query:.3f}",
+        'avg_usd_per_query': f"{avg_usd_per_query:.5f}",
+    }
+
+    # 2. Time-Series Data for Charts
+    # Ensure datetime column is in datetime format
+    logs_df['datetime'] = pd.to_datetime(logs_df['datetime'])
+    # Group by date
+    logs_df['date'] = logs_df['datetime'].dt.date
+    
+    daily_stats = logs_df.groupby('date').agg(
+        wh=('wh', 'sum'),
+        g_co2=('g_co2', 'sum'),
+        queries=('id', 'count')
+    ).reset_index()
+    
+    # Convert date to string for JSON serialization
+    daily_stats['date'] = daily_stats['date'].astype(str)
+
+    timeseries_data = {
+        'labels': daily_stats['date'].tolist(),
+        'queries': daily_stats['queries'].tolist(),
+        'wh': daily_stats['wh'].tolist(),
+        'g_co2': daily_stats['g_co2'].tolist()
+    }
+
+    # 3. Cost Breakdown (Pie Chart)
+    total_usd_in = logs_df['usd_in'].sum()
+    total_usd_cache = logs_df['usd_cache'].sum()
+    total_usd_out = logs_df['usd_out'].sum()
+
+    cost_breakdown_data = {
+        'labels': ['Input Cost', 'Cache Cost', 'Output Cost'],
+        'data': [round(total_usd_in, 5), round(total_usd_cache, 5), round(total_usd_out, 5)]
+    }
+
+    # 4. Token Breakdown (Pie Chart)
+    total_input_tokens = logs_df['input_tokens_tokenizer'].sum()
+    total_cached_tokens = logs_df['cached_tokens'].sum()
+    total_output_tokens = logs_df['output_tokens'].sum()
+    
+    token_breakdown_data = {
+        'labels': ['Input Tokens', 'Cached Tokens', 'Output Tokens'],
+        'data': [int(total_input_tokens), int(total_cached_tokens), int(total_output_tokens)]
+    }
+
+    # 5. Recent Activity Table
+    # Get prompts
+    prompts_simple_df = prompts_df[['id', 'prompt']]
+    # Get recent logs
+    logs_recent_df = logs_df.sort_values(by='datetime', ascending=False).head(5)
+    
+    # Merge to get prompt text for recent logs
+    recent_activity_df = pd.merge(logs_recent_df, prompts_simple_df, on='id', how='left')
+    
+    # Select and format columns
+    recent_activity_df = recent_activity_df[['datetime', 'prompt', 'wh', 'g_co2', 'tokens']]
+    # Truncate long prompts for display
+    recent_activity_df['prompt'] = recent_activity_df['prompt'].str.slice(0, 50) + '...'
+    
+    recent_logs = recent_activity_df.to_dict('records')
+    # Format numbers and dates for cleaner display in HTML
+    for log in recent_logs:
+        log['datetime'] = log['datetime'].strftime('%Y-%m-%d %H:%M')
+        log['wh'] = f"{log['wh']:.3f}"
+        log['g_co2'] = f"{log['g_co2']:.3f}"
+
+
+    # Bundle all chart data into a single JSON string for JavaScript
+    chart_data = {
+        'timeseries': timeseries_data,
+        'cost_breakdown': cost_breakdown_data,
+        'token_breakdown': token_breakdown_data
+    }
+
+    return render_template("dashboard.html",
+                           kpis=kpis,
+                           chart_data=json.dumps(chart_data), # Pass as a JSON string
+                           recent_logs=recent_logs,
+                           error=None) # Pass None for error if successful
 
 if __name__ == '__main__':
     app.run(debug=True)

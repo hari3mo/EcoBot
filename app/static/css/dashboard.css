@@ -1,0 +1,141 @@
+/* --------------------------------------------------- */
+/* Dashboard Overrides & Layout
+/* --------------------------------------------------- */
+
+/* These rules override the vertical centering from base.html,
+  allowing the dashboard to scroll naturally.
+*/
+body {
+    height: auto;
+    background-color: #f8f9fa;
+    /* Light grey background */
+}
+
+.container-fluid.h-100.d-flex.align-items-center {
+    height: auto !important;
+    display: block !important;
+    align-items: flex-start !important;
+    padding: 0;
+}
+
+.row.justify-content-center.w-100 {
+    margin: 0;
+}
+
+.dashboard-container {
+    padding: 1rem 1.5rem 3rem 1.5rem;
+}
+
+.dashboard-title {
+    font-weight: 700;
+    color: #333;
+}
+
+.section-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #dee2e6;
+    padding-bottom: 0.5rem;
+    color: #495057;
+}
+
+/* --------------------------------------------------- */
+/* KPI (Key Performance Indicator) Cards
+/* --------------------------------------------------- */
+.kpi-card {
+    border: none;
+    border-radius: 0.5rem;
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+}
+
+.kpi-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
+}
+
+.kpi-card .card-body {
+    padding: 1.5rem;
+}
+
+.kpi-card .kpi-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #007bff;
+}
+
+/* Specific icon colors */
+.kpi-card:nth-child(2) .kpi-icon {
+    color: #28a745;
+}
+
+/* Cost */
+.kpi-card:nth-child(3) .kpi-icon {
+    color: #ffc107;
+}
+
+/* Energy */
+.kpi-card:nth-child(4) .kpi-icon {
+    color: #6c757d;
+}
+
+/* CO2 */
+
+.kpi-card .card-title {
+    font-size: 1rem;
+    color: #6c757d;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.kpi-card .card-text {
+    font-size: 2.1rem;
+    font-weight: 700;
+    color: #343a40;
+}
+
+.kpi-card.avg-card .card-text {
+    font-size: 1.75rem;
+    color: #17a2b8;
+}
+
+.kpi-card.avg-card:nth-child(2) .card-text {
+    color: #fd7e14;
+}
+
+.kpi-card.avg-card:nth-child(3) .card-text {
+    color: #6610f2;
+}
+
+/* --------------------------------------------------- */
+/* Chart & Table Cards
+/* --------------------------------------------------- */
+.chart-card {
+    border: none;
+    border-radius: 0.5rem;
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+}
+
+.table-responsive {
+    max-height: 400px;
+    /* Makes long tables scrollable */
+}
+
+.table .prompt-cell {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.table th {
+    background-color: #f1f3f5;
+}
