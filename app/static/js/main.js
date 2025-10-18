@@ -74,6 +74,7 @@ function removeLoadingIndicator() {
 function formatMessage(text) {
   return marked.parse(text, {
     breaks: true,
+    gfm: true
   })
 }
 

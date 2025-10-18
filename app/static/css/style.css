@@ -550,3 +550,32 @@ body {
         justify-self: center;
     }
 }
+
+/* Lists inside bot/user messages */
+.message-content ul,
+.message-content ol {
+    margin: 0.5rem 0 0.75rem;
+    padding-left: 1.25rem;
+    /* indent bullets/numbers */
+    list-style-position: outside;
+}
+
+.message-content ul {
+    list-style-type: disc;
+}
+
+.message-content ol {
+    list-style-type: decimal;
+}
+
+.message-content li {
+    margin: 0.25rem 0;
+}
+
+/* Nested lists */
+.message-content li>ul,
+.message-content li>ol {
+    margin: 0.25rem 0;
+    padding-left: 1.25rem;
+    /* keep nested indentation */
+}
