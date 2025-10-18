@@ -10,9 +10,8 @@ credentials.json
 .DS_Store
 .vercel
 .vscode/
+notebooks/*.ipynb
 chatbot.py
-notebooks/notebook.ipynb
-notebooks/charts.ipynb
 docs/reading*.txt
 logs/*-dev.csv
 **/*-old*
