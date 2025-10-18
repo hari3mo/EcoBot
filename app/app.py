@@ -402,9 +402,9 @@ def dashboard():
     
     recent_activity_df = pd.merge(logs_recent_df, prompts_simple_df, on='id', how='left')
     recent_activity_df = recent_activity_df[['datetime', 'prompt', 'wh', 'ml', 'g_co2', 'tokens', 'usd_in', 'usd_cache', 'usd_out']]
-    recent_activity_df['prompt'] = recent_activity_df['prompt'].str.slice(0, 50) + '...' if recent_activity_df['prompt'].str.len().max() > 50 else recent_activity_df['prompt']
-    
+    recent_activity_df['prompt'] = recent_activity_df['prompt'].apply(lambda x: x if len(x) <= 50 else x[:50] + '...')
     recent_logs = recent_activity_df.to_dict('records')
+    
     for log in recent_logs:
         log['datetime'] = log['datetime'].strftime('%Y-%m-%d %H:%M')
         log['ml'] = f"{log['ml']:.3f}"
