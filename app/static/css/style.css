@@ -381,7 +381,7 @@ body {
     line-height: 1;
 }
 
-.stat-title {
+.stat-title, .stat-title-left,  .stat-title-right {
     font-size: 0.8rem;
     font-weight: 700;
     color: #94a3b8;
@@ -578,4 +578,11 @@ body {
     margin: 0.25rem 0;
     padding-left: 1.25rem;
     /* keep nested indentation */
+}
+
+.stat-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
 }

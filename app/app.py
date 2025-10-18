@@ -323,12 +323,20 @@ def pull_db():
 
 @app.route("/dashboard", methods=["GET"])
 def dashboard():
-    log_table_name = 'logs' if PROD else 'logs-dev'
-    prompt_table_name = 'prompts' if PROD else 'prompts-dev'
-
+    # logs = 'logs' if PROD else 'logs-dev'
+    # prompts = 'prompts' if PROD else 'prompts-dev'
     try:
-        logs_df = pd.read_sql_table(log_table_name, con=engine)
-        prompts_df = pd.read_sql_table(prompt_table_name, con=engine)
+        # logs_df = pd.read_sql_table(logs, con=engine)
+        # prompts_df = pd.read_sql_table(prompts, con=engine)
+
+        logs_prod = pd.read_sql_table('logs', con=engine)
+        prompts_prod = pd.read_sql_table('prompts', con=engine)
+        logs_dev = pd.read_sql_table('logs-dev', con=engine)
+        prompts_dev = pd.read_sql_table('prompts-dev', con=engine)
+
+        logs_df = pd.concat([logs_prod, logs_dev], ignore_index=True)
+        prompts_df = pd.concat([prompts_prod, prompts_dev], ignore_index=True)
+
     except Exception as e:
         logging.error(f"Error reading from database for dashboard: {e}")
         return render_template("dashboard.html", error=str(e))

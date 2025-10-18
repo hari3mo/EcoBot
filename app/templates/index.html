@@ -13,32 +13,39 @@
             </div>
         </div>
         
-         <!-- Input -->
-            <div class="chat-input-container">
-                <div class="chat-input-wrapper">
-                    <input 
-                        type="text" 
-                        class="chat-input" 
-                        id="chatInput" 
-                        placeholder="Type your message..." 
-                        onkeypress="if(event.key === 'Enter') sendMessage()">
-                    <button class="send-button" onclick="sendMessage()" id="sendButton">Send</button>
-                </div>
+        <!-- Input -->
+        <div class="chat-input-container">
+            <div class="chat-input-wrapper">
+                <input 
+                    type="text" 
+                    class="chat-input" 
+                    id="chatInput" 
+                    placeholder="Type your message..." 
+                    onkeypress="if(event.key === 'Enter') sendMessage()">
+                <button class="send-button" onclick="sendMessage()" id="sendButton">Send</button>
             </div>
         </div>
+    </div>
 
     <!-- Stats -->
     <div class="stats-section">
-        <div class="stat-card">
-            <div class="stat-title">💬 Query Count</div>
-            <div class="stat-values stat-values-center">
-                <div class="stat-value-group">
-                    <div class="stat-number" id="queryCount">0</div>
-                    <div class="stat-label">Total Queries</div>
-                </div>
-            </div>
+    <div class="stat-card">
+    <div class="stat-card-header">
+        <span class="stat-title-left">💬 Query Count</span>
+        <span class="stat-title-right">Cached Tokens 🪙</span>
+    </div>
+    <div class="stat-values stat-values-center">
+        <div class="stat-value-group">
+            <div class="stat-number" id="queryCount">0</div>
+            <div class="stat-label">Queries</div>
         </div>
-        
+        <div class="stat-divider"></div>
+        <div class="stat-value-group">
+            <div class="stat-number" id="cachedTokens">0<span class="stat-unit"></span></div>
+            <div class="stat-label">Tokens</div>
+        </div>
+    </div>
+</div>
         <div class="stat-card">
             <div class="stat-title">⚡ Energy Consumption</div>
             <div class="stat-values">
