@@ -1,1 +1,2 @@
 id,previous_id,datetime,chat_index,wh,ml,g_co2,usd_in,usd_cache,usd_out,tokens,input_tokens,input_tokens_tokenizer,output_tokens,output_tokens_tokenizer,cached_tokens,total_tokens,total_wh,total_ml,total_co2,total_usd,total_tokens_session,avg_tokens,avg_wh,avg_ml,avg_co2,avg_usd
+resp_0df2f6b4c756d7720068f37265d19c81969f738858f0577eee,,2025-10-18 10:56:37,1,1.206,2.1708,0.39798,7.5e-06,8.125e-06,0.00061,132,71,6,61,60,65,132,1.206,2.1708,0.39798,0.000625625,132,132.0,1.206,2.1708,0.39798,0.000625625

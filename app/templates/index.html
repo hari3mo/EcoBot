@@ -1,9 +1,7 @@
 {% extends "base.html" %}
 
 {% block extra_scripts %}
-<!-- Added marked.js library for markdown parsing and main.js -->
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<!-- Fixed path to match Flask static folder structure -->
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% endblock %}
 

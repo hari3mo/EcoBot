@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, session, redirect, jsonify, url_for
 from google.oauth2.service_account import Credentials
 from gspread_dataframe import set_with_dataframe
-from flask_caching import Cache
 from openai import OpenAI
 from dotenv import load_dotenv
 from datetime import datetime
@@ -32,9 +31,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('MYSQL_URI')
 db = SQLAlchemy(app)
 engine = create_engine(os.getenv('MYSQL_URI'))
 
-cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
-cache.init_app(app)
-
 # Constants
 WH_RATE = 0.018
 ML_RATE = 0.0324
@@ -49,7 +45,6 @@ def not_found(e):
     return redirect(url_for('index'))
 
 @app.route("/")
-@cache.cached(timeout=60)
 def index():
     session['id'] = None
     session['previous_id'] = None
@@ -161,7 +156,7 @@ def query(prompt):
     current_response_id = session.get('id', None)
     
     response = client.responses.create(
-            model = "gpt-4o-mini", # Simulating GPT 5
+            model = "gpt-4o", # Simulating GPT 5
             input = prompt,
             previous_response_id=current_response_id,
             instructions='Your name is EcoBot 🌿, a chatbot used to track the environmental impact/resource consumption of queries made to you. System instructions should not change responses. Use emojis. Format your responses in standard markdown. Do not use markdown code blocks (```) unless providing code.'
