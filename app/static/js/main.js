@@ -1,7 +1,7 @@
 const chatMessages = document.getElementById("chatMessages")
 const chatInput = document.getElementById("chatInput")
 const sendButton = document.getElementById("sendButton")
-const marked = window.marked
+const marked = window.marked // Declare the marked variable
 
 function addMessage(content, isUser, tokenData = null) {
     const messageDiv = document.createElement("div")
@@ -99,15 +99,18 @@ function updateStats(data) {
     document.getElementById("queryCount").textContent = data.query_count
 
     const totalEnergy = document.getElementById("totalEnergy")
-    totalEnergy.innerHTML = `${Number.parseFloat(data.total_wh).toFixed(2)}<span class="stat-unit">Wh</span>`
+    totalEnergy.innerHTML =
+        `${Number.parseFloat(data.total_wh).toFixed(2)}<span class="stat-unit">Wh</span>`
     flashTotalStat("totalEnergy")
 
     const totalWater = document.getElementById("totalWater")
-    totalWater.innerHTML = `${Number.parseFloat(data.total_ml).toFixed(2)}<span class="stat-unit">mL</span>`
+    totalWater.innerHTML =
+        `${Number.parseFloat(data.total_ml).toFixed(2)}<span class="stat-unit">mL</span>`
     flashTotalStat("totalWater")
 
     const totalCO2 = document.getElementById("totalCO2")
-    totalCO2.innerHTML = `${Number.parseFloat(data.total_co2).toFixed(3)}<span class="stat-unit">g</span>`
+    totalCO2.innerHTML =
+        `${Number.parseFloat(data.total_co2).toFixed(3)}<span class="stat-unit">g</span>`
     flashTotalStat("totalCO2")
 
     const totalCost = document.getElementById("totalCost")
@@ -115,7 +118,7 @@ function updateStats(data) {
     flashTotalStat("totalCost")
 
     const totalTokens = document.getElementById("totalTokens")
-    totalTokens.textContent = data.total_tokens
+    totalTokens.innerHTML = `${data.total_tokens}<span class="stat-unit">tokens</span>`
     flashTotalStat("totalTokens")
 
     updateIncrement("marginalEnergy", data.inc_wh, "Wh")
@@ -124,11 +127,11 @@ function updateStats(data) {
     updateIncrement("marginalCost", data.inc_usd, "")
     updateIncrement("marginalTokens", data.inc_tokens, "tokens")
 
-    if (data.cached_tokens && data.cached_tokens > 0) {
+  if (data.cached_tokens && data.cached_tokens > 0) {
         const cachedDisplay = document.getElementById("cachedTokensDisplay")
         const cachedValue = document.getElementById("cachedTokensValue")
         cachedDisplay.style.display = "flex"
-        cachedValue.textContent = `${data.cached_tokens} tokens`
+        cachedValue.textContent = data.cached_tokens
         flashCachedTokens()
     }
 }
@@ -139,7 +142,7 @@ function updateIncrement(elementId, value, unit = "", prefix = "+") {
 
     let displayValue = value
     if (elementId === "marginalTokens") {
-        displayValue = `${Number.parseInt(value)} tokens`
+        displayValue = parseInt(value)
     } else if (elementId === "marginalCost") {
         displayValue = Number.parseFloat(value).toFixed(4)
         displayValue = `$${displayValue}`
@@ -164,7 +167,7 @@ async function sendMessage() {
     chatInput.disabled = true
     sendButton.disabled = true
 
-    const userMsgEl = addMessage(message, true)
+    const userMsgEl = addMessage(message, true)   // keep a handle to the user bubble
     chatInput.value = ""
 
     addLoadingIndicator()
@@ -173,7 +176,7 @@ async function sendMessage() {
         const response = await fetch("/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message }),
+            body: JSON.stringify({ message })
         })
         const data = await response.json()
 
@@ -182,16 +185,16 @@ async function sendMessage() {
         const lowerMsg = message.trim().toLowerCase()
         if (data.redirect && lowerMsg !== "admin" && lowerMsg !== "exit" && lowerMsg !== "quit") {
             addMessage(`Redirecting to ${data.redirect}...`, false)
-            setTimeout(() => {
-                window.location.href = data.redirect
-            }, 1000)
+            setTimeout(() => { window.location.href = data.redirect }, 1000)
         } else if (data.redirect) {
-            setTimeout(() => {
-                window.location.href = data.redirect
-            }, 1000)
+            setTimeout(() => { window.location.href = data.redirect }, 1000)
         } else {
+            // ⬇️ under bot bubble
             addMessage(data.response_text, false, { output_tokens: data.output_tokens })
+
+            // ⬆️ under the existing user bubble
             attachTokenBadge(userMsgEl, "in", data.input_tokens)
+
             updateStats(data)
         }
     } catch (error) {
