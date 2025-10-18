@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, session, redirect, jsonify, url_for
 from google.oauth2.service_account import Credentials
 from gspread_dataframe import set_with_dataframe
+from flask_caching import Cache
 from openai import OpenAI
 from dotenv import load_dotenv
 from datetime import datetime
@@ -422,7 +423,7 @@ def dashboard():
     
     recent_activity_df = pd.merge(logs_recent_df, prompts_simple_df, on='id', how='left')
     recent_activity_df = recent_activity_df[['datetime', 'prompt', 'wh', 'ml', 'g_co2', 'tokens', 'usd_in', 'usd_cache', 'usd_out']]
-    recent_activity_df['prompt'] = recent_activity_df['prompt'].str.slice(0, 50) + '...'
+    recent_activity_df['prompt'] = recent_activity_df['prompt'].str.slice(0, 50) + '...' if recent_activity_df['prompt'].str.len().max() < 50 else recent_activity_df['prompt']
     
     recent_logs = recent_activity_df.to_dict('records')
     for log in recent_logs:

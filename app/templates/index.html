@@ -10,17 +10,32 @@
 {% block content %}
 <div class="container">
   <div class="chat-section">
+    <!-- Added course title header matching dashboard style -->
+    <div class="course-header">
+      <h1>SYN 100 - Artificial Intelligence: Climate Applications & Ethical Implications</h1>
+    </div>
+    
     <div class="chat-header">
-    <div class="chat-header-left">
+      <div class="chat-header-left">
         <span>🌿 EcoBot 5</span>
         {% if session['admin'] %}
         <button class="admin-button">Admin</button>
         {% endif %}
+      </div>
+      <div class="chat-header-right">
+        <!-- Added New Chat button -->
+        <button class="new-chat-button" onclick="window.location.href='/'">
+          🔄 New Chat
+        </button>
+      </div>
     </div>
-    <div class="chat-header-right">
-        <a class="dashboard-link-button" href="{{ url_for('dashboard') }}" target="_blank" rel="noopener">📊 Dashboard</a>
-        </div>
+    
+    <!-- Added cached tokens display area -->
+    <div class="cached-tokens-display" id="cachedTokensDisplay" style="display: none;">
+      <span class="cached-label">💾 Cached Tokens:</span>
+      <span class="cached-value" id="cachedTokensValue">0</span>
     </div>
+    
     <div class="chat-messages" id="chatMessages">
       <div class="message bot-message">
         <div class="message-label">EcoBot</div>
@@ -46,17 +61,7 @@
   </div>
 
   <div class="stats-section">
-    <div class="stats-header">Environmental Impact</div>
-    
-    <div class="stat-card stat-card-wide">
-      <div class="stat-title">💬 Query Count</div>
-      <div class="stat-values stat-values-center">
-        <div class="stat-value-group">
-          <div class="stat-label">Total Queries</div>
-          <div class="stat-number" id="queryCount">0</div>
-        </div>
-      </div>
-    </div>
+    <a class="dashboard-link-button" href="{{ url_for('dashboard') }}" target="_blank" rel="noopener">📊 Dashboard</a>
 
     <div class="stat-card">
       <div class="stat-title">⚡ Energy Consumption</div>
@@ -129,6 +134,16 @@
         <div class="stat-value-group">
           <div class="stat-label">Last Query</div>
           <div class="stat-number" id="marginalTokens">0</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="stat-card stat-card">
+      <div class="stat-title">💬 Query Count</div>
+      <div class="stat-values stat-values-center">
+        <div class="stat-value-group">
+          <div class="stat-label">Total Queries</div>
+          <div class="stat-number" id="queryCount">0</div>
         </div>
       </div>
     </div>

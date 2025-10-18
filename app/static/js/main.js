@@ -3,7 +3,7 @@ const chatInput = document.getElementById("chatInput")
 const sendButton = document.getElementById("sendButton")
 const marked = window.marked // Declare the marked variable
 
-function addMessage(content, isUser) {
+function addMessage(content, isUser, tokenData = null) {
     const messageDiv = document.createElement("div")
     messageDiv.className = `message ${isUser ? "user-message" : "bot-message"}`
 
@@ -17,6 +17,17 @@ function addMessage(content, isUser) {
 
     messageDiv.appendChild(label)
     messageDiv.appendChild(contentDiv)
+
+    if (!isUser && tokenData) {
+        const tokenInfo = document.createElement("div")
+        tokenInfo.className = "token-info"
+        tokenInfo.innerHTML = `
+            <span class="token-badge">📥 Input: ${tokenData.input_tokens}</span>
+            <span class="token-badge">📤 Output: ${tokenData.output_tokens}</span>
+        `
+        messageDiv.appendChild(tokenInfo)
+    }
+
     chatMessages.appendChild(messageDiv)
     chatMessages.scrollTop = chatMessages.scrollHeight
 }
@@ -55,25 +66,61 @@ function formatMessage(text) {
 }
 
 function updateStats(data) {
+    // Helper function to animate stat updates
+    function animateStat(elementId, value) {
+        const element = document.getElementById(elementId)
+        element.classList.remove("stat-increment")
+        // Force reflow to restart animation
+        void element.offsetWidth
+        element.classList.add("stat-increment")
+    }
+
     document.getElementById("queryCount").textContent = data.query_count
+    animateStat("queryCount", data.query_count)
 
     document.getElementById("totalEnergy").innerHTML =
         `${Number.parseFloat(data.total_wh).toFixed(2)}<span class="stat-unit">Wh</span>`
+    animateStat("totalEnergy", data.total_wh)
+
     document.getElementById("totalWater").innerHTML =
         `${Number.parseFloat(data.total_ml).toFixed(2)}<span class="stat-unit">mL</span>`
+    animateStat("totalWater", data.total_ml)
+
     document.getElementById("totalCO2").innerHTML =
         `${Number.parseFloat(data.total_co2).toFixed(4)}<span class="stat-unit">g</span>`
+    animateStat("totalCO2", data.total_co2)
+
     document.getElementById("totalCost").textContent = `$${Number.parseFloat(data.total_usd).toFixed(4)}`
+    animateStat("totalCost", data.total_usd)
+
     document.getElementById("totalTokens").textContent = data.total_tokens
+    animateStat("totalTokens", data.total_tokens)
 
     document.getElementById("marginalEnergy").innerHTML =
         `${Number.parseFloat(data.inc_wh).toFixed(2)}<span class="stat-unit">Wh</span>`
+    animateStat("marginalEnergy", data.inc_wh)
+
     document.getElementById("marginalWater").innerHTML =
         `${Number.parseFloat(data.inc_ml).toFixed(2)}<span class="stat-unit">mL</span>`
+    animateStat("marginalWater", data.inc_ml)
+
     document.getElementById("marginalCO2").innerHTML =
         `${Number.parseFloat(data.inc_co2).toFixed(4)}<span class="stat-unit">g</span>`
+    animateStat("marginalCO2", data.inc_co2)
+
     document.getElementById("marginalCost").textContent = `$${Number.parseFloat(data.inc_usd).toFixed(4)}`
+    animateStat("marginalCost", data.inc_usd)
+
     document.getElementById("marginalTokens").textContent = data.inc_tokens
+    animateStat("marginalTokens", data.inc_tokens)
+
+    if (data.cached_tokens && data.cached_tokens > 0) {
+        const cachedDisplay = document.getElementById("cachedTokensDisplay")
+        const cachedValue = document.getElementById("cachedTokensValue")
+        cachedDisplay.style.display = "flex"
+        cachedValue.textContent = data.cached_tokens
+        animateStat("cachedTokensValue", data.cached_tokens)
+    }
 }
 
 async function sendMessage() {
@@ -112,10 +159,13 @@ async function sendMessage() {
                 window.location.href = data.redirect
             }, 1000)
         } else {
-            addMessage(data.response_text, false)
+            const tokenData = {
+                input_tokens: data.input_tokens,
+                output_tokens: data.output_tokens,
+            }
+            addMessage(data.response_text, false, tokenData)
             updateStats(data)
         }
-        
     } catch (error) {
         removeLoadingIndicator()
         addMessage("Error: " + error.message)
