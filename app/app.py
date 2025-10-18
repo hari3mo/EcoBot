@@ -32,6 +32,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('MYSQL_URI')
 db = SQLAlchemy(app)
 engine = create_engine(os.getenv('MYSQL_URI'))
 
+cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
+cache.init_app(app)
+
 # Constants
 WH_RATE = 0.018
 ML_RATE = 0.0324
@@ -46,6 +49,7 @@ def not_found(e):
     return redirect(url_for('index'))
 
 @app.route("/")
+@cache.cached(timeout=60)
 def index():
     session['id'] = None
     session['previous_id'] = None
