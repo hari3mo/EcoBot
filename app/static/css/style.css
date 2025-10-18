@@ -55,7 +55,6 @@ body {
 .course-left {
     display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
     justify-self: start;
 }
 
@@ -311,42 +310,30 @@ body {
 /* Cached Tokens — match action button styling */
 .cached-tokens-display {
     display: none;
-    /* your JS can toggle to flex */
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 0.75rem;
+    align-items: center;;
+    gap: 0.25rem;
+    padding: 0.5rem 1rem;
     background: rgba(16, 185, 129, 0.2);
     border: 1px solid rgba(16, 185, 129, 0.4);
     border-radius: 10px;
-    /* match buttons */
     color: #10b981;
     font-size: 0.875rem;
     font-weight: 600;
-    width: fit-content;
-    margin-left: auto;
-    /* align to right (fix from margin-right) */
-    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
 }
 
 .cached-tokens-display:hover {
     background: rgba(16, 185, 129, 0.3);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
     transform: translateY(-2px);
-}
-
-/* Bold numeric value */
-.cached-tokens-display .cached-tokens-number,
-.cached-tokens-display strong {
-    font-weight: 700;
-}
-/* Bold numeric value */
-.cached-tokens-display .cached-tokens-number,
-.cached-tokens-display strong {
-    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
 }
 
 .cached-tokens-display.increment-flash {
     animation: flash 0.75s ease;
+}
+#cachedTokensValue {
+    color: #34d399;
+    font-weight: 800;
 }
 
 .stat-title {

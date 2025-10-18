@@ -13,17 +13,20 @@
          <div class="course-header">
         <div class="course-left">
             <span class="ecobot-title">🌿 EcoBot 5</span>
+            <div class="cached-tokens-display" id="cachedTokensDisplay" style="display:none;">
+                <span class="cached-label">💾</span>
+                <span class="cached-value" id="cachedTokensValue">0</span>
+                <span class="cached-suffix">tokens cached</span>
+            </div>
+            {% if session['admin'] %}
+            <button class="admin-button" onclick="location.href='/admin'">Admin</button>
+            {% endif %}
             <button class="admin-button" style="display: none;">Admin</button>
         </div>
 
         <h1 class="course-title">SYN 100 - Artificial Intelligence: Climate Applications & Ethical Implications</h1>
 
         <div class="course-actions">
-            <div class="cached-tokens-display" id="cachedTokensDisplay" style="display:none;">
-                <span class="cached-label">💾</span>
-                <span class="cached-value" id="cachedTokensValue">0</span>
-                <span class="cached-suffix">tokens cached</span>
-            </div>
             <button class="dashboard-link-button" onclick="alert('Dashboard')">📊 Dashboard</button>
             <button class="new-chat-button" onclick="location.reload()">🔄 New Chat</button>
         </div>
