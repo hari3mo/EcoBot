@@ -333,7 +333,52 @@ body {
 }
 #cachedTokensValue {
     color: #34d399;
-    font-weight: 800;
+    font-weight: 700;
+}
+
+/* --- Course header groups: consistent spacing/size --- */
+:root {
+    --header-gap: 0.5rem;
+    --control-h: 38px;
+    /* tweak once, applies everywhere */
+    --control-px: 12px;
+}
+
+.course-left,
+.course-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--header-gap);
+}
+
+/* Explicit alignment */
+.course-left {
+    justify-self: start;
+}
+
+.course-actions {
+    justify-self: end;
+}
+
+/* Normalize control sizing for pills/buttons/badges on both sides */
+:where(.new-chat-button, .admin-button, .dashboard-link-button, .cached-tokens-display) {
+    display: inline-flex;
+    align-items: center;
+    height: var(--control-h);
+    padding: 0 var(--control-px);
+    line-height: 1;
+}
+
+/* Make the brand text match control height visually */
+.ecobot-title {
+    display: inline-flex;
+    align-items: center;
+    height: var(--control-h);
+    padding: 0 6px;
+    /* small inset to match button feel */
+    font-size: 1.3rem;
+    /* closer to button text */
+    line-height: 1;
 }
 
 .stat-title {
