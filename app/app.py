@@ -53,13 +53,14 @@ def index():
     session['total_CO2'] = 0
     session['total_usd'] = 0
     session['total_tokens'] = 0
+    session['admin'] = session.get('admin', False)
     return render_template('index.html')
 
 @app.route("/chat", methods=["POST"])
 def chat():
     prompt = request.form["prompt"]
     if prompt == "admin":
-        session['admin'] = True if not session['admin'] else False
+        session['admin'] = not session.get('admin', False)
         return jsonify({'redirect': url_for('index')})
     
     elif prompt in ["exit", "quit"]:
@@ -68,20 +69,21 @@ def chat():
     
     if session.get('admin'):
         admin_commands = {
-            # command: {url_endpoint, allowed_in_prod}
+            # route: {endpoint, production}
             "pull": {"endpoint": "pull", "prod": False},
             "push": {"endpoint": "push", "prod": True},
             "logs": {"endpoint": "logs", "prod": True},
             "logs-dev": {"endpoint": "logs_dev", "prod": False},
             "prompts": {"endpoint": "prompts", "prod": True},
-            "prompts-dev": {"endpoint": "prompts_dev", "prod": False}
+            "prompts-dev": {"endpoint": "prompts_dev", "prod": False},
+            "dashboard": {"endpoint": "dashboard", "prod": True}
         }
 
         if prompt in admin_commands:
-            command = admin_commands[prompt]
-            if PROD and not command["prod"]:
+            route = admin_commands[prompt]
+            if PROD and not route["prod"]:
                 return jsonify({'redirect': url_for('index')})
-            return jsonify({'redirect': url_for(command["endpoint"])})
+            return jsonify({'redirect': url_for(route["endpoint"])})
     
     response_data = query(prompt)
     return jsonify(response_data)
@@ -145,7 +147,6 @@ def prompts_dev():
         .sort_values(by='datetime', ascending=False)
     return render_template("prompts_dev.html", prompts_dev=prompts_dev)
 
-
 def query(prompt):
     db.session.commit()
     current_response_id = session.get('id', None)
@@ -161,7 +162,7 @@ def query(prompt):
     usage = response.usage
     query_tokens = usage.total_tokens
 
-    enc = tiktoken.encoding_for_model("gpt-4o") # Tokenizer
+    enc = tiktoken.encoding_for_model("gpt-4o")
     input_tokenizer = len(enc.encode(prompt))
     output_tokenizer = len(enc.encode(output_text))
     input_tokens = usage.output_tokens + input_tokenizer
@@ -186,11 +187,11 @@ def query(prompt):
     session['id'] = response.id
 
     logging.info(f'Response ID: {response.id}')
-    logging.info(f'Output Tokens (API): {usage.output_tokens} = ${usd_cost_out:.6f}')
-    logging.info(f'Input Tokens (API): {usage.input_tokens} = ${usd_cost_in + usd_cost_cache:.6f}')
-    logging.info(f'Input Tokens (Tokenizer): {input_tokenizer} = ${usd_cost_in:.6f}')
-    logging.info(f'Cached Tokens: {cached_tokens} = ${usd_cost_cache:.6f}')
-    logging.info(f'Query Tokens: {query_tokens} = ${usd_cost:.6f}')
+    logging.info(f'Output Tokens (API): {usage.output_tokens} == ${usd_cost_out:.6f}')
+    logging.info(f'Input Tokens (API): {usage.input_tokens} == ${usd_cost_in + usd_cost_cache:.6f}')
+    logging.info(f'Input Tokens (Tokenizer): {input_tokenizer} == ${usd_cost_in:.6f}')
+    logging.info(f'Cached Tokens: {cached_tokens} == ${usd_cost_cache:.6f}')
+    logging.info(f'Query Tokens: {query_tokens} == ${usd_cost:.6f}')
 
     log_data = {
             'prompt': prompt,
@@ -219,7 +220,7 @@ def query(prompt):
 
     df = pd.DataFrame([log_data]).astype({'datetime': 'datetime64[ns]'})\
         .sort_values(by='datetime', ascending=False)
-
+    
     log_columns = [
         'id', 'previous_id', 'datetime', 'wh', 'ml', 'g_co2', 'usd_in', 'usd_cache', 'usd_out',
         'tokens', 'input_tokens', 'input_tokens_tokenizer', 'output_tokens',
@@ -286,14 +287,12 @@ def push_sheets():
 
     for table_name, (sheet_name, worksheet_name) in worksheet_map.items():
         logging.info(f"Processing table: {table_name} -> {sheet_name}, {worksheet_name}")
-
         df = pd.read_sql_table(table_name, con=engine).sort_values(by='datetime', ascending=False)
         df['datetime'] = df['datetime'].astype(str)
-
+        
         sheet = gc.open(sheet_name)
         worksheet = sheet.worksheet(worksheet_name)
         set_with_dataframe(worksheet, df, resize=True, include_index=False)
-
         logging.info(f"Updated {worksheet_name} in {sheet_name}")
 
 def pull_db():
@@ -307,6 +306,8 @@ def pull_db():
     prompts.to_csv('../logs/prompts.csv', index=False)
     prompts_dev.to_csv('../logs/prompts_dev.csv', index=False)
 
-    
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)

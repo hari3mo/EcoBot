@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+
 <div class="col-12">
   <h2 class="text-center">
     SYN 100 - Artificial Intelligence: Climate Applications & Ethical Implications
@@ -14,8 +15,7 @@
         <div class="img_cont">
           <img
             src={{url_for('static', filename='images/placeholder.png')}}
-            class="rounded-circle user_img"
-          />
+            class="rounded-circle user_img"/>
           <span class="online_icon"></span>
         </div>
         <div class="user_info">
@@ -25,6 +25,7 @@
         {% if session.admin %}
         <div class="admin-badge">Admin</div>
         {% endif %}
+        
       </div>
     </div>
     <div id="messageFormeight" class="card-body msg_card_body"></div>
@@ -95,4 +96,5 @@
     </div>
   </div>
 </div>
+
 {% endblock %}
