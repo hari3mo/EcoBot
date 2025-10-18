@@ -1,3 +1,7 @@
+/* ============================================
+   RESET & BASE STYLES
+   ============================================ */
+
 * {
     margin: 0;
     padding: 0;
@@ -9,23 +13,27 @@ body {
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     color: #e2e8f0;
     min-height: 100vh;
-    /* Reduced padding for better screen fit */
     padding: 1rem;
     overflow: hidden;
 }
+
+/* ============================================
+   LAYOUT
+   ============================================ */
 
 .container {
     max-width: 1600px;
     margin: 0 auto;
     display: grid;
-    /* Adjusted grid columns for better fit */
     grid-template-columns: 1fr 350px;
     gap: 1rem;
-    /* Reduced height to fit everything on screen */
     height: calc(100vh - 2rem);
 }
 
-/* Added course header styling matching dashboard */
+/* ============================================
+   COURSE HEADER
+   ============================================ */
+
 .course-header {
     padding: 1rem 2rem;
     background: rgba(16, 185, 129, 0.15);
@@ -43,7 +51,10 @@ body {
     letter-spacing: 0.02em;
 }
 
-/* Chat Section */
+/* ============================================
+   CHAT SECTION
+   ============================================ */
+
 .chat-section {
     background: rgba(30, 41, 59, 0.6);
     backdrop-filter: blur(10px);
@@ -54,15 +65,14 @@ body {
     overflow: hidden;
 }
 
+/* Chat Header */
 .chat-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* Reduced padding */
     padding: 1rem 1.5rem;
     background: rgba(16, 185, 129, 0.1);
     border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-    /* Reduced font size */
     font-size: 1.1rem;
     font-weight: 600;
 }
@@ -78,26 +88,7 @@ body {
     align-items: center;
 }
 
-/* Added new chat button styling */
-.new-chat-button {
-    padding: 0.5rem 1rem;
-    background: rgba(16, 185, 129, 0.2);
-    border: 1px solid rgba(16, 185, 129, 0.4);
-    border-radius: 10px;
-    color: #10b981;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.new-chat-button:hover {
-    background: rgba(16, 185, 129, 0.3);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-}
-
-/* Added cached tokens display styling */
+/* Cached Tokens Display */
 .cached-tokens-display {
     display: flex;
     align-items: center;
@@ -107,7 +98,6 @@ body {
     border-bottom: 1px solid rgba(148, 163, 184, 0.1);
     font-size: 0.9rem;
     justify-content: flex-end;
-    /* Align to right */
 }
 
 .cached-label {
@@ -121,28 +111,10 @@ body {
     font-size: 1rem;
 }
 
-.admin-button {
-    padding: 0.5rem 1rem;
-    background: rgba(16, 185, 129, 0.2);
-    border: 1px solid rgba(16, 185, 129, 0.4);
-    border-radius: 10px;
-    color: #10b981;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.admin-button:hover {
-    background: rgba(16, 185, 129, 0.3);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-}
-
+/* Chat Messages */
 .chat-messages {
     flex: 1;
     overflow-y: auto;
-    /* Reduced padding */
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
@@ -155,18 +127,6 @@ body {
     gap: 0.5rem;
     max-width: 80%;
     animation: slideIn 0.3s ease;
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 .user-message {
@@ -186,7 +146,6 @@ body {
 }
 
 .message-content {
-    /* Reduced padding */
     padding: 0.875rem 1rem;
     border-radius: 12px;
     line-height: 1.6;
@@ -202,7 +161,7 @@ body {
     border: 1px solid rgba(148, 163, 184, 0.1);
 }
 
-/* Added token info styling under messages */
+/* Token Info Badges */
 .token-info {
     display: flex;
     gap: 0.5rem;
@@ -221,6 +180,7 @@ body {
     color: #10b981;
 }
 
+/* Loading Animation */
 .loading {
     display: flex;
     gap: 0.5rem;
@@ -243,21 +203,8 @@ body {
     animation-delay: -0.16s;
 }
 
-@keyframes bounce {
-
-    0%,
-    80%,
-    100% {
-        transform: scale(0);
-    }
-
-    40% {
-        transform: scale(1);
-    }
-}
-
+/* Chat Input */
 .chat-input-container {
-    /* Reduced padding */
     padding: 1rem 1.5rem;
     background: rgba(15, 23, 42, 0.6);
     border-top: 1px solid rgba(148, 163, 184, 0.1);
@@ -270,7 +217,6 @@ body {
 
 .chat-input {
     flex: 1;
-    /* Reduced padding */
     padding: 0.75rem 1rem;
     background: rgba(51, 65, 85, 0.6);
     border: 1px solid rgba(148, 163, 184, 0.2);
@@ -286,8 +232,11 @@ body {
     box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
+/* ============================================
+   BUTTONS
+   ============================================ */
+
 .send-button {
-    /* Reduced padding */
     padding: 0.75rem 1.5rem;
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     border: none;
@@ -308,32 +257,73 @@ body {
     cursor: not-allowed;
 }
 
-/* Stats Section - removed overflow-y and adjusted to match chatbox height */
+.new-chat-button,
+.admin-button {
+    padding: 0.5rem 1rem;
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    border-radius: 10px;
+    color: #10b981;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.new-chat-button:hover,
+.admin-button:hover {
+    background: rgba(16, 185, 129, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.dashboard-link-button {
+    display: block;
+    padding: 1rem 1.25rem;
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    border-radius: 12px;
+    color: #10b981;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    text-decoration: none;
+    margin-bottom: 0.15rem;
+    flex-shrink: 0;
+}
+
+.dashboard-link-button:hover {
+    background: rgba(16, 185, 129, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+/* ============================================
+   STATS SECTION
+   ============================================ */
+
 .stats-section {
     display: flex;
     flex-direction: column;
-    /* Reduced gap */
     gap: 0.75rem;
-    /* Removed overflow-y: auto to prevent scrollbar */
     padding: 0.5rem 0;
     height: 100%;
-    /* Match parent container height */
     overflow-y: auto;
 }
-
-/* Removed stats-header styling as header is removed */
 
 .stat-card {
     background: rgba(30, 41, 59, 0.6);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(148, 163, 184, 0.1);
     border-radius: 16px;
-    /* Reduced padding */
     padding: 1rem;
     transition: all 0.3s ease;
-    /* Added flex-shrink to allow cards to compress if needed */
-    flex-shrink: 1;
+    flex: 1;
     min-height: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .stat-card:hover {
@@ -342,8 +332,22 @@ body {
     box-shadow: 0 8px 32px rgba(16, 185, 129, 0.15);
 }
 
-.stat-card-wide {
-    width: 100%;
+.stat-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #94a3b8;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+}
+
+.stat-values {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+    justify-content: center;
 }
 
 .stat-values-center {
@@ -367,10 +371,9 @@ body {
     margin-bottom: 0.25rem;
 }
 
-/* Added animation for stat number updates */
 .stat-number {
-    /* Increased font size */
-    font-size: 1.5rem;
+    /* Increased font size from 1.5rem to 1.9rem for better visibility */
+    font-size: 1.9rem;
     font-weight: 700;
     background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
     -webkit-background-clip: text;
@@ -379,13 +382,7 @@ body {
     transition: all 0.3s ease;
 }
 
-.stat-card-wide .stat-number {
-    /* Reduced font size */
-    font-size: 2rem;
-}
-
 .stat-unit {
-    /* Reduced font size */
     font-size: 0.8rem;
     margin-left: 0.25rem;
 }
@@ -396,7 +393,39 @@ body {
     background: rgba(148, 163, 184, 0.2);
 }
 
-/* Scrollbar Styling */
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounce {
+
+    0%,
+    80%,
+    100% {
+        transform: scale(0);
+    }
+
+    40% {
+        transform: scale(1);
+    }
+}
+
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
+
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -414,7 +443,10 @@ body {
     background: rgba(16, 185, 129, 0.5);
 }
 
-/* Responsive Design */
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
 @media (max-width: 1200px) {
     .container {
         grid-template-columns: 1fr;
@@ -455,80 +487,4 @@ body {
     .stat-number {
         font-size: 1.1rem;
     }
-}
-
-/* Stats Section - removed overflow-y and adjusted to match chatbox height */
-.stats-section {
-    display: flex;
-    flex-direction: column;
-    /* Reduced gap and made cards fill available height */
-    gap: 0.75rem;
-    padding: 0.5rem 0;
-    height: 100%;
-    /* Removed overflow-y to prevent scrollbar, cards will flex to fill space */
-}
-
-/* Removed stats-header styling as header is removed */
-
-.stat-card {
-    background: rgba(30, 41, 59, 0.6);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(148, 163, 184, 0.1);
-    border-radius: 16px;
-    /* Reduced padding */
-    padding: 1rem;
-    transition: all 0.3s ease;
-    /* Added flex: 1 to make cards grow and fill available space evenly */
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-}
-
-.stat-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(16, 185, 129, 0.3);
-    box-shadow: 0 8px 32px rgba(16, 185, 129, 0.15);
-}
-
-/* Added styling to make dashboard button not grow with flex */
-.dashboard-link-button {
-    display: block;
-    padding: 1rem 1.25rem;
-    background: rgba(16, 185, 129, 0.2);
-    border: 1px solid rgba(16, 185, 129, 0.4);
-    border-radius: 12px;
-    color: #10b981;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
-    text-decoration: none;
-    margin-bottom: 0.15rem;
-    flex-shrink: 0;
-}
-
-.dashboard-link-button:hover {
-    background: rgba(16, 185, 129, 0.3);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-}
-
-.stat-title {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #94a3b8;
-    margin-bottom: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    flex-shrink: 0;
-}
-
-.stat-values {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex: 1;
-    justify-content: center;
 }

@@ -3,6 +3,7 @@ app/logs/prompts*
 .env
 app/.vercel
 app/__pycache__
+app/static/.DS_Store
 __pycache__/
 app/env
 credentials.json

@@ -59,15 +59,12 @@ function removeLoadingIndicator() {
 }
 
 function formatMessage(text) {
-    // Sanitize output to prevent XSS
     return marked.parse(text, {
         breaks: true,
     })
 }
 
 function updateStats(data) {
-    // Update stats without animation
-
     document.getElementById("queryCount").textContent = data.query_count
 
     document.getElementById("totalEnergy").innerHTML =
