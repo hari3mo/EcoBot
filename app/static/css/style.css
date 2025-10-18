@@ -370,8 +370,7 @@ body {
 }
 
 .stat-number {
-    font-size: 2.0rem;
-    /* Increased from 1.9rem */
+    font-size: 1.9rem;
     font-weight: 700;
     background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
     -webkit-background-clip: text;

@@ -206,5 +206,6 @@ async function sendMessage() {
         chatInput.disabled = false
         sendButton.disabled = false
         chatInput.focus()
+        chatMessages.scrollTop = chatMessages.scrollHeight // Ensure scroll after response
     }
 }
