@@ -21,8 +21,8 @@
         {% endif %}
       </div>
       <div class="chat-header-right">
-        <!-- Added New Chat button -->
-        <button class="new-chat-button" onclick="window.location.href='/'">
+        <button class="dashboard-link-button" onclick="window.open('{{ url_for('dashboard') }}', '_blank')">📊 Dashboard</button>
+        <button class="new-chat-button" onclick="window.open('{{ url_for('index') }}')">
           🔄 New Chat
         </button>
       </div>
@@ -59,7 +59,6 @@
   </div>
 
   <div class="stats-section">
-    <a class="dashboard-link-button" href="{{ url_for('dashboard') }}" target="_blank" rel="noopener">📊 Dashboard</a>
     
     <div class="stat-card stat-card">
       <div class="stat-title">💬 Query Count</div>

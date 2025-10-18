@@ -258,7 +258,8 @@ body {
 }
 
 .new-chat-button,
-.admin-button {
+.admin-button,
+.dashboard-link-button {
     padding: 0.5rem 1rem;
     background: rgba(16, 185, 129, 0.2);
     border: 1px solid rgba(16, 185, 129, 0.4);
@@ -268,16 +269,18 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
+    margin-left: 0.3rem;
 }
 
 .new-chat-button:hover,
-.admin-button:hover {
+.admin-button:hover,
+.dashboard-link-button:hover {
     background: rgba(16, 185, 129, 0.3);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
 }
 
-.dashboard-link-button {
+/* .dashboard-link-button {
     display: block;
     padding: 1rem 1.25rem;
     background: rgba(16, 185, 129, 0.2);
@@ -298,7 +301,7 @@ body {
     background: rgba(16, 185, 129, 0.3);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-}
+} */
 
 /* ============================================
    STATS SECTION
@@ -420,6 +423,29 @@ body {
     40% {
         transform: scale(1);
     }
+}
+
+/* Added increment flash animation from old files */
+@keyframes flash {
+    0% {
+        opacity: 0;
+        transform: translateX(10px);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateX(0);
+        color: #34d399;
+    }
+
+    100% {
+        opacity: 0.8;
+        color: #10b981;
+    }
+}
+
+.increment-flash {
+    animation: flash 1s ease;
 }
 
 /* ============================================

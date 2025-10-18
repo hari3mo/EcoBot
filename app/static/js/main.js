@@ -80,18 +80,11 @@ function updateStats(data) {
 
     document.getElementById("totalTokens").textContent = data.total_tokens
 
-    document.getElementById("marginalEnergy").innerHTML =
-        `${Number.parseFloat(data.inc_wh).toFixed(2)}<span class="stat-unit">Wh</span>`
-
-    document.getElementById("marginalWater").innerHTML =
-        `${Number.parseFloat(data.inc_ml).toFixed(2)}<span class="stat-unit">mL</span>`
-
-    document.getElementById("marginalCO2").innerHTML =
-        `${Number.parseFloat(data.inc_co2).toFixed(4)}<span class="stat-unit">g</span>`
-
-    document.getElementById("marginalCost").textContent = `$${Number.parseFloat(data.inc_usd).toFixed(4)}`
-
-    document.getElementById("marginalTokens").textContent = data.inc_tokens
+    updateIncrement("marginalEnergy", data.inc_wh, "Wh")
+    updateIncrement("marginalWater", data.inc_ml, "mL")
+    updateIncrement("marginalCO2", data.inc_co2, "g")
+    updateIncrement("marginalCost", data.inc_usd, "", "$")
+    updateIncrement("marginalTokens", data.inc_tokens, "")
 
     if (data.cached_tokens && data.cached_tokens > 0) {
         const cachedDisplay = document.getElementById("cachedTokensDisplay")
@@ -99,6 +92,18 @@ function updateStats(data) {
         cachedDisplay.style.display = "flex"
         cachedValue.textContent = data.cached_tokens
     }
+}
+
+function updateIncrement(elementId, value, unit = "", prefix = "") {
+    const element = document.getElementById(elementId)
+    if (!element) return
+
+    element.innerHTML = `+${prefix}${Number.parseFloat(value).toFixed(unit === "g" ? 4 : 2)}<span class="stat-unit">${unit}</span>`
+    element.classList.add("increment-flash")
+
+    setTimeout(() => {
+        element.classList.remove("increment-flash")
+    }, 1000)
 }
 
 async function sendMessage() {
