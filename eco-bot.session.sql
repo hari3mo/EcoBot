@@ -3,7 +3,7 @@ CREATE TABLE logs (
     id VARCHAR(255) PRIMARY KEY,
     previous_id VARCHAR(255),
     datetime DATETIME,
-    conversation_index: INT,
+    chat_index INT,
     wh DECIMAL(18, 9),
     ml DECIMAL(18, 9),
     g_co2 DECIMAL(18, 9),
@@ -20,7 +20,13 @@ CREATE TABLE logs (
     total_wh DECIMAL(18, 9),
     total_ml DECIMAL(18, 9),
     total_co2 DECIMAL(18, 9),
-    total_usd DECIMAL(18, 9)
+    total_usd DECIMAL(18, 9),
+    total_tokens_session INT,
+    avg_tokens DECIMAL(18, 9),
+    avg_wh DECIMAL(18, 9),
+    avg_ml DECIMAL(18, 9),
+    avg_co2 DECIMAL(18, 9),
+    avg_usd DECIMAL(18, 9)
 );
 
 --@block--
@@ -38,7 +44,7 @@ CREATE TABLE `logs-dev` (
     id VARCHAR(255) PRIMARY KEY,
     previous_id VARCHAR(255),
     datetime DATETIME,
-    conversation_index INT,
+    chat_index INT,
     wh DECIMAL(18, 9),
     ml DECIMAL(18, 9),
     g_co2 DECIMAL(18, 9),
@@ -55,7 +61,13 @@ CREATE TABLE `logs-dev` (
     total_wh DECIMAL(18, 9),
     total_ml DECIMAL(18, 9),
     total_co2 DECIMAL(18, 9),
-    total_usd DECIMAL(18, 9)
+    total_usd DECIMAL(18, 9),
+    total_tokens_session INT,
+    avg_tokens DECIMAL(18, 9),
+    avg_wh DECIMAL(18, 9),
+    avg_ml DECIMAL(18, 9),
+    avg_co2 DECIMAL(18, 9),
+    avg_usd DECIMAL(18, 9)
 );
 
 --@block--

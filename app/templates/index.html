@@ -1,119 +1,137 @@
 {% extends "base.html" %}
 
+{% block extra_scripts %}
+<!-- Added marked.js library for markdown parsing and main.js -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<!-- Fixed path to match Flask static folder structure -->
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endblock %}
 
-  <body>
-  {% block content %}
-  <div class="container">
-    <div class="chat-section">
-      <div class="chat-header">
-        🌿 EcoBot - Environmental Impact Chat
+{% block content %}
+<div class="container">
+  <div class="chat-section">
+    <div class="chat-header">
+    <div class="chat-header-left">
+        <span>🌿 EcoBot 5</span>
         {% if session['admin'] %}
-        <button class="admin-button" onclick="window.location.href='/admin'">Admin</button>
+        <button class="admin-button">Admin</button>
         {% endif %}
-      </div>
-      <div class="chat-messages" id="chatMessages">
-        <div class="message bot-message">
-          <div class="message-label">EcoBot</div>
-          <div class="message-content">
-            Hello! I'm EcoBot 🌿. I track the environmental impact of our conversation. Ask me anything!
-          </div>
+    </div>
+    <div class="chat-header-right">
+        <a class="dashboard-link-button" href="{{ url_for('dashboard') }}" target="_blank" rel="noopener">📊 Dashboard</a>
+        </div>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="message bot-message">
+        <div class="message-label">EcoBot</div>
+        <div class="message-content">
+          Hello! I'm EcoBot 🌿. I track the environmental impact of our conversation. Ask me anything!
         </div>
       </div>
-      <div class="chat-input-container">
-        <div class="chat-input-wrapper">
-          <input 
-            type="text" 
-            class="chat-input" 
-            id="chatInput" 
-            placeholder="Type your message..."
-            onkeypress="if(event.key === 'Enter') sendMessage()"
-          >
-          <button class="send-button" onclick="sendMessage()" id="sendButton">
-            Send
-          </button>
+    </div>
+    <div class="chat-input-container">
+      <div class="chat-input-wrapper">
+        <input 
+          type="text" 
+          class="chat-input" 
+          id="chatInput" 
+          placeholder="Type your message..."
+          onkeypress="if(event.key === 'Enter') sendMessage()"
+        >
+        <button class="send-button" onclick="sendMessage()" id="sendButton">
+          Send
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-section">
+    <div class="stats-header">Environmental Impact</div>
+    
+    <div class="stat-card stat-card-wide">
+      <div class="stat-title">💬 Query Count</div>
+      <div class="stat-values stat-values-center">
+        <div class="stat-value-group">
+          <div class="stat-label">Total Queries</div>
+          <div class="stat-number" id="queryCount">0</div>
         </div>
       </div>
     </div>
 
-    <div class="stats-section">
-      <div class="stats-header">Environmental Impact</div>
-      
-      <div class="stat-card">
-        <div class="stat-title">⚡ Energy Consumption</div>
-        <div class="stat-values">
-          <div class="stat-value-group">
-            <div class="stat-label">Total</div>
-            <div class="stat-number" id="totalEnergy">0<span class="stat-unit">Wh</span></div>
-          </div>
-          <div class="stat-divider"></div>
-          <div class="stat-value-group">
-            <div class="stat-label">Last Query</div>
-            <div class="stat-number" id="marginalEnergy">0<span class="stat-unit">Wh</span></div>
-          </div>
+    <div class="stat-card">
+      <div class="stat-title">⚡ Energy Consumption</div>
+      <div class="stat-values">
+        <div class="stat-value-group">
+          <div class="stat-label">Total</div>
+          <div class="stat-number" id="totalEnergy">0<span class="stat-unit">Wh</span></div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-value-group">
+          <div class="stat-label">Last Query</div>
+          <div class="stat-number" id="marginalEnergy">0<span class="stat-unit">Wh</span></div>
         </div>
       </div>
+    </div>
 
-      <div class="stat-card">
-        <div class="stat-title">💧 Water Usage</div>
-        <div class="stat-values">
-          <div class="stat-value-group">
-            <div class="stat-label">Total</div>
-            <div class="stat-number" id="totalWater">0<span class="stat-unit">mL</span></div>
-          </div>
-          <div class="stat-divider"></div>
-          <div class="stat-value-group">
-            <div class="stat-label">Last Query</div>
-            <div class="stat-number" id="marginalWater">0<span class="stat-unit">mL</span></div>
-          </div>
+    <div class="stat-card">
+      <div class="stat-title">💧 Water Usage</div>
+      <div class="stat-values">
+        <div class="stat-value-group">
+          <div class="stat-label">Total</div>
+          <div class="stat-number" id="totalWater">0<span class="stat-unit">mL</span></div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-value-group">
+          <div class="stat-label">Last Query</div>
+          <div class="stat-number" id="marginalWater">0<span class="stat-unit">mL</span></div>
         </div>
       </div>
+    </div>
 
-      <div class="stat-card">
-        <div class="stat-title">🌍 CO₂ Emissions</div>
-        <div class="stat-values">
-          <div class="stat-value-group">
-            <div class="stat-label">Total</div>
-            <div class="stat-number" id="totalCO2">0<span class="stat-unit">g</span></div>
-          </div>
-          <div class="stat-divider"></div>
-          <div class="stat-value-group">
-            <div class="stat-label">Last Query</div>
-            <div class="stat-number" id="marginalCO2">0<span class="stat-unit">g</span></div>
-          </div>
+    <div class="stat-card">
+      <div class="stat-title">🌍 CO₂ Emissions</div>
+      <div class="stat-values">
+        <div class="stat-value-group">
+          <div class="stat-label">Total</div>
+          <div class="stat-number" id="totalCO2">0<span class="stat-unit">g</span></div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-value-group">
+          <div class="stat-label">Last Query</div>
+          <div class="stat-number" id="marginalCO2">0<span class="stat-unit">g</span></div>
         </div>
       </div>
+    </div>
 
-      <div class="stat-card">
-        <div class="stat-title">💰 Cost</div>
-        <div class="stat-values">
-          <div class="stat-value-group">
-            <div class="stat-label">Total</div>
-            <div class="stat-number" id="totalCost">$0.00</div>
-          </div>
-          <div class="stat-divider"></div>
-          <div class="stat-value-group">
-            <div class="stat-label">Last Query</div>
-            <div class="stat-number" id="marginalCost">$0.00</div>
-          </div>
+    <div class="stat-card">
+      <div class="stat-title">💰 Cost</div>
+      <div class="stat-values">
+        <div class="stat-value-group">
+          <div class="stat-label">Total</div>
+          <div class="stat-number" id="totalCost">$0.00</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-value-group">
+          <div class="stat-label">Last Query</div>
+          <div class="stat-number" id="marginalCost">$0.00</div>
         </div>
       </div>
+    </div>
 
-      <div class="stat-card">
-        <div class="stat-title">🔢 Tokens Used</div>
-        <div class="stat-values">
-          <div class="stat-value-group">
-            <div class="stat-label">Total</div>
-            <div class="stat-number" id="totalTokens">0</div>
-          </div>
-          <div class="stat-divider"></div>
-          <div class="stat-value-group">
-            <div class="stat-label">Last Query</div>
-            <div class="stat-number" id="marginalTokens">0</div>
-          </div>
+    <div class="stat-card">
+      <div class="stat-title">🔢 Tokens Used</div>
+      <div class="stat-values">
+        <div class="stat-value-group">
+          <div class="stat-label">Total</div>
+          <div class="stat-number" id="totalTokens">0</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-value-group">
+          <div class="stat-label">Last Query</div>
+          <div class="stat-number" id="marginalTokens">0</div>
         </div>
       </div>
     </div>
   </div>
-  {% endblock %}
-</body>
-</html>
+</div>
+{% endblock %}

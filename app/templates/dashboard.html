@@ -3,240 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoBot Dashboard - Environmental Impact Analytics</title>
+    <title>{% block title %}EcoBot Dashboard{% endblock %}</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: #e2e8f0;
-            min-height: 100vh;
-            padding: 2rem;
-        }
-
-        .dashboard-container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
-        }
-
-        .header p {
-            color: #94a3b8;
-            font-size: 1.1rem;
-        }
-
-        .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-
-        .kpi-card {
-            background: rgba(30, 41, 59, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(148, 163, 184, 0.1);
-            border-radius: 16px;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .kpi-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(16, 185, 129, 0.3);
-            box-shadow: 0 8px 32px rgba(16, 185, 129, 0.15);
-        }
-
-        .kpi-label {
-            font-size: 0.875rem;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.5rem;
-        }
-
-        .kpi-value {
-            font-size: 2rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.25rem;
-        }
-
-        .kpi-subtitle {
-            font-size: 0.75rem;
-            color: #64748b;
-        }
-
-        .charts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .chart-card {
-            background: rgba(30, 41, 59, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(148, 163, 184, 0.1);
-            border-radius: 16px;
-            padding: 2rem;
-        }
-
-        .chart-card.full-width {
-            grid-column: 1 / -1;
-        }
-
-        .chart-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #e2e8f0;
-            margin-bottom: 1.5rem;
-        }
-
-        .chart-container {
-            position: relative;
-            height: 300px;
-        }
-
-        .chart-container.tall {
-            height: 400px;
-        }
-
-        .recent-activity {
-            background: rgba(30, 41, 59, 0.6);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(148, 163, 184, 0.1);
-            border-radius: 16px;
-            padding: 2rem;
-        }
-
-        .activity-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #e2e8f0;
-            margin-bottom: 1.5rem;
-        }
-
-        .activity-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .activity-table th {
-            text-align: left;
-            padding: 1rem;
-            font-size: 0.875rem;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-        }
-
-        .activity-table td {
-            padding: 1rem;
-            border-bottom: 1px solid rgba(148, 163, 184, 0.05);
-            color: #cbd5e1;
-        }
-
-        .activity-table tr:hover {
-            background: rgba(16, 185, 129, 0.05);
-        }
-
-        .prompt-text {
-            max-width: 400px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .metric-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #10b981;
-        }
-
-        .error-message {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 16px;
-            padding: 2rem;
-            text-align: center;
-            color: #fca5a5;
-        }
-
-        .back-button {
-            display: inline-block;
-            margin-bottom: 2rem;
-            padding: 0.75rem 1.5rem;
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            border-radius: 12px;
-            color: #10b981;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .back-button:hover {
-            background: rgba(16, 185, 129, 0.2);
-            transform: translateX(-4px);
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 1rem;
-            }
-
-            .header h1 {
-                font-size: 2rem;
-            }
-
-            .kpi-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .charts-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .activity-table {
-                font-size: 0.875rem;
-            }
-
-            .activity-table th,
-            .activity-table td {
-                padding: 0.75rem 0.5rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
 </head>
 <body>
     <div class="dashboard-container">
@@ -299,6 +68,12 @@
             </div>
 
             <div class="kpi-card">
+                <div class="kpi-label">Avg Water/Query</div>
+                <div class="kpi-value">{{ kpis.avg_ml_per_query }}</div>
+                <div class="kpi-subtitle">mL per query</div>
+            </div>
+
+            <div class="kpi-card">
                 <div class="kpi-label">Avg CO₂/Query</div>
                 <div class="kpi-value">{{ kpis.avg_co2_per_query }}</div>
                 <div class="kpi-subtitle">g per query</div>
@@ -347,6 +122,7 @@
                         <th>Timestamp</th>
                         <th>Prompt</th>
                         <th>Energy (Wh)</th>
+                        <th>Water (mL)</th>
                         <th>CO₂ (g)</th>
                         <th>Tokens</th>
                     </tr>
@@ -357,6 +133,7 @@
                         <td>{{ log.datetime }}</td>
                         <td class="prompt-text">{{ log.prompt }}</td>
                         <td><span class="metric-badge">{{ log.wh }}</span></td>
+                        <td><span class="metric-badge">{{ log.ml }}</span></td>
                         <td><span class="metric-badge">{{ log.g_co2 }}</span></td>
                         <td><span class="metric-badge">{{ log.tokens }}</span></td>
                     </tr>

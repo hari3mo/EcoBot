@@ -14,7 +14,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 
 import logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.ERROR)
 
 load_dotenv()
 app = Flask(__name__)
@@ -53,7 +53,7 @@ def index():
     session['total_CO2'] = 0
     session['total_usd'] = 0
     session['total_tokens'] = 0
-    session['conversation_length'] = 0
+    session['chat_index'] = 0
     session['admin'] = session.get('admin', False)
     return render_template('index.html')
 
@@ -89,7 +89,6 @@ def chat():
             return jsonify({'redirect': url_for(route["endpoint"])})
     
     response_data = query(prompt)
-    session['conversation_length'] += 1
     return jsonify(response_data)
 
 @app.route("/push", methods=["GET"])
@@ -152,6 +151,7 @@ def prompts_dev():
     return render_template("prompts_dev.html", prompts_dev=prompts_dev)
 
 def query(prompt):
+    logging.info(f'\nPrompt received: {prompt}\n')
     db.session.commit()
     current_response_id = session.get('id', None)
     
@@ -189,6 +189,14 @@ def query(prompt):
     session['total_usd'] = session.get('total_usd', 0) + usd_cost
     session['total_tokens'] = session.get('total_tokens', 0) + query_tokens
     session['id'] = response.id
+    session['chat_index'] += 1
+
+    # Session averages
+    avg_wh = session['total_WH'] / session['chat_index']
+    avg_ml = session['total_ML'] / session['chat_index']
+    avg_co2 = session['total_CO2'] / session['chat_index']
+    avg_usd = session['total_usd'] / session['chat_index']
+    avg_tokens = session['total_tokens'] / session['chat_index']
 
     logging.info(f'Response ID: {response.id}')
     logging.info(f'Output Tokens (API): {usage.output_tokens} == ${usd_cost_out:.6f}')
@@ -202,7 +210,8 @@ def query(prompt):
             'response': output_text,
             'id': response.id,
             'previous_id': current_response_id,
-            'datetime': datetime.fromtimestamp(response.created_at),
+            'datetime': pd.to_datetime(response.created_at, unit='s'),
+            'chat_index': session['chat_index'],
             'wh': wh_cost,
             'ml': ml_cost,
             'g_co2': co2_cost,
@@ -215,22 +224,30 @@ def query(prompt):
             'output_tokens': usage.output_tokens,
             'output_tokens_tokenizer': output_tokenizer,
             'cached_tokens': cached_tokens,
+            'total_tokens': query_tokens,
             'total_wh': session['total_WH'],
             'total_ml': session['total_ML'],
             'total_co2': session['total_CO2'],
             'total_usd': session['total_usd'],
-            'total_tokens': session['total_tokens'],
+            'total_tokens_session': session['total_tokens'],
+            'avg_tokens': avg_tokens,
+            'avg_wh': avg_wh,
+            'avg_ml': avg_ml,
+            'avg_co2': avg_co2,
+            'avg_usd': avg_usd
         }
 
     df = pd.DataFrame([log_data]).astype({'datetime': 'datetime64[ns]'})\
         .sort_values(by='datetime', ascending=False)
     
     log_columns = [
-        'id', 'previous_id', 'datetime', 'wh', 'ml', 'g_co2', 'usd_in', 'usd_cache', 'usd_out',
+        'id', 'previous_id', 'datetime', 'chat_index', 'wh', 'ml', 'g_co2', 'usd_in', 'usd_cache', 'usd_out',
         'tokens', 'input_tokens', 'input_tokens_tokenizer', 'output_tokens',
-        'output_tokens_tokenizer', 'cached_tokens', 'total_wh', 'total_ml',
-        'total_co2', 'total_usd', 'total_tokens']
-    
+        'output_tokens_tokenizer', 'cached_tokens', 'total_tokens', 'total_wh',
+        'total_ml', 'total_co2', 'total_usd', 'total_tokens_session',
+        'avg_tokens', 'avg_wh', 'avg_ml', 'avg_co2', 'avg_usd'
+    ]
+
     prompt_columns = ['id', 'previous_id', 'datetime', 'prompt', 'response']
 
     logs_df = df[log_columns]
@@ -247,10 +264,12 @@ def query(prompt):
             try:
                 logs_df.to_sql('logs-dev', con=connection, if_exists='append', index=False)
                 prompt_df.to_sql('prompts-dev', con=connection, if_exists='append', index=False)
+                logging.info("Log entry added to database.")
             except Exception as e:
                 logging.error(f"Error writing to development database: {e}")
 
         connection.commit()
+
 
     return {
         "response_text": output_text,
@@ -261,6 +280,7 @@ def query(prompt):
         "total_co2": f"{session['total_CO2']:.4f}",
         "total_usd": f"{session['total_usd']:.5f}",
         "total_tokens": session['total_tokens'],
+        "query_count": session['chat_index'],
         
         # Marginal costs
         "inc_wh": f"{wh_cost:.3f}",
@@ -270,7 +290,8 @@ def query(prompt):
         "inc_tokens": query_tokens,
         "input_tokens": input_tokenizer,
         "output_tokens": usage.output_tokens,
-        "cached_tokens": cached_tokens
+        "cached_tokens": cached_tokens,
+        "total_tokens_query": query_tokens
     }
 
 def push_sheets():
@@ -310,12 +331,8 @@ def pull_db():
     prompts.to_csv('../logs/prompts.csv', index=False)
     prompts_dev.to_csv('../logs/prompts-dev.csv', index=False)
 
-
 @app.route("/dashboard", methods=["GET"])
 def dashboard():
-    if not session.get('admin'):
-        return redirect(url_for('index'))
-
     # Determine which tables to query based on PROD flag
     log_table_name = 'logs' if PROD else 'logs-dev'
     prompt_table_name = 'prompts' if PROD else 'prompts-dev'
@@ -326,7 +343,6 @@ def dashboard():
         prompts_df = pd.read_sql_table(prompt_table_name, con=engine)
     except Exception as e:
         logging.error(f"Error reading from database for dashboard: {e}")
-        # Render the dashboard with an error message
         return render_template("dashboard.html", error=str(e))
 
     # Handle case where tables might be empty
@@ -344,6 +360,7 @@ def dashboard():
     total_tokens = logs_df['tokens'].sum()
     
     avg_wh_per_query = logs_df['wh'].mean()
+    avg_ml_per_query = logs_df['ml'].mean()
     avg_co2_per_query = logs_df['g_co2'].mean()
     avg_usd_per_query = (logs_df['usd_in'] + logs_df['usd_cache'] + logs_df['usd_out']).mean()
 
@@ -355,14 +372,13 @@ def dashboard():
         'total_usd': f"{total_usd:.4f}",
         'total_tokens': int(total_tokens),
         'avg_wh_per_query': f"{avg_wh_per_query:.3f}",
+        'avg_ml_per_query': f"{avg_ml_per_query:.3f}",
         'avg_co2_per_query': f"{avg_co2_per_query:.3f}",
         'avg_usd_per_query': f"{avg_usd_per_query:.5f}",
     }
 
     # 2. Time-Series Data for Charts
-    # Ensure datetime column is in datetime format
     logs_df['datetime'] = pd.to_datetime(logs_df['datetime'])
-    # Group by date
     logs_df['date'] = logs_df['datetime'].dt.date
     
     daily_stats = logs_df.groupby('date').agg(
@@ -371,7 +387,6 @@ def dashboard():
         queries=('id', 'count')
     ).reset_index()
     
-    # Convert date to string for JSON serialization
     daily_stats['date'] = daily_stats['date'].astype(str)
 
     timeseries_data = {
@@ -402,28 +417,20 @@ def dashboard():
     }
 
     # 5. Recent Activity Table
-    # Get prompts
     prompts_simple_df = prompts_df[['id', 'prompt']]
-    # Get recent logs
-    logs_recent_df = logs_df.sort_values(by='datetime', ascending=False).head(5)
+    logs_recent_df = logs_df.sort_values(by='datetime', ascending=False).head(10)
     
-    # Merge to get prompt text for recent logs
     recent_activity_df = pd.merge(logs_recent_df, prompts_simple_df, on='id', how='left')
-    
-    # Select and format columns
-    recent_activity_df = recent_activity_df[['datetime', 'prompt', 'wh', 'g_co2', 'tokens']]
-    # Truncate long prompts for display
+    recent_activity_df = recent_activity_df[['datetime', 'prompt', 'wh', 'ml', 'g_co2', 'tokens', 'usd_in', 'usd_cache', 'usd_out']]
     recent_activity_df['prompt'] = recent_activity_df['prompt'].str.slice(0, 50) + '...'
     
     recent_logs = recent_activity_df.to_dict('records')
-    # Format numbers and dates for cleaner display in HTML
     for log in recent_logs:
         log['datetime'] = log['datetime'].strftime('%Y-%m-%d %H:%M')
+        log['ml'] = f"{log['ml']:.3f}"
         log['wh'] = f"{log['wh']:.3f}"
         log['g_co2'] = f"{log['g_co2']:.3f}"
 
-
-    # Bundle all chart data into a single JSON string for JavaScript
     chart_data = {
         'timeseries': timeseries_data,
         'cost_breakdown': cost_breakdown_data,
@@ -432,9 +439,10 @@ def dashboard():
 
     return render_template("dashboard.html",
                            kpis=kpis,
-                           chart_data=json.dumps(chart_data), # Pass as a JSON string
+                           chart_data=json.dumps(chart_data),
                            recent_logs=recent_logs,
-                           error=None) # Pass None for error if successful
+                           error=None)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,141 +1,231 @@
-/* --------------------------------------------------- */
-/* Dashboard Overrides & Layout
-/* --------------------------------------------------- */
-
-/* These rules override the vertical centering from base.html,
-  allowing the dashboard to scroll naturally.
-*/
-body {
-    height: auto;
-    background-color: #f8f9fa;
-    /* Light grey background */
-}
-
-.container-fluid.h-100.d-flex.align-items-center {
-    height: auto !important;
-    display: block !important;
-    align-items: flex-start !important;
-    padding: 0;
-}
-
-.row.justify-content-center.w-100 {
+* {
     margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #e2e8f0;
+    min-height: 100vh;
+    padding: 2rem;
 }
 
 .dashboard-container {
-    padding: 1rem 1.5rem 3rem 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
-.dashboard-title {
-    font-weight: 700;
-    color: #333;
-}
-
-.section-title {
-    font-size: 1.75rem;
-    font-weight: 600;
-    margin-top: 2rem;
-    margin-bottom: 1.5rem;
-    border-bottom: 2px solid #dee2e6;
-    padding-bottom: 0.5rem;
-    color: #495057;
-}
-
-/* --------------------------------------------------- */
-/* KPI (Key Performance Indicator) Cards
-/* --------------------------------------------------- */
-.kpi-card {
-    border: none;
-    border-radius: 0.5rem;
+.header {
     text-align: center;
-    transition: all 0.3s ease-in-out;
+    margin-bottom: 3rem;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+.header p {
+    color: #94a3b8;
+    font-size: 1.1rem;
+}
+
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.kpi-card {
+    background: rgba(30, 41, 59, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
 }
 
 .kpi-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important;
+    transform: translateY(-4px);
+    border-color: rgba(16, 185, 129, 0.3);
+    box-shadow: 0 8px 32px rgba(16, 185, 129, 0.15);
 }
 
-.kpi-card .card-body {
-    padding: 1.5rem;
-}
-
-.kpi-card .kpi-icon {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    color: #007bff;
-}
-
-/* Specific icon colors */
-.kpi-card:nth-child(2) .kpi-icon {
-    color: #28a745;
-}
-
-/* Cost */
-.kpi-card:nth-child(3) .kpi-icon {
-    color: #ffc107;
-}
-
-/* Energy */
-.kpi-card:nth-child(4) .kpi-icon {
-    color: #6c757d;
-}
-
-/* CO2 */
-
-.kpi-card .card-title {
-    font-size: 1rem;
-    color: #6c757d;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
+.kpi-label {
+    font-size: 0.875rem;
+    color: #94a3b8;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
 }
 
-.kpi-card .card-text {
-    font-size: 2.1rem;
+.kpi-value {
+    font-size: 2rem;
     font-weight: 700;
-    color: #343a40;
+    background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.25rem;
 }
 
-.kpi-card.avg-card .card-text {
-    font-size: 1.75rem;
-    color: #17a2b8;
+.kpi-subtitle {
+    font-size: 0.75rem;
+    color: #64748b;
 }
 
-.kpi-card.avg-card:nth-child(2) .card-text {
-    color: #fd7e14;
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
 }
 
-.kpi-card.avg-card:nth-child(3) .card-text {
-    color: #6610f2;
-}
-
-/* --------------------------------------------------- */
-/* Chart & Table Cards
-/* --------------------------------------------------- */
 .chart-card {
-    border: none;
-    border-radius: 0.5rem;
+    background: rgba(30, 41, 59, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 16px;
+    padding: 2rem;
+}
+
+.chart-card.full-width {
+    grid-column: 1 / -1;
+}
+
+.chart-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    margin-bottom: 1.5rem;
 }
 
 .chart-container {
     position: relative;
+    height: 300px;
+}
+
+.chart-container.tall {
+    height: 400px;
+}
+
+.recent-activity {
+    background: rgba(30, 41, 59, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 16px;
+    padding: 2rem;
+}
+
+.activity-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    margin-bottom: 1.5rem;
+}
+
+.activity-table {
     width: 100%;
+    border-collapse: collapse;
 }
 
-.table-responsive {
-    max-height: 400px;
-    /* Makes long tables scrollable */
+.activity-table th {
+    text-align: left;
+    padding: 1rem;
+    font-size: 0.875rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
 }
 
-.table .prompt-cell {
-    max-width: 300px;
+.activity-table td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.05);
+    color: #cbd5e1;
+}
+
+.activity-table tr:hover {
+    background: rgba(16, 185, 129, 0.05);
+}
+
+.prompt-text {
+    max-width: 400px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.table th {
-    background-color: #f1f3f5;
+.metric-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #10b981;
 }
+
+.error-message {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    color: #fca5a5;
+}
+
+.back-button {
+    display: inline-block;
+    margin-bottom: 2rem;
+    padding: 0.75rem 1.5rem;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 12px;
+    color: #10b981;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.back-button:hover {
+    background: rgba(16, 185, 129, 0.2);
+    transform: translateX(-4px);
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 1rem;
+    }
+
+    .header h1 {
+        font-size: 2rem;
+    }
+
+    .kpi-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .activity-table {
+        font-size: 0.875rem;
+    }
+
+    .activity-table th,
+    .activity-table td {
+        padding: 0.75rem 0.5rem;
+    }
+}
+

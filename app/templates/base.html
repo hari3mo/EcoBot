@@ -1,15 +1,21 @@
+<!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoGPT</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css')}}"/>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  </head>
-  <body>
-    {% block content %}
-    {% endblock %}
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-  </body>
+    <meta name="viewport" content="height=device-height, initial-scale=1.0">
+    <title>{% block title %}EcoBot{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="page-container">
+        <!--<a href="/" class="back-button">← Back to Chat</a>-->
+
+        {% block content %}
+        <!-- Page content goes here -->
+        {% endblock %}
+    </div>
+    
+    <!-- Added extra_scripts block so child templates can inject scripts -->
+    {% block extra_scripts %}{% endblock %}
+</body>
 </html>
