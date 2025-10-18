@@ -10,6 +10,19 @@
 <body>
     <div class="page-container">
         <!--<a href="/" class="back-button">← Back to Chat</a>-->
+         <div class="course-header">
+        <div class="course-left">
+            <span class="ecobot-title">🌿 EcoBot 5</span>
+            <button class="admin-button" style="display: none;">Admin</button>
+        </div>
+
+        <h1 class="course-title">SYN 100 - Artificial Intelligence: Climate Applications & Ethical Implications</h1>
+
+        <div class="course-actions">
+            <button class="dashboard-link-button" onclick="alert('Dashboard')">📊 Dashboard</button>
+            <button class="new-chat-button" onclick="location.reload()">🔄 New Chat</button>
+        </div>
+    </div>
         {% block content %}
         {% endblock %}
     </div>

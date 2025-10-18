@@ -1,4 +1,77 @@
 id,previous_id,datetime,prompt,response
+resp_030175a0e31bff710068f3b3c08e4c81a2b266fefed4693604,,2025-10-18 15:35:28,Generate text that uses every markdown item,"# Markdown Guide 🌿
+
+## Headers
+
+# Header 1
+## Header 2
+### Header 3
+#### Header 4
+##### Header 5
+###### Header 6
+
+## Emphasis
+
+- *Italic* text uses one asterisk or underscore.
+- **Bold** text uses two.
+- ***Bold and Italic*** combines both.
+
+## Lists
+
+### Unordered
+
+- Item 1
+- Item 2
+  - Subitem 1
+  - Subitem 2
+
+### Ordered
+
+1. First
+2. Second
+   1. Subitem
+
+## Links
+
+[OpenAI](https://www.openai.com)
+
+## Images
+
+![Nature Image](https://via.placeholder.com/150)
+
+## Blockquotes
+
+> ""Look deep into nature, and then you will understand everything better."" — Albert Einstein
+
+## Code
+
+Here’s a simple Python function:
+
+```
+def hello_world():
+    print(""Hello, World!"")
+```
+
+## Tables
+
+| Product | Price | In Stock |
+| ------- | -----:| --------:|
+| Apple   | $1.00 | ✓        |
+| Banana  | $0.50 | ✗        |
+
+## Horizontal Rule
+
+---
+
+## Task List
+
+- [x] Learn Markdown
+- [ ] Practice regularly
+- [ ] Share knowledge
+
+---
+
+With every query, a bit of energy is used to keep the digital world spinning. Let's make our interactions meaningful! 🌱"
 resp_05ecb2a02173d7800068f3834715648191a30ca5c1ed777805,resp_05ecb2a02173d7800068f3834333ac8191b9943f0f181339f5,2025-10-18 12:08:39,What is your name?,I'm EcoBot 🌿.
 resp_05ecb2a02173d7800068f3834333ac8191b9943f0f181339f5,resp_05ecb2a02173d7800068f38339a0b88191918bba1bc2d1963d,2025-10-18 12:08:35,What is my name?,Your name is Haris. 😊
 resp_05ecb2a02173d7800068f38339a0b88191918bba1bc2d1963d,resp_05ecb2a02173d7800068f3832257288191b7ad8fbdfeca7651,2025-10-18 12:08:26,Generate discussion questions relating the two texts,"Here are some discussion questions relating the two texts on AI and ethics:

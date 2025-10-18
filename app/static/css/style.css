@@ -13,43 +13,78 @@ body {
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     color: #e2e8f0;
     min-height: 100vh;
-    padding: 1rem;
+    padding: 0;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ============================================
    LAYOUT
    ============================================ */
 
+/* Updated container to account for full-width header */
 .container {
-    /* max-width: 1600px; */
     margin: 0 auto;
+    padding: 1rem;
     display: grid;
-    /* grid-template-columns: 1fr 350px; */
-    grid-template-columns: 77.5% 22.5%; /* Chatbox 70%, Stats menu 30% */
+    grid-template-columns: 77.5% 22.5%;
     gap: 1rem;
-    height: calc(100vh - 2rem);
+    height: calc(100vh - 100px);
+    /* Account for header height */
+    flex: 1;
 }
 
 /* ============================================
-   COURSE HEADER
+   COURSE HEADER - Now full width
    ============================================ */
 
+/* Made course-header full width and fixed positioning */
 .course-header {
-    padding: 1rem 2rem;
+    padding: 1.25rem 2rem;
     background: rgba(16, 185, 129, 0.15);
     border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-    text-align: center;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 1.5rem;
+    width: 100%;
+    flex-shrink: 0;
 }
 
-.course-header h1 {
-    font-size: 1.1rem;
+.course-left {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    justify-self: start;
+}
+
+.ecobot-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    /* color: #10b981; */
+}
+
+.course-title {
+    font-size: 1.25rem;
     font-weight: 600;
     background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
+    justify-self: center;
+    text-align: center;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.course-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-self: end;
+    flex-wrap: wrap;
 }
 
 /* ============================================
@@ -66,44 +101,7 @@ body {
     overflow: hidden;
 }
 
-/* Chat Header */
-.chat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    background: rgba(16, 185, 129, 0.1);
-    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-.chat-header-left {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex: 1;
-    /* Add flex: 1 to allow right alignment of children */
-    justify-content: flex-start;
-    position: relative;
-}
-
-.chat-header-right {
-    display: flex;
-    align-items: center;
-}
-
-/* Cached Tokens Display */
-.cached-tokens-display {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    background: rgba(139, 92, 246, 0.1);
-    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-    justify-content: flex-end;
-}
-
+/* Removed chat-header styles as it's been deleted */
 
 /* Chat Messages */
 .chat-messages {
@@ -139,10 +137,14 @@ body {
     letter-spacing: 0.05em;
 }
 
+/* Fixed message-content to prevent extra whitespace for short messages */
 .message-content {
     padding: 0.875rem 1rem;
     border-radius: 12px;
     line-height: 1.6;
+    width: fit-content;
+    max-width: 100%;
+    word-wrap: break-word;
 }
 
 .user-message .message-content {
@@ -259,11 +261,10 @@ body {
     border: 1px solid rgba(16, 185, 129, 0.4);
     border-radius: 10px;
     color: #10b981;
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-left: 0.3rem;
 }
 
 .new-chat-button:hover,
@@ -274,31 +275,8 @@ body {
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
 }
 
-/* .dashboard-link-button {
-    display: block;
-    padding: 1rem 1.25rem;
-    background: rgba(16, 185, 129, 0.2);
-    border: 1px solid rgba(16, 185, 129, 0.4);
-    border-radius: 12px;
-    color: #10b981;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
-    text-decoration: none;
-    margin-bottom: 0.15rem;
-    flex-shrink: 0;
-}
-
-.dashboard-link-button:hover {
-    background: rgba(16, 185, 129, 0.3);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-} */
-
 /* ============================================
-   STATS SECTION
+   STATS SECTION - Optimized sizing
    ============================================ */
 
 .stats-section {
@@ -316,7 +294,7 @@ body {
     backdrop-filter: blur(10px);
     border: 1px solid rgba(148, 163, 184, 0.1);
     border-radius: 16px;
-    padding: 1rem;
+    padding: 1rem 1.25rem;
     transition: all 0.3s ease;
     flex: 1;
     min-height: 0;
@@ -330,13 +308,49 @@ body {
     box-shadow: 0 8px 32px rgba(16, 185, 129, 0.15);
 }
 
-.stat-title {
+.cached-tokens-display {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 12px;
     font-size: 0.875rem;
+    width: fit-content;
+    margin-right: auto;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.cached-tokens-display:hover {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.4);
+    transform: translateY(-1px);
+}
+
+.cached-label {
+    color: #10b981;
     font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.cached-value {
+    color: #34d399;
+    font-weight: 700;
+}
+
+.cached-tokens-display.increment-flash {
+    animation: flash 0.75s ease;
+}
+
+.stat-title {
+    font-size: 0.8rem;
+    font-weight: 700;
     color: #94a3b8;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.875rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     flex-shrink: 0;
 }
 
@@ -356,6 +370,10 @@ body {
 
 .stat-value-group {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
 }
 
 .stat-values-center .stat-value-group {
@@ -366,28 +384,40 @@ body {
 .stat-label {
     font-size: 0.7rem;
     color: #64748b;
-    margin-bottom: 0.25rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    order: 2;
 }
 
+/* Optimized stat number sizing */
 .stat-number {
-    font-size: 1.9rem;
+    font-size: 2rem;
     font-weight: 700;
     background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     transition: all 0.3s ease;
+    line-height: 1.2;
+    order: 1;
+}
+
+.stat-number-small {
+    font-size: 1.5rem;
 }
 
 .stat-unit {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     margin-left: 0.25rem;
+    opacity: 0.8;
 }
 
 .stat-divider {
     width: 1px;
-    height: 40px;
+    height: 50px;
     background: rgba(148, 163, 184, 0.2);
+    flex-shrink: 0;
 }
 
 /* ============================================
@@ -419,22 +449,23 @@ body {
     }
 }
 
-/* Added increment flash animation from old files */
 @keyframes flash {
     0% {
         opacity: 0;
-        transform: translateX(10px);
+        transform: scale(0.95);
+        box-shadow: 0 0 0 rgba(16, 185, 129, 0);
     }
 
     50% {
         opacity: 1;
-        transform: translateX(0);
-        color: #34d399;
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
     }
 
     100% {
-        opacity: 0.8;
-        color: #10b981;
+        opacity: 1;
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(16, 185, 129, 0);
     }
 }
 
@@ -463,50 +494,25 @@ body {
     background: rgba(16, 185, 129, 0.5);
 }
 
-/* Course header becomes a flex row with actions on the right */
-.course-header {
-    padding: 1rem 2rem;
-    background: rgba(16, 185, 129, 0.15);
-    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-}
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 900px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
 
-.course-header h1 {
-    margin: 0;
-}
+    .stats-section {
+        margin-right: 0;
+    }
 
-/* Buttons container in course header */
-.course-actions {
-    display: flex;
-    gap: .5rem;
-}
+    .course-header {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
 
-/* Cached tokens now a small pill inside the chat header (right of EcoBot 5) */
-.cached-tokens-display {
-    margin-left: auto;
-    display: none;
-    align-items: center;
-    gap: .4rem;
-    padding: .2rem .5rem;
-    background: rgba(139, 92, 246, .15);
-    border: 1px solid rgba(148, 163, 184, .2);
-    border-radius: 999px;
-    font-size: 1rem;
-}
-
-.cached-label {
-    color: #c4b5fd;
-    font-weight: 700;
-}
-
-.cached-value {
-    color: #e9d5ff;
-    font-weight: 700;
-}
-
-.cached-tokens-display.increment-flash {
-    animation: flash 0.75s ease;
+    .course-left,
+    .course-actions {
+        justify-self: center;
+    }
 }
