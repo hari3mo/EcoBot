@@ -108,7 +108,7 @@ function updateStats(data) {
   flashTotalStat("totalWater")
 
   const totalCO2 = document.getElementById("totalCO2")
-  totalCO2.innerHTML = `${Number.parseFloat(data.total_co2).toFixed(3)}<span class="stat-unit">g</span>`
+  totalCO2.innerHTML = `${Number.parseFloat(data.total_co2).toFixed(3)}<span class="stat-unit">g CO₂</span>`
   flashTotalStat("totalCO2")
 
   const totalCost = document.getElementById("totalCost")
@@ -119,18 +119,20 @@ function updateStats(data) {
   totalTokens.innerHTML = `${data.total_tokens}<span class="stat-unit">tokens</span>`
   flashTotalStat("totalTokens")
 
-  updateIncrement("marginalEnergy", data.inc_wh, "Wh")
-  updateIncrement("marginalWater", data.inc_ml, "mL")
-  updateIncrement("marginalCO2", data.inc_co2, "g")
+  updateIncrement("marginalEnergy", data.inc_wh, "")
+  updateIncrement("marginalWater", data.inc_ml, "")
+  updateIncrement("marginalCO2", data.inc_co2, "")
   updateIncrement("marginalCost", data.inc_usd, "")
-  updateIncrement("marginalTokens", data.inc_tokens, "tokens")
+  updateIncrement("marginalTokens", data.inc_tokens, "")
 
-  if (data.cached_tokens && data.cached_tokens > 0) {
-    const cachedDisplay = document.getElementById("cachedTokensDisplay")
-    const cachedValue = document.getElementById("cachedTokensValue")
-    cachedDisplay.style.display = "flex"
-    cachedValue.textContent = data.cached_tokens
-    flashCachedTokens()
+  // Increment cached tokens display each query
+  const cachedTokensEl = document.getElementById("cachedTokens")
+  if (cachedTokensEl) {
+    let currentCached = parseInt(cachedTokensEl.textContent) || 0
+    let increment = Number.parseInt(data.cached_tokens) || 0
+    let newCached = currentCached + increment
+    cachedTokensEl.innerHTML = `${newCached}<span class="stat-unit">tokens</span>`
+    flashTotalStat("cachedTokens")
   }
 }
 
@@ -143,7 +145,7 @@ function updateIncrement(elementId, value, unit = "", prefix = "+") {
     displayValue = Number.parseInt(value)
   } else if (elementId === "marginalCost") {
     displayValue = Number.parseFloat(value).toFixed(4)
-    displayValue = `$${displayValue}`
+    displayValue = `${displayValue} USD`
   } else if (elementId === "marginalCO2") {
     displayValue = Number.parseFloat(value).toFixed(3)
   } else {

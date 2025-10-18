@@ -16,11 +16,6 @@
             {% if session['admin'] %}
             <button class="admin-button">Admin</button>
             {% endif %}
-            <div class="cached-tokens-display" id="cachedTokensDisplay" style="display:none;">
-                <span class="cached-label">💾</span>
-                <span class="cached-value" id="cachedTokensValue">0</span>
-                <span class="cached-suffix">tokens cached</span>
-            </div>
         </div>
 
         <h1 class="course-title">SYN 100 - Artificial Intelligence: Climate Applications & Ethical Implications</h1>
@@ -34,6 +29,6 @@
         {% endblock %}
     </div>
     
-    {% block extra_scripts %}{% endblock %}
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

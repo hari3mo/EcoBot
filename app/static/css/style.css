@@ -310,7 +310,7 @@ body {
 /* Cached Tokens — match action button styling */
 .cached-tokens-display {
     display: none;
-    align-items: center;;
+    align-items: center;
     gap: 0.25rem;
     padding: 0.5rem 1rem;
     background: rgba(16, 185, 129, 0.2);
@@ -331,6 +331,7 @@ body {
 .cached-tokens-display.increment-flash {
     animation: flash 0.75s ease;
 }
+
 #cachedTokensValue {
     color: #34d399;
     font-weight: 700;
@@ -381,14 +382,28 @@ body {
     line-height: 1;
 }
 
-.stat-title, .stat-title-left,  .stat-title-right {
+.stat-title,
+.stat-title-left,
+.stat-title-right {
     font-size: 0.8rem;
     font-weight: 700;
     color: #94a3b8;
-    margin-bottom: 0.875rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     flex-shrink: 0;
+}
+
+/* Added alignment for left and right titles */
+.stat-title-left {
+    text-align: left;
+}
+
+.stat-title-right {
+    text-align: right;
+}
+
+.stat-title {
+    margin-bottom: 0.875rem;
 }
 
 .stat-values {
@@ -413,18 +428,20 @@ body {
     gap: 0.25rem;
 }
 
+/* Added alignment classes for total and marginal values */
+.stat-value-group.total {
+    align-items: flex-end;
+}
+
+/* Updated marginal value alignment to right */
+.stat-value-group.marginal {
+    align-items: flex-end;
+    text-align: right;
+}
+
 .stat-values-center .stat-value-group {
     flex: none;
     text-align: center;
-}
-
-.stat-label {
-    font-size: 0.7rem;
-    color: #64748b;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    order: 2;
 }
 
 /* Optimized stat number sizing */
@@ -444,10 +461,21 @@ body {
     font-size: 1.5rem;
 }
 
+.stat-label {
+    font-size: 0.7rem;
+    color: #64748b;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    order: 2;
+}
+
 .stat-unit {
     font-size: 0.75rem;
     margin-left: 0.25rem;
     opacity: 0.8;
+    color: #64748b;
+    /* Match stat-label color */
 }
 
 .stat-divider {
