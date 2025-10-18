@@ -308,35 +308,40 @@ body {
     box-shadow: 0 8px 32px rgba(16, 185, 129, 0.15);
 }
 
+/* Cached Tokens — match action button styling */
 .cached-tokens-display {
     display: none;
+    /* your JS can toggle to flex */
     align-items: center;
     gap: 0.5rem;
-    padding: 0.625rem 1rem;
-    background: rgba(16, 185, 129, 0.15);
-    border: 1px solid rgba(16, 185, 129, 0.3);
-    border-radius: 12px;
+    padding: 0.5rem 0.75rem;
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    border-radius: 10px;
+    /* match buttons */
+    color: #10b981;
     font-size: 0.875rem;
+    font-weight: 600;
     width: fit-content;
-    margin-right: auto;
+    margin-left: auto;
+    /* align to right (fix from margin-right) */
     margin-bottom: 0.5rem;
-    transition: all 0.3s ease;
 }
 
 .cached-tokens-display:hover {
-    background: rgba(16, 185, 129, 0.2);
-    border-color: rgba(16, 185, 129, 0.4);
-    transform: translateY(-1px);
+    background: rgba(16, 185, 129, 0.3);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    transform: translateY(-2px);
 }
 
-.cached-label {
-    color: #10b981;
-    font-weight: 600;
-    letter-spacing: 0.02em;
+/* Bold numeric value */
+.cached-tokens-display .cached-tokens-number,
+.cached-tokens-display strong {
+    font-weight: 700;
 }
-
-.cached-value {
-    color: #34d399;
+/* Bold numeric value */
+.cached-tokens-display .cached-tokens-number,
+.cached-tokens-display strong {
     font-weight: 700;
 }
 
@@ -453,19 +458,16 @@ body {
     0% {
         opacity: 0;
         transform: scale(0.95);
-        box-shadow: 0 0 0 rgba(16, 185, 129, 0);
     }
 
     50% {
         opacity: 1;
         transform: scale(1.05);
-        box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
     }
 
     100% {
         opacity: 1;
         transform: scale(1);
-        box-shadow: 0 0 0 rgba(16, 185, 129, 0);
     }
 }
 
