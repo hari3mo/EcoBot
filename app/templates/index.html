@@ -97,18 +97,21 @@
         </div>
         
         <!-- Cache Card -->
-        <div class="stat-card">
-            <div class="stat-header">
-                <span class="stat-icon">💾</span>
-                <span class="stat-title">Cache</span>
+        <div class="stat-card stat-card-dual">
+            <div class="stat-dual-item">
+                <span class="stat-dual-icon">💬</span>
+                <div class="stat-dual-content">
+                    <div class="stat-dual-value" id="queryCount">0</div>
+                    <div class="stat-dual-label">Queries</div>
+                </div>
             </div>
-            <div class="stat-main">
-                <div class="stat-total" id="queryCount">0</div>
-                <div class="stat-unit">queries</div>
-            </div>
-            <div class="stat-secondary">
-                <span class="stat-secondary-value" id="cachedTokens">0</span>
-                <span class="stat-secondary-label">cached tokens</span>
+            <div class="stat-dual-divider"></div>
+            <div class="stat-dual-item">
+                <span class="stat-dual-icon">💾</span>
+                <div class="stat-dual-content">
+                    <div class="stat-dual-value" id="cachedTokens">0</div>
+                    <div class="stat-dual-label">Cached Tokens</div>
+                </div>
             </div>
         </div>
     </div>
