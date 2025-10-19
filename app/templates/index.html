@@ -29,103 +29,88 @@
 
     <!-- Stats -->
     <div class="stats-section">
+        <!-- Redesigned stat cards with Apple-inspired layout -->
+        
         <!-- Energy Card -->
         <div class="stat-card">
-            <div class="stat-title">⚡ Energy
-                <div class="stat-title-right">TOTAL</div>
+            <div class="stat-header">
+                <span class="stat-icon">⚡</span>
+                <span class="stat-title">Energy</span>
             </div>
-            <div class="stat-values">
-                <div class="stat-value-group marginal">
-                    <div class="stat-number stat-number-small" id="marginalEnergy">0<span class="stat-unit"></span></div>
-                    <div class="stat-label">Wh</div>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat-value-group total">
-                    <div class="stat-number stat-number-small" id="totalEnergy">0<span class="stat-unit">Wh</span></div>
-                    <div class="stat-label"></div>
-                </div>
+            <div class="stat-main">
+                <div class="stat-total" id="totalEnergy">0</div>
+                <div class="stat-unit">Wh</div>
             </div>
+            <div class="stat-increment" id="marginalEnergy">+0</div>
         </div>
 
         <!-- Water Card -->
         <div class="stat-card">
-            <div class="stat-title">💧 Water</div>
-            <div class="stat-values">
-                <div class="stat-value-group marginal">
-                    <div class="stat-number stat-number-small" id="marginalWater">0<span class="stat-unit"></span></div>
-                    <div class="stat-label">mL</div>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat-value-group total">
-                    <div class="stat-number stat-number-small" id="totalWater">0<span class="stat-unit">mL</span></div>
-                    <div class="stat-label"></div>
-                </div>
+            <div class="stat-header">
+                <span class="stat-icon">💧</span>
+                <span class="stat-title">Water</span>
             </div>
+            <div class="stat-main">
+                <div class="stat-total" id="totalWater">0</div>
+                <div class="stat-unit">mL</div>
+            </div>
+            <div class="stat-increment" id="marginalWater">+0</div>
         </div>
 
         <!-- CO2 Card -->
         <div class="stat-card">
-            <div class="stat-title">🌍 Emissions</div>
-            <div class="stat-values">
-                <div class="stat-value-group marginal">
-                    <div class="stat-number stat-number-small" id="marginalCO2">0<span class="stat-unit"></span></div>
-                    <div class="stat-label">g CO₂</div>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat-value-group total">
-                    <div class="stat-number stat-number-small" id="totalCO2">0<span class="stat-unit">g CO₂</span></div>
-                    <div class="stat-label"></div>
-                </div>
+            <div class="stat-header">
+                <span class="stat-icon">🌍</span>
+                <span class="stat-title">Emissions</span>
             </div>
+            <div class="stat-main">
+                <div class="stat-total" id="totalCO2">0</div>
+                <div class="stat-unit">g CO₂</div>
+            </div>
+            <div class="stat-increment" id="marginalCO2">+0</div>
         </div>
 
         <!-- Cost Card -->
         <div class="stat-card">
-            <div class="stat-title">💵 Money</div>
-            <div class="stat-values">
-                <div class="stat-value-group marginal">
-                    <div class="stat-number stat-number-small" id="marginalCost">0.00</div>
-                    <div class="stat-label">USD</div>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat-value-group total">
-                    <div class="stat-number stat-number-small" id="totalCost">$0.00<span class="stat-unit"></span></div>
-                    <div class="stat-label"></div>
-                </div>
+            <div class="stat-header">
+                <span class="stat-icon">💵</span>
+                <span class="stat-title">Cost</span>
             </div>
+            <div class="stat-main">
+                <div class="stat-total" id="totalCost">0.00</div>
+                <div class="stat-unit">USD</div>
+            </div>
+            <div class="stat-increment" id="marginalCost">+0.00</div>
         </div>
 
         <!-- Tokens Card -->
         <div class="stat-card">
-            <div class="stat-title">🪙 Tokens</div>
-            <div class="stat-values">
-                <div class="stat-value-group marginal">
-                    <div class="stat-number stat-number-small" id="marginalTokens">0</div>
-                    <div class="stat-label">Tokens</div>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat-value-group total">
-                    <div class="stat-number stat-number-small" id="totalTokens">0<span class="stat-unit">tokens</span></div>
-                    <div class="stat-label"></div>
-                </div>
+            <div class="stat-header">
+                <span class="stat-icon">🪙</span>
+                <span class="stat-title">Tokens</span>
             </div>
+            <div class="stat-main">
+                <div class="stat-total" id="totalTokens">0</div>
+                <div class="stat-unit">tokens</div>
+            </div>
+            <div class="stat-increment" id="marginalTokens">+0</div>
         </div>
-        <!-- Combined Queries and Marginal Tokens Card -->
+        
+        <!-- Cache Card -->
         <div class="stat-card">
-            <div class="stat-title">💾 Cache</div>
-            <div class="stat-values">
-                <div class="stat-value-group marginal">
-                    <div class="stat-number stat-number-small" id="queryCount">0</div>
-                    <div class="stat-label">Queries</div>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat-value-group total">
-                    <div class="stat-number stat-number-small" id="cachedTokens">0<span class="stat-unit">tokens</span></div>
-                    <div class="stat-label"></div>
-                </div>
+            <div class="stat-header">
+                <span class="stat-icon">💾</span>
+                <span class="stat-title">Cache</span>
+            </div>
+            <div class="stat-main">
+                <div class="stat-total" id="queryCount">0</div>
+                <div class="stat-unit">queries</div>
+            </div>
+            <div class="stat-secondary">
+                <span class="stat-secondary-value" id="cachedTokens">0</span>
+                <span class="stat-secondary-label">cached tokens</span>
             </div>
         </div>
-
     </div>
 </div>
 

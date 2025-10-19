@@ -1,7 +1,7 @@
 const chatMessages = document.getElementById("chatMessages")
 const chatInput = document.getElementById("chatInput")
 const sendButton = document.getElementById("sendButton")
-const marked = window.marked // Declare the marked variable
+const marked = window.marked
 
 function addMessage(content, isUser, tokenData = null) {
   const messageDiv = document.createElement("div")
@@ -74,90 +74,77 @@ function removeLoadingIndicator() {
 function formatMessage(text) {
   return marked.parse(text, {
     breaks: true,
-    gfm: true
+    gfm: true,
   })
 }
 
 function flashTotalStat(elementId) {
   const element = document.getElementById(elementId)
   if (!element) return
-  element.classList.add("increment-flash")
+  element.classList.add("total-flash")
   setTimeout(() => {
-    element.classList.remove("increment-flash")
-  }, 1000)
-}
-
-function flashCachedTokens() {
-  const cachedDisplay = document.getElementById("cachedTokensDisplay")
-  if (!cachedDisplay) return
-  cachedDisplay.classList.add("increment-flash")
-  setTimeout(() => {
-    cachedDisplay.classList.remove("increment-flash")
-  }, 1000)
+    element.classList.remove("total-flash")
+  }, 500)
 }
 
 function updateStats(data) {
-  document.getElementById("queryCount").textContent = data.query_count
-
   const totalEnergy = document.getElementById("totalEnergy")
-  totalEnergy.innerHTML = `${Number.parseFloat(data.total_wh).toFixed(2)}<span class="stat-unit">Wh</span>`
+  totalEnergy.textContent = Number.parseFloat(data.total_wh).toFixed(2)
   flashTotalStat("totalEnergy")
 
   const totalWater = document.getElementById("totalWater")
-  totalWater.innerHTML = `${Number.parseFloat(data.total_ml).toFixed(2)}<span class="stat-unit">mL</span>`
+  totalWater.textContent = Number.parseFloat(data.total_ml).toFixed(2)
   flashTotalStat("totalWater")
 
   const totalCO2 = document.getElementById("totalCO2")
-  totalCO2.innerHTML = `${Number.parseFloat(data.total_co2).toFixed(3)}<span class="stat-unit">g CO₂</span>`
+  totalCO2.textContent = Number.parseFloat(data.total_co2).toFixed(3)
   flashTotalStat("totalCO2")
 
   const totalCost = document.getElementById("totalCost")
-  totalCost.textContent = `$${Number.parseFloat(data.total_usd).toFixed(3)}`
+  totalCost.textContent = Number.parseFloat(data.total_usd).toFixed(4)
   flashTotalStat("totalCost")
 
   const totalTokens = document.getElementById("totalTokens")
-  totalTokens.innerHTML = `${data.total_tokens}<span class="stat-unit">tokens</span>`
+  totalTokens.textContent = data.total_tokens
   flashTotalStat("totalTokens")
 
-  updateIncrement("marginalEnergy", data.inc_wh, "")
-  updateIncrement("marginalWater", data.inc_ml, "")
-  updateIncrement("marginalCO2", data.inc_co2, "")
-  updateIncrement("marginalCost", data.inc_usd, "")
-  updateIncrement("marginalTokens", data.inc_tokens, "")
+  const queryCount = document.getElementById("queryCount")
+  queryCount.textContent = data.query_count
+  flashTotalStat("queryCount")
 
-  // Increment cached tokens display each query
+  updateIncrement("marginalEnergy", data.inc_wh, 2)
+  updateIncrement("marginalWater", data.inc_ml, 2)
+  updateIncrement("marginalCO2", data.inc_co2, 3)
+  updateIncrement("marginalCost", data.inc_usd, 4)
+  updateIncrement("marginalTokens", data.inc_tokens, 0)
+
   const cachedTokensEl = document.getElementById("cachedTokens")
   if (cachedTokensEl) {
-    let currentCached = parseInt(cachedTokensEl.textContent) || 0
-    let increment = Number.parseInt(data.cached_tokens) || 0
-    let newCached = currentCached + increment
-    cachedTokensEl.innerHTML = `${newCached}<span class="stat-unit">tokens</span>`
+    const currentCached = Number.parseInt(cachedTokensEl.textContent) || 0
+    const increment = Number.parseInt(data.cached_tokens) || 0
+    const newCached = currentCached + increment
+    cachedTokensEl.textContent = newCached
     flashTotalStat("cachedTokens")
   }
 }
 
-function updateIncrement(elementId, value, unit = "", prefix = "+") {
+function updateIncrement(elementId, value, decimals = 2) {
   const element = document.getElementById(elementId)
   if (!element) return
 
-  let displayValue = value
-  if (elementId === "marginalTokens") {
+  let displayValue
+  if (decimals === 0) {
     displayValue = Number.parseInt(value)
-  } else if (elementId === "marginalCost") {
-    displayValue = Number.parseFloat(value).toFixed(4)
-    displayValue = `${displayValue}`
-  } else if (elementId === "marginalCO2") {
-    displayValue = Number.parseFloat(value).toFixed(3)
   } else {
-    displayValue = Number.parseFloat(value).toFixed(2)
+    displayValue = Number.parseFloat(value).toFixed(decimals)
   }
 
-  element.innerHTML = `${prefix}${displayValue}<span class="stat-unit">${unit}</span>`
+  element.textContent = `+${displayValue}`
   element.classList.add("increment-flash")
 
   setTimeout(() => {
     element.classList.remove("increment-flash")
-  }, 1000)
+  }, 600)
 }
 
 async function sendMessage() {
@@ -167,7 +154,7 @@ async function sendMessage() {
   chatInput.disabled = true
   sendButton.disabled = true
 
-  const userMsgEl = addMessage(message, true) // keep a handle to the user bubble
+  const userMsgEl = addMessage(message, true)
   chatInput.value = ""
 
   addLoadingIndicator()
@@ -193,12 +180,8 @@ async function sendMessage() {
         window.location.href = data.redirect
       }, 1000)
     } else {
-      // ⬇️ under bot bubble
       addMessage(data.response_text, false, { output_tokens: data.output_tokens })
-
-      // ⬆️ under the existing user bubble
       attachTokenBadge(userMsgEl, "in", data.input_tokens)
-
       updateStats(data)
     }
   } catch (error) {
@@ -210,6 +193,6 @@ async function sendMessage() {
     chatInput.disabled = false
     sendButton.disabled = false
     chatInput.focus()
-    chatMessages.scrollTop = chatMessages.scrollHeight // Ensure scroll after response
+    chatMessages.scrollTop = chatMessages.scrollHeight
   }
 }
