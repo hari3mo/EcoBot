@@ -3,6 +3,8 @@ const chatInput = document.getElementById("chatInput")
 const sendButton = document.getElementById("sendButton")
 const marked = window.marked
 
+let firstQuerySent = false
+
 function addMessage(content, isUser, tokenData = null) {
   const messageDiv = document.createElement("div")
   messageDiv.className = `message ${isUser ? "user-message" : "bot-message"}`
@@ -87,7 +89,19 @@ function flashTotalStat(elementId) {
   }, 500)
 }
 
+function showMarginalStats() {
+  if (!firstQuerySent) {
+    const incrementElements = document.querySelectorAll(".stat-increment")
+    incrementElements.forEach((el) => {
+      el.classList.add("visible")
+    })
+    firstQuerySent = true
+  }
+}
+
 function updateStats(data) {
+  showMarginalStats()
+
   const totalEnergy = document.getElementById("totalEnergy")
   totalEnergy.textContent = Number.parseFloat(data.total_wh).toFixed(2)
   flashTotalStat("totalEnergy")

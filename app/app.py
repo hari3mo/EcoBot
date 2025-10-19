@@ -406,7 +406,8 @@ def dashboard():
     }
 
     prompts_simple_df = prompts_df[['id', 'prompt']]
-    logs_recent_df = logs_df.sort_values(by='datetime', ascending=False).head(10)
+    # logs_recent_df = logs_df.sort_values(by='datetime', ascending=False).head(10)
+    logs_recent_df = logs_prod.sort_values(by='datetime', ascending=False).head(10)
     
     recent_activity_df = pd.merge(logs_recent_df, prompts_simple_df, on='id', how='left')
     recent_activity_df = recent_activity_df[['datetime', 'prompt', 'wh', 'ml', 'g_co2', 'tokens', 'usd_in', 'usd_cache', 'usd_out']]

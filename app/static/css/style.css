@@ -37,16 +37,16 @@ body {
 }
 
 /* ============================================
-   COURSE HEADER
+   COURSE HEADER - Apple-inspired refinement
    ============================================ */
 
 .course-header {
-    padding: 1.25rem 2rem;
-    background: rgba(16, 185, 129, 0.08);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    padding: 1rem 2rem;
+    background: rgba(16, 185, 129, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 1.5rem;
     width: 100%;
     flex-shrink: 0;
@@ -55,7 +55,6 @@ body {
 .course-left {
     display: inline-flex;
     align-items: center;
-    justify-self: start;
     gap: 0.75rem;
 }
 
@@ -63,25 +62,74 @@ body {
     font-size: 1.25rem;
     font-weight: 600;
     letter-spacing: -0.02em;
-    color: #10b981;
 }
 
 .course-title {
-    font-size: 1.125rem;
-    font-weight: 600;
+    font-size: 1rem;
+    font-weight: 500;
     color: #d1d5db;
-    justify-self: center;
     text-align: center;
     margin: 0;
     line-height: 1.4;
     letter-spacing: -0.01em;
+    flex: 1;
 }
 
+/* Redesigned action buttons with icon-first approach */
 .course-actions {
     display: flex;
-    gap: 0.625rem;
-    justify-self: end;
-    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.action-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    color: #d1d5db;
+    font-size: 1.125rem;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.action-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(16, 185, 129, 0.3);
+    transform: translateY(-1px);
+}
+
+.action-button:active {
+    transform: translateY(0);
+}
+
+/* Tooltip for icon buttons */
+.action-button::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: -32px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.9);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.action-button:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
 }
 
 /* ============================================
@@ -206,6 +254,7 @@ body {
 .chat-input-wrapper {
     display: flex;
     gap: 0.75rem;
+    align-items: center;
 }
 
 .chat-input {
@@ -230,30 +279,35 @@ body {
    BUTTONS
    ============================================ */
 
+/* Redesigned send button as icon-only with iOS style */
 .send-button {
-    padding: 0.875rem 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     border: none;
-    border-radius: 12px;
+    border-radius: 50%;
     color: white;
-    font-weight: 600;
-    font-size: 0.9375rem;
+    font-size: 1.125rem;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    flex-shrink: 0;
 }
 
 .send-button:hover:not(:disabled) {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
 }
 
 .send-button:active:not(:disabled) {
-    transform: translateY(0);
+    transform: translateY(0) scale(0.98);
 }
 
 .send-button:disabled {
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: not-allowed;
 }
 
@@ -282,18 +336,15 @@ body {
    STATS SECTION - Apple-inspired redesign
    ============================================ */
 
-/* Made stats section use full height without scrolling */
 .stats-section {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
     padding: 0.2rem 0 0 0;
-    /* Added top padding to prevent hover cutoff */
     height: 100%;
     overflow: hidden;
 }
 
-/* Reduced padding and spacing to fit all 6 cards without scrolling */
 .stat-card {
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(20px);
@@ -309,23 +360,18 @@ body {
     min-height: 0;
 }
 
-/* Added Apple-style hover effect with lift and glow */
 .stat-card:hover {
     transform: translateY(-2px);
-    /* Reduced from -4px to -2px to prevent cutoff */
     border-color: rgba(16, 185, 129, 0.3);
     box-shadow: 0 1px 32px rgba(16, 185, 129, 0.15);
 }
 
-/* Make last stat card match chat input container height */
 .stat-card:last-child {
     flex: 0 0 auto;
     height: 72px;
-    /* Matches chat-input-container padding + input height */
     min-height: 72px;
 }
 
-/* New dual-item layout for cache card */
 .stat-card-dual {
     flex-direction: row;
     align-items: center;
@@ -363,11 +409,11 @@ body {
 }
 
 .stat-dual-label {
-    font-size: 0.6875rem;
-    font-weight: 600;
-    color: #9ca3af;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #6b7280;
+    letter-spacing: 0.01em;
+    text-transform: none;
 }
 
 .stat-dual-divider {
@@ -377,14 +423,12 @@ body {
     flex-shrink: 0;
 }
 
-/* New header layout with icon and title */
 .stat-header {
     display: flex;
     align-items: center;
     gap: 0.625rem;
 }
 
-/* Slightly smaller icon for more compact layout */
 .stat-icon {
     font-size: 1.125rem;
     line-height: 1;
@@ -399,7 +443,6 @@ body {
     letter-spacing: 0.06em;
 }
 
-/* Reduced main number size to fit better */
 .stat-main {
     display: flex;
     align-items: baseline;
@@ -422,7 +465,7 @@ body {
     letter-spacing: 0.01em;
 }
 
-/* More compact increment badge */
+/* Hide marginal stats initially, show after first query */
 .stat-increment {
     font-size: 0.75rem;
     font-weight: 600;
@@ -433,9 +476,17 @@ body {
     width: fit-content;
     font-variant-numeric: tabular-nums;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    transform: scale(0.9);
+    pointer-events: none;
 }
 
-/* Tighter secondary info spacing */
+.stat-increment.visible {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}
+
 .stat-secondary {
     display: flex;
     align-items: baseline;
@@ -486,7 +537,6 @@ body {
     }
 }
 
-/* Refined flash animation for increments */
 @keyframes flash {
     0% {
         background: rgba(16, 185, 129, 0.25);
@@ -503,7 +553,6 @@ body {
     animation: flash 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Flash animation for total values */
 @keyframes totalFlash {
     0% {
         color: #10b981;
@@ -550,7 +599,8 @@ body {
     }
 
     .course-header {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+        align-items: center;
         text-align: center;
     }
 
@@ -560,7 +610,6 @@ body {
     }
 }
 
-/* Lists inside bot/user messages */
 .message-content ul,
 .message-content ol {
     margin: 0.5rem 0 0.75rem;

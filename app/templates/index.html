@@ -13,7 +13,7 @@
             </div>
         </div>
         
-        <!-- Input -->
+        <!-- Updated input with icon-based send button -->
         <div class="chat-input-container">
             <div class="chat-input-wrapper">
                 <input 
@@ -22,15 +22,15 @@
                     id="chatInput" 
                     placeholder="Type your message..." 
                     onkeypress="if(event.key === 'Enter') sendMessage()">
-                <button class="send-button" onclick="sendMessage()" id="sendButton">Send</button>
+                <button class="send-button" onclick="sendMessage()" id="sendButton" aria-label="Send message">
+                    ↑
+                </button>
             </div>
         </div>
     </div>
 
     <!-- Stats -->
     <div class="stats-section">
-        <!-- Redesigned stat cards with Apple-inspired layout -->
-        
         <!-- Energy Card -->
         <div class="stat-card">
             <div class="stat-header">

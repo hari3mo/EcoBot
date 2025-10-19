@@ -9,22 +9,26 @@
 </head>
 <body>
     <div class="page-container">
-        <!--<a href="/" class="back-button">← Back to Chat</a>-->
-         <div class="course-header">
-        <div class="course-left">
-            <span class="ecobot-title">🌿 EcoBot 5</span>
-            {% if session['admin'] %}
-            <button class="admin-button">Admin</button>
-            {% endif %}
-        </div>
+        <!-- Redesigned header with icon-based actions -->
+        <div class="course-header">
+            <div class="course-left">
+                <span class="ecobot-title">🌿 EcoBot 5</span>
+                {% if session['admin'] %}
+                <button class="admin-button">Admin</button>
+                {% endif %}
+            </div>
 
-        <h1 class="course-title">SYN 100 - Artificial Intelligence: Climate Applications & Ethical Implications</h1>
+            <h1 class="course-title">SYN 100 - Artificial Intelligence: Climate Applications & Ethical Implications</h1>
 
-        <div class="course-actions">
-            <button class="dashboard-link-button" onclick="window.location.href='{{ url_for('dashboard') }}'">📊 Dashboard</button>
-            <button class="new-chat-button" onclick="location.reload()">🔄 New Chat</button>
+            <div class="course-actions">
+                <button class="action-button" onclick="window.location.href='{{ url_for('dashboard') }}'" data-tooltip="Dashboard">
+                    📊
+                </button>
+                <button class="action-button" onclick="location.reload()" data-tooltip="New Chat">
+                    🔄
+                </button>
+            </div>
         </div>
-    </div>
         {% block content %}
         {% endblock %}
     </div>
