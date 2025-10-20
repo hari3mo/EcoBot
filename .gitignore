@@ -11,6 +11,7 @@ credentials.json
 .vercel
 .vscode/
 notebooks/*.ipynb
+logs/prompts*.csv
 chatbot.py
 docs/reading*.txt
 logs/*-dev.csv
