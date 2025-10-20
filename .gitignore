@@ -15,3 +15,4 @@ logs/prompts*.csv
 chatbot.py
 docs/reading*.txt
 **/*-old*
+.gitignore
