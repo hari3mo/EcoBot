@@ -97,22 +97,31 @@
         </div>
         
         <!-- Cache Card -->
-        <div class="stat-card stat-card-dual">
-            <div class="stat-dual-item">
-                <span class="stat-dual-icon">💬</span>
-                <div class="stat-dual-content">
-                    <div class="stat-dual-value" id="queryCount">0</div>
-                    <div class="stat-dual-label">Queries</div>
+        <!-- Split dual card into two separate cards on same row -->
+        <div class="stat-row">
+            <!-- Queries Card -->
+            <div class="stat-card stat-card-compact">
+                <div class="stat-header">
+                    <span class="stat-icon">💬</span>
+                    <span class="stat-title">Queries</span>
+                </div>
+                <div class="stat-main">
+                    <div class="stat-total" id="queryCount">0</div>
                 </div>
             </div>
-            <div class="stat-dual-divider"></div>
-            <div class="stat-dual-item">
-                <span class="stat-dual-icon">💾</span>
-                <div class="stat-dual-content">
-                    <div class="stat-dual-value" id="cachedTokens">0</div>
-                    <div class="stat-dual-label">Cached Tokens</div>
+            
+            <!-- Cached Tokens Card -->
+            <div class="stat-card stat-card-compact">
+                <div class="stat-header">
+                    <span class="stat-icon">💾</span>
+                    <span class="stat-title">Cache</span>
+                </div>
+                <div class="stat-main">
+                    <div class="stat-total" id="cachedTokens">0</div>
+                    <div class="stat-unit">tokens</div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>

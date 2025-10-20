@@ -126,23 +126,14 @@ function updateStats(data) {
   queryCount.textContent = data.query_count
   flashTotalStat("queryCount")
 
-  updateIncrement("marginalEnergy", data.inc_wh, 2)
-  updateIncrement("marginalWater", data.inc_ml, 2)
-  updateIncrement("marginalCO2", data.inc_co2, 3)
-  updateIncrement("marginalCost", data.inc_usd, 4)
-  updateIncrement("marginalTokens", data.inc_tokens, 0)
-
-  const cachedTokensEl = document.getElementById("cachedTokens")
-  if (cachedTokensEl) {
-    const currentCached = Number.parseInt(cachedTokensEl.textContent) || 0
-    const increment = Number.parseInt(data.cached_tokens) || 0
-    const newCached = currentCached + increment
-    cachedTokensEl.textContent = newCached
-    flashTotalStat("cachedTokens")
-  }
+  updateIncrement("marginalEnergy", data.inc_wh, 2, " Wh")
+  updateIncrement("marginalWater", data.inc_ml, 2, " mL")
+  updateIncrement("marginalCO2", data.inc_co2, 3, " g CO₂")
+  updateIncrement("marginalCost", data.inc_usd, 4, "", "$")
+  updateIncrement("marginalTokens", data.inc_tokens, 0, " tokens")
 }
 
-function updateIncrement(elementId, value, decimals = 2) {
+function updateIncrement(elementId, value, decimals = 2, unit = "", prefix = "") {
   const element = document.getElementById(elementId)
   if (!element) return
 
@@ -153,7 +144,7 @@ function updateIncrement(elementId, value, decimals = 2) {
     displayValue = Number.parseFloat(value).toFixed(decimals)
   }
 
-  element.textContent = `+${displayValue}`
+  element.textContent = `+${prefix}${displayValue}${unit}`
   element.classList.add("increment-flash")
 
   setTimeout(() => {

@@ -9,7 +9,7 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    font-family: -apple-system, BlinkMacMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial,
         sans-serif;
     background: linear-gradient(135deg, #0a0f1e 0%, #1a1f2e 100%);
     color: #e5e7eb;
@@ -199,7 +199,6 @@ body {
 .bot-message .message-content {
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.06);
-    color: #e5e7eb;
 }
 
 /* Token Info Badges */
@@ -218,7 +217,8 @@ body {
     border-radius: 8px;
     font-size: 0.6875rem;
     font-weight: 600;
-    color: #10b981;
+    /* color: #10b981; */
+    color: #e5e7eb;
 }
 
 /* Loading Animation */
@@ -366,62 +366,23 @@ body {
     box-shadow: 0 1px 32px rgba(16, 185, 129, 0.15);
 }
 
-.stat-card:last-child {
-    flex: 0 0 auto;
-    height: 72px;
-    min-height: 72px;
-}
+/* Removed last-child specific sizing since we now have a row wrapper */
 
-.stat-card-dual {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.875rem 1.25rem;
-    gap: 1rem;
-}
-
-.stat-dual-item {
+/* Added stat-row container for side-by-side cards */
+.stat-row {
     display: flex;
-    align-items: center;
     gap: 0.75rem;
+    flex: 0 0 auto;
+}
+
+/* Compact card variant for queries and cached tokens */
+.stat-card-compact {
     flex: 1;
+    min-height: 0;
+    height: auto;
 }
 
-.stat-dual-icon {
-    font-size: 1.5rem;
-    line-height: 1;
-    filter: grayscale(0.2);
-}
-
-.stat-dual-content {
-    display: flex;
-    flex-direction: column;
-    gap: 0.125rem;
-}
-
-.stat-dual-value {
-    font-size: 1.375rem;
-    font-weight: 700;
-    color: #f9fafb;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    font-variant-numeric: tabular-nums;
-}
-
-.stat-dual-label {
-    font-size: 0.8125rem;
-    font-weight: 500;
-    color: #6b7280;
-    letter-spacing: 0.01em;
-    text-transform: none;
-}
-
-.stat-dual-divider {
-    width: 1px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.08);
-    flex-shrink: 0;
-}
+/* Removed dual card styles - no longer needed */
 
 .stat-header {
     display: flex;
