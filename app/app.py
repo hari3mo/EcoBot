@@ -53,6 +53,7 @@ def index():
     session['total_CO2'] = 0
     session['total_usd'] = 0
     session['total_tokens'] = 0
+    session['cached_tokens'] = 0
     session['chat_index'] = 0
     session['admin'] = session.get('admin', False)
     return render_template('index.html')
@@ -170,6 +171,9 @@ def query(prompt):
     output_tokenizer = len(enc.encode(output_text))
     input_tokens = usage.output_tokens + input_tokenizer
     cached_tokens = usage.input_tokens - input_tokenizer
+    current_cache = max(usage.input_tokens - input_tokenizer,
+                        session['cached_tokens'] + input_tokenizer\
+                            + usage.output_tokens)
 
     wh_cost = input_tokens * WH_RATE
     ml_cost = input_tokens * ML_RATE
@@ -280,7 +284,7 @@ def query(prompt):
         "inc_tokens": query_tokens,
         "input_tokens": input_tokenizer,
         "output_tokens": usage.output_tokens,
-        "cached_tokens": cached_tokens,
+        "cached_tokens": current_cache,
         "total_tokens_query": query_tokens
     }
 
