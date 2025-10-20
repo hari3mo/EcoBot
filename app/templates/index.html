@@ -17,18 +17,18 @@
         <div class="chat-input-container">
             <div class="chat-input-wrapper">
                 <input 
-                    type="text" 
-                    class="chat-input" 
-                    id="chatInput" 
-                    placeholder="Type your message..." 
-                    onkeypress="if(event.key === 'Enter') sendMessage()">
+                type="text" 
+                class="chat-input" 
+                id="chatInput" 
+                placeholder="Type your message..." 
+                onkeypress="if(event.key === 'Enter') sendMessage()">
                 <button class="send-button" onclick="sendMessage()" id="sendButton" aria-label="Send message">
                     ↑
                 </button>
             </div>
         </div>
     </div>
-
+    
     <!-- Stats -->
     <div class="stats-section">
         <!-- Energy Card -->
@@ -38,11 +38,13 @@
                 <span class="stat-title">Energy</span>
             </div>
             <br>
-            <div class="stat-main">
-                <div class="stat-total" id="totalEnergy">0</div>
-                <div class="stat-unit">Wh</div>
+            <div class="stat-row">
+                <div class="stat-main">
+                    <div class="stat-total" id="totalEnergy">0</div>
+                    <div class="stat-unit">Wh</div>
+                </div>
+                <div class="stat-increment" id="marginalEnergy">+0</div>
             </div>
-            <div class="stat-increment" id="marginalEnergy">+0</div>
         </div>
 
         <!-- Water Card -->
@@ -52,11 +54,13 @@
                 <span class="stat-title">Water</span>
             </div>
             <br>
-            <div class="stat-main">
-                <div class="stat-total" id="totalWater">0</div>
-                <div class="stat-unit">mL</div>
+            <div class="stat-row">
+                <div class="stat-main">
+                    <div class="stat-total" id="totalWater">0</div>
+                    <div class="stat-unit">mL</div>
+                </div>
+                <div class="stat-increment" id="marginalWater">+0</div>
             </div>
-            <div class="stat-increment" id="marginalWater">+0</div>
         </div>
 
         <!-- CO2 Card -->
@@ -66,11 +70,13 @@
                 <span class="stat-title">Emissions</span>
             </div>
             <br>
-            <div class="stat-main">
-                <div class="stat-total" id="totalCO2">0</div>
-                <div class="stat-unit">g CO₂</div>
+            <div class="stat-row">
+                <div class="stat-main">
+                    <div class="stat-total" id="totalCO2">0</div>
+                    <div class="stat-unit">g CO₂</div>
+                </div>
+                <div class="stat-increment" id="marginalCO2">+0</div>
             </div>
-            <div class="stat-increment" id="marginalCO2">+0</div>
         </div>
 
         <!-- Cost Card -->
@@ -80,11 +86,13 @@
                 <span class="stat-title">Cost</span>
             </div>
             <br>
-            <div class="stat-main">
-                <div class="stat-total" id="totalCost">0.00</div>
-                <div class="stat-unit">USD</div>
+            <div class="stat-row">
+                <div class="stat-main">
+                    <div class="stat-total" id="totalCost">0.00</div>
+                    <div class="stat-unit">USD</div>
+                </div>
+                <div class="stat-increment" id="marginalCost">+0.00</div>
             </div>
-            <div class="stat-increment" id="marginalCost">+0.00</div>
         </div>
 
         <!-- Tokens Card -->
@@ -94,38 +102,46 @@
                 <span class="stat-title">Tokens</span>
             </div>
             <br>
-            <div class="stat-main">
-                <div class="stat-total" id="totalTokens">0</div>
-                <div class="stat-unit">tokens</div>
+            <div class="stat-row">
+                <div class="stat-main">
+                    <div class="stat-total" id="totalTokens">0</div>
+                    <div class="stat-unit">tokens</div>
+                </div>
+                <div class="stat-increment" id="marginalTokens">+0</div>
             </div>
-            <div class="stat-increment" id="marginalTokens">+0</div>
         </div>
         
-        <div class="stat-row">
-            <!-- Queries Card -->
-            <div class="stat-card stat-card-compact" id="queriesCard">
-                <div class="stat-header">
-                    <span class="stat-icon">💬</span>
-                    <span class="stat-title">Queries</span>
-                </div>
-                <div class="stat-main">
-                    <div class="stat-total" id="queryCount">0</div>
-                </div>
+        <!-- Cached Tokens Card -->
+        <div class="stat-card" id="cacheCard">
+            <div class="stat-header">
+                <span class="stat-icon">💾</span>
+                <span class="stat-title">Cache</span>
             </div>
-            <!-- Cached Tokens Card -->
-            <div class="stat-card stat-card-compact" id="cacheCard">
-                <div class="stat-header">
-                    <span class="stat-icon">💾</span>
-                    <span class="stat-title">Cache</span>
-                </div>
+            <br>
+            <div class="stat-row">
                 <div class="stat-main">
                     <div class="stat-total" id="cachedTokens">0</div>
                     <div class="stat-unit">tokens</div>
                 </div>
+                <div class="stat-increment" id="marginalCache">+0</div>
+            </div>
+        </div>
+
+        <!-- Queries Card -->
+        <div class="stat-card" id="queriesCard">
+            <div class="stat-header">
+                <span class="stat-icon">💬</span>
+                <span class="stat-title">Query</span>
+            </div>
+            <br>
+            <div class="stat-row">
+                <div class="stat-main">
+                    <div class="stat-unit">#</div>
+                    <div class="stat-total" id="queryCount">0</div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-{% endblock %}
+    
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    {% endblock %}

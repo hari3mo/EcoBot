@@ -137,6 +137,7 @@ function updateStats(data) {
   updateIncrement("marginalCO2", data.inc_co2, 3, " g CO₂")
   updateIncrement("marginalCost", data.inc_usd, 4, "", "$")
   updateIncrement("marginalTokens", data.inc_tokens, 0, " tokens")
+  updateIncrement("marginalCache", data.inc_tokens_cache, 0, " tokens")
 }
 
 function updateIncrement(elementId, value, decimals = 2, unit = "", prefix = "") {

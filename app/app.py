@@ -175,8 +175,12 @@ def query(prompt):
                         session['cached_tokens'] + input_tokenizer
                             + usage.output_tokens)
     
-    logging.info(f'Cache 1: {usage.input_tokens - input_tokenizer}')
-    logging.info(f'Cache 2: {session["cached_tokens"] + input_tokenizer + usage.output_tokens}')
+    inc_cache = current_cache - session['cached_tokens']
+    
+    logging.info(f'Cache (Before): {cached_tokens}')
+    logging.info(f'Cache (After): {session["cached_tokens"] + input_tokenizer + usage.output_tokens}')
+    logging.info(f'~{inc_cache} tokens added to cache.')
+
     session['cached_tokens'] = current_cache
 
     wh_cost = input_tokens * WH_RATE
@@ -286,6 +290,7 @@ def query(prompt):
         "inc_co2": f"{co2_cost:.4f}",
         "inc_usd": f"{usd_cost:.5f}",
         "inc_tokens": query_tokens,
+        "inc_tokens_cache": inc_cache,
         "input_tokens": input_tokenizer,
         "output_tokens": usage.output_tokens,
         "cached_tokens": current_cache,

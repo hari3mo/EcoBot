@@ -30,7 +30,7 @@ body {
     margin: 0 auto;
     padding: 1.25rem;
     display: grid;
-    grid-template-columns: 1fr 320px;
+    grid-template-columns: 1fr 300px;
     gap: 1.25rem;
     height: calc(100vh - 100px);
     flex: 1;
@@ -366,11 +366,13 @@ body {
     box-shadow: 0 1px 32px rgba(16, 185, 129, 0.15);
 }
 
-/* Added stat-row container for side-by-side cards */
 .stat-row {
     display: flex;
     gap: 0.75rem;
-    flex: 0 0 auto;
+    align-items: center;
+    justify-content: space-between;
+    /* push increment to the right */
+    width: 100%;
 }
 
 /* Compact card variant for queries and cached tokens */
@@ -378,15 +380,6 @@ body {
     flex: 0 0 auto;
     min-height: 0;
     height: auto;
-}
-
-.stat-row #cacheCard {
-    flex: 1 1 0%;
-    min-width: 0;
-}
-
-.stat-row #queriesCard {
-    flex: 0 0 auto;
 }
 
 .stat-header {
