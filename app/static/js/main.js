@@ -132,12 +132,17 @@ function updateStats(data) {
     flashTotalStat("cachedTokens")
   }
 
+  const headerCachedTokens = document.getElementById("headerCachedTokens")
+  if (headerCachedTokens) {
+    headerCachedTokens.textContent = `${Number.parseInt(data.cached_tokens || 0)} cached`
+    // flashTotalStat("headerCachedTokens")
+  }
+
   updateIncrement("marginalEnergy", data.inc_wh, 2, " Wh")
   updateIncrement("marginalWater", data.inc_ml, 2, " mL")
   updateIncrement("marginalCO2", data.inc_co2, 3, " g CO₂")
   updateIncrement("marginalCost", data.inc_usd, 4, "", "$")
   updateIncrement("marginalTokens", data.inc_tokens, 0, " tokens")
-  updateIncrement("marginalCache", data.inc_tokens_cache, 0, " tokens")
 }
 
 function updateIncrement(elementId, value, decimals = 2, unit = "", prefix = "") {

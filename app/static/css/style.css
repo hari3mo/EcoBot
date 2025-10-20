@@ -375,9 +375,16 @@ body {
     width: 100%;
 }
 
+/* Added container for Query and Cache cards to display side-by-side */
+.stat-row-container {
+    display: flex;
+    gap: 0.75rem;
+    flex: 0 0 auto;
+}
+
 /* Compact card variant for queries and cached tokens */
 .stat-card-compact {
-    flex: 0 0 auto;
+    flex: 1;
     min-height: 0;
     height: auto;
 }
@@ -386,6 +393,19 @@ body {
     display: flex;
     align-items: center;
     gap: 0.625rem;
+}
+
+/* Added styling for header badge showing total cached tokens */
+.stat-header-badge {
+    margin-left: auto;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #10b981;
+    padding: 0.3125rem 0.625rem;
+    background: rgba(16, 185, 129, 0.08);
+    border-radius: 8px;
+    font-variant-numeric: tabular-nums;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .stat-icon {
@@ -444,6 +464,14 @@ body {
     opacity: 1;
     transform: scale(1);
     pointer-events: auto;
+}
+
+/* Added container for stacking increments vertically */
+.stat-increments-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-end;
 }
 
 .stat-secondary {
@@ -593,3 +621,14 @@ body {
     margin: 0.25rem 0;
     padding-left: 1.25rem;
 }
+
+.stat-card-compact {
+    flex: 1;
+    min-height: 0;
+    height: auto;
+}
+
+/* .stat-increment {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.08);
+} */
