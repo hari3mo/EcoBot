@@ -126,6 +126,12 @@ function updateStats(data) {
   queryCount.textContent = data.query_count
   flashTotalStat("queryCount")
 
+  const cachedTokensEl = document.getElementById("cachedTokens")
+  if (cachedTokensEl) {
+    cachedTokensEl.textContent = Number.parseInt(data.cached_tokens || 0)
+    flashTotalStat("cachedTokens")
+  }
+
   updateIncrement("marginalEnergy", data.inc_wh, 2, " Wh")
   updateIncrement("marginalWater", data.inc_ml, 2, " mL")
   updateIncrement("marginalCO2", data.inc_co2, 3, " g CO₂")

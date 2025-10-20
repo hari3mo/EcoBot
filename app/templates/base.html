@@ -21,7 +21,7 @@
             <h1 class="course-title">SYN 100 - Artificial Intelligence: Climate Applications & Ethical Implications</h1>
 
             <div class="course-actions">
-                <button class="action-button" onclick="window.location.href='{{ url_for('dashboard') }}'" data-tooltip="Dashboard">
+                <button class="action-button" onclick="window.open('{{ url_for('dashboard') }}', '_blank')" data-tooltip="Dashboard">
                     📊
                 </button>
                 <button class="action-button" onclick="location.reload()" data-tooltip="New Chat">
