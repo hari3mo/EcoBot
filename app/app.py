@@ -324,6 +324,9 @@ def push_sheets():
         logging.info(f"Updated {worksheet_name} in {sheet_name}")
 
 def pull_db():
+    if PROD:
+        logging.error("Pull operation is not allowed in production environment.")
+        return 0
     logs = pd.read_sql_table('logs', con=engine).sort_values(by='datetime', ascending=False)
     logs_dev = pd.read_sql_table('logs-dev', con=engine).sort_values(by='datetime', ascending=False)
     prompts = pd.read_sql_table('prompts', con=engine).sort_values(by='datetime', ascending=False)
