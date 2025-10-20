@@ -14,7 +14,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 
 import logging
-logging.basicConfig(level=logging.ERROR)
+logging.basicConfig(level=logging.INFO)
 
 load_dotenv()
 app = Flask(__name__)
@@ -151,7 +151,7 @@ def prompts_dev():
     return render_template("prompts_dev.html", prompts_dev=prompts_dev)
 
 def query(prompt):
-    logging.info(f'\nPrompt received: {prompt}\n')
+    logging.info(f'Prompt received:\n{prompt}')
     db.session.commit()
     current_response_id = session.get('id', None)
     
@@ -171,9 +171,13 @@ def query(prompt):
     output_tokenizer = len(enc.encode(output_text))
     input_tokens = usage.output_tokens + input_tokenizer
     cached_tokens = usage.input_tokens - input_tokenizer
-    current_cache = max(usage.input_tokens - input_tokenizer,
-                        session['cached_tokens'] + input_tokenizer\
+    current_cache = max(cached_tokens,
+                        session['cached_tokens'] + input_tokenizer
                             + usage.output_tokens)
+    
+    logging.info(f'Cache 1: {usage.input_tokens - input_tokenizer}')
+    logging.info(f'Cache 2: {session["cached_tokens"] + input_tokenizer + usage.output_tokens}')
+    session['cached_tokens'] = current_cache
 
     wh_cost = input_tokens * WH_RATE
     ml_cost = input_tokens * ML_RATE
