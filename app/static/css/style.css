@@ -366,8 +366,6 @@ body {
     box-shadow: 0 1px 32px rgba(16, 185, 129, 0.15);
 }
 
-/* Removed last-child specific sizing since we now have a row wrapper */
-
 /* Added stat-row container for side-by-side cards */
 .stat-row {
     display: flex;
@@ -377,12 +375,19 @@ body {
 
 /* Compact card variant for queries and cached tokens */
 .stat-card-compact {
-    flex: 1;
+    flex: 0 0 auto;
     min-height: 0;
     height: auto;
 }
 
-/* Removed dual card styles - no longer needed */
+.stat-row #cacheCard {
+    flex: 1 1 0%;
+    min-width: 0;
+}
+
+.stat-row #queriesCard {
+    flex: 0 0 auto;
+}
 
 .stat-header {
     display: flex;
