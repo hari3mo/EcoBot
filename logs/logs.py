@@ -29,7 +29,7 @@ print("Successfully pulled from database.")
 
 print("--------------------------------")
 
-print("Staging changes to logs.csv & logs-dev.csv...")
+print("Staging changes logs.csv & logs-dev.csv...")
 subprocess.run(["git", "add", "logs/logs-dev.csv", "logs/logs.csv"])
 
 print("Committing changes...")
