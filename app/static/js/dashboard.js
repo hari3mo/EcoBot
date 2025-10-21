@@ -54,10 +54,19 @@ $(document).ready(function () {
                         yAxisID: 'y-impact'
                     },
                     {
-                        label: 'CO2 (g)',
-                        data: data.g_co2,
+                        label: 'Water (mL)',
+                        data: chartData.timeseries.ml,
                         borderColor: 'rgba(75, 192, 192, 1)',
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        tension: 0.4,
+                        fill: true,
+                        yAxisID: 'y1'
+                    },
+                    {
+                        label: 'CO2 (g)',
+                        data: data.g_co2,
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.08)',
                         fill: true,
                         yAxisID: 'y-impact'
                     }

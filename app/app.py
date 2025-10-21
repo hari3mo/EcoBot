@@ -46,6 +46,7 @@ def not_found(e):
 
 @app.route("/")
 def index():
+    session['prod'] = PROD
     session['id'] = None
     session['previous_id'] = None
     session['total_WH'] = 0
@@ -69,6 +70,7 @@ def chat():
     
     elif prompt in ["exit", "quit"]:
         session['admin'] = False
+
         return jsonify({'redirect': url_for('index')})
     
     if session.get('admin'):
@@ -327,6 +329,7 @@ def pull_db():
     if PROD:
         logging.error("Pull operation is not allowed in production environment.")
         return 0
+    
     logs = pd.read_sql_table('logs', con=engine).sort_values(by='datetime', ascending=False)
     logs_dev = pd.read_sql_table('logs-dev', con=engine).sort_values(by='datetime', ascending=False)
     prompts = pd.read_sql_table('prompts', con=engine).sort_values(by='datetime', ascending=False)
@@ -391,6 +394,7 @@ def dashboard():
     daily_stats = logs_df.groupby('date').agg(
         wh=('wh', 'sum'),
         g_co2=('g_co2', 'sum'),
+        ml=('ml', 'sum'),
         queries=('id', 'count')
     ).reset_index()
     
@@ -400,6 +404,7 @@ def dashboard():
         'labels': daily_stats['date'].tolist(),
         'queries': daily_stats['queries'].tolist(),
         'wh': daily_stats['wh'].tolist(),
+        'ml': daily_stats['ml'].tolist(),
         'g_co2': daily_stats['g_co2'].tolist()
     }
 
@@ -421,20 +426,23 @@ def dashboard():
         'data': [int(total_input_tokens), int(total_cached_tokens), int(total_output_tokens)]
     }
 
-    prompts_simple_df = prompts_df[['id', 'prompt']]
-    # logs_recent_df = logs_df.sort_values(by='datetime', ascending=False).head(10)
-    logs_recent_df = logs_prod.sort_values(by='datetime', ascending=False).head(10)
-    
-    recent_activity_df = pd.merge(logs_recent_df, prompts_simple_df, on='id', how='left')
-    recent_activity_df = recent_activity_df[['datetime', 'prompt', 'wh', 'ml', 'g_co2', 'tokens', 'usd_in', 'usd_cache', 'usd_out']]
-    recent_activity_df['prompt'] = recent_activity_df['prompt'].apply(lambda x: x if len(x) <= 50 else x[:50] + '...')
-    recent_logs = recent_activity_df.to_dict('records')
-    
-    for log in recent_logs:
-        log['datetime'] = log['datetime'].strftime('%Y-%m-%d %H:%M')
-        log['ml'] = f"{log['ml']:.3f}"
-        log['wh'] = f"{log['wh']:.3f}"
-        log['g_co2'] = f"{log['g_co2']:.3f}"
+    recent_logs = {}
+    if session['admin']:
+        logs = logs_prod if PROD else logs_dev
+        prompts_simple_df = prompts_df[['id', 'prompt']]
+        # logs_recent_df = logs_df.sort_values(by='datetime', ascending=False).head(10)
+        logs_recent_df = logs.sort_values(by='datetime', ascending=False).head(10)
+        
+        recent_activity_df = pd.merge(logs_recent_df, prompts_simple_df, on='id', how='left')
+        recent_activity_df = recent_activity_df[['datetime', 'prompt', 'wh', 'ml', 'g_co2', 'tokens', 'usd_in', 'usd_cache', 'usd_out']]
+        recent_activity_df['prompt'] = recent_activity_df['prompt'].apply(lambda x: x if len(x) <= 50 else x[:50] + '...')
+        recent_logs = recent_activity_df.to_dict('records')
+        
+        for log in recent_logs:
+            log['datetime'] = log['datetime'].strftime('%Y-%m-%d %H:%M')
+            log['ml'] = f"{log['ml']:.3f}"
+            log['wh'] = f"{log['wh']:.3f}"
+            log['g_co2'] = f"{log['g_co2']:.3f}"
 
     chart_data = {
         'timeseries': timeseries_data,

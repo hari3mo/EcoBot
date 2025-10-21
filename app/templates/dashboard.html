@@ -113,10 +113,10 @@
                 </div>
             </div>
         </div>
-
+        {% if recent_logs %}
         <!-- Recent Activity Table -->
         <div class="recent-activity">
-            <h2 class="activity-title">Recent Activity</h2>
+            <h2 class="activity-title">Recent Activity - {{ 'Production' if session['prod'] else 'Development' }}</h2>
             <table class="activity-table">
                 <thead>
                     <tr>
@@ -142,6 +142,7 @@
                 </tbody>
             </table>
         </div>
+        {% endif %}
 
         {% endif %}
     </div>
@@ -174,6 +175,15 @@
                     {
                         label: 'Energy (Wh)',
                         data: chartData.timeseries.wh,
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        yAxisID: 'y1'
+                    },
+                    {
+                        label: 'Water (mL)',
+                        data: chartData.timeseries.ml,
                         borderColor: '#3b82f6',
                         backgroundColor: 'rgba(59, 130, 246, 0.1)',
                         tension: 0.4,
@@ -183,8 +193,8 @@
                     {
                         label: 'CO₂ (g)',
                         data: chartData.timeseries.g_co2,
-                        borderColor: '#f59e0b',
-                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.08)',
                         tension: 0.4,
                         fill: true,
                         yAxisID: 'y1'
