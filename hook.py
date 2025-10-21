@@ -3,13 +3,11 @@ from dotenv import load_dotenv
 import pandas as pd
 import os
 import logging
-logging.basicConfig(level=logging.INFO)
 
 load_dotenv()
 engine = create_engine(os.getenv('MYSQL_URI')).connect()
 
 print("Pulling latest from database..")
-logging.info("Connecting to database at %s", os.getenv('MYSQL_URI'))
 
 logs = pd.read_sql_table('logs', con=engine).sort_values(by='datetime', ascending=False)
 logs_dev = pd.read_sql_table('logs-dev', con=engine).sort_values(by='datetime', ascending=False)
