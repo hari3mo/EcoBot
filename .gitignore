@@ -11,7 +11,6 @@ credentials.json
 .vercel
 .vscode/
 notebooks/*.ipynb
-!notebooks/pull-push.ipynb
 logs/prompts*.csv
 chatbot.py
 docs/reading*.txt
