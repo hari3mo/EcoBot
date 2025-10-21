@@ -17,3 +17,4 @@ chatbot.py
 docs/reading*.txt
 **/*-old*
 .gitignore
+.pre-commit-config.yaml
