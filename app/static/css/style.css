@@ -448,9 +448,10 @@ body {
 .stat-increment {
     font-size: 0.75rem;
     font-weight: 600;
-    color: #10b981;
+    /* Changed color from green to red to indicate cost/negative impact */
+    color: #ef4444;
     padding: 0.3125rem 0.625rem;
-    background: rgba(16, 185, 129, 0.08);
+    background: rgba(239, 68, 68, 0.08);
     border-radius: 8px;
     width: fit-content;
     font-variant-numeric: tabular-nums;
@@ -526,12 +527,13 @@ body {
 
 @keyframes flash {
     0% {
-        background: rgba(16, 185, 129, 0.25);
+        /* Updated flash animation to use red instead of green */
+        background: rgba(239, 68, 68, 0.25);
         transform: scale(1.02);
     }
 
     100% {
-        background: rgba(16, 185, 129, 0.08);
+        background: rgba(239, 68, 68, 0.08);
         transform: scale(1);
     }
 }
@@ -627,8 +629,3 @@ body {
     min-height: 0;
     height: auto;
 }
-
-/* .stat-increment {
-    color: #ef4444;
-    background: rgba(239, 68, 68, 0.08);
-} */
