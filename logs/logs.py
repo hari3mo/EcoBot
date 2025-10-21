@@ -20,12 +20,20 @@ logs_dev = pd.read_sql_table('logs-dev', con=engine).sort_values(by='datetime', 
 prompts = pd.read_sql_table('prompts', con=engine).sort_values(by='datetime', ascending=False)
 prompts_dev = pd.read_sql_table('prompts-dev', con=engine).sort_values(by='datetime', ascending=False)
 
-logs.to_csv('logs.csv', index=False)
-logs_dev.to_csv('logs-dev.csv', index=False)
-prompts.to_csv('prompts.csv', index=False)
-prompts_dev.to_csv('prompts-dev.csv', index=False)
+logs.to_csv('logs/logs.csv', index=False)
+logs_dev.to_csv('logs/logs-dev.csv', index=False)
+prompts.to_csv('logs/prompts.csv', index=False)
+prompts_dev.to_csv('logs/prompts-dev.csv', index=False)
 
 print("Pulled latest from database and saved to CSV files.")
+
+print("--------------------------------")
+
+print("Staging changes to logs.csv & logs-dev.csv...")
+subprocess.run(["git", "add", "logs/logs-dev.csv", "logs/logs.csv"])
+print("Committing changes...")
+subprocess.run(["git", "commit", "-m", "logs"])
+print("Done!")
 
 print("--------------------------------")
 
@@ -60,7 +68,6 @@ for table_name, (sheet_name, worksheet_name) in worksheet_map.items():
 
 print("All sheets updated successfully.")
 
-subprocess.run(["git", "add", "logs-dev.csv", "logs.csv"])
-subprocess.run(["git", "commit", "-m", "logs"])
+
 
 subprocess.run(["echo", 'bye bro'])
