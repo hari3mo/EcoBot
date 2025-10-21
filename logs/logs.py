@@ -15,15 +15,16 @@ engine = create_engine(os.getenv('MYSQL_URI')).connect()
 
 print("Pulling latest from database...")
 
-logs = pd.read_sql_table('logs', con=engine).sort_values(by='datetime', ascending=False)
-logs_dev = pd.read_sql_table('logs-dev', con=engine).sort_values(by='datetime', ascending=False)
-prompts = pd.read_sql_table('prompts', con=engine).sort_values(by='datetime', ascending=False)
-prompts_dev = pd.read_sql_table('prompts-dev', con=engine).sort_values(by='datetime', ascending=False)
+table_names = ['logs', 'logs-dev', 'prompts', 'prompts-dev']
+dfs = {}
 
-logs.to_csv('logs/logs.csv', index=False)
-logs_dev.to_csv('logs/logs-dev.csv', index=False)
-prompts.to_csv('logs/prompts.csv', index=False)
-prompts_dev.to_csv('logs/prompts-dev.csv', index=False)
+for table in table_names:
+    dfs[table] = pd.read_sql_table(table, con=engine).sort_values(by='datetime', ascending=False)
+
+dfs['logs'].to_csv('logs/logs.csv', index=False)
+dfs['logs-dev'].to_csv('logs/logs-dev.csv', index=False)
+dfs['prompts'].to_csv('logs/prompts.csv', index=False)
+dfs['prompts-dev'].to_csv('logs/prompts-dev.csv', index=False)
 
 print("Successfully pulled from database.")
 
@@ -59,7 +60,7 @@ worksheet_map = {
 
 for table_name, (sheet_name, worksheet_name) in worksheet_map.items():
     print(f"Processing table: {table_name} -> {sheet_name}, {worksheet_name}")
-    df = pd.read_sql_table(table_name, con=engine).sort_values(by='datetime', ascending=False)
+    df = dfs[table_name].copy()
     df['datetime'] = df['datetime'].astype(str)
     sheet = client.open(sheet_name)
     worksheet = sheet.worksheet(worksheet_name)
