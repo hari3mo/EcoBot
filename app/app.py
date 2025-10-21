@@ -32,9 +32,12 @@ db = SQLAlchemy(app)
 engine = create_engine(os.getenv('MYSQL_URI'))
 
 # Constants
-WH_RATE = 0.018
-ML_RATE = 0.0324
-G_CO2_RATE = 0.00594
+WH_RATE = 0.018 # Wh/token
+ML_RATE = 0.3 # mL/Wh
+G_CO2_RATE = 0.367 # gCO2/mL
+# ML_RATE = 0.0324
+# G_CO2_RATE = 0.00594
+
 USD_RATE_INPUT = 0.00000125
 USD_RATE_CACHE = 0.000000125
 USD_RATE_OUT = 0.00001
@@ -186,8 +189,10 @@ def query(prompt):
     session['cached_tokens'] = current_cache
 
     wh_cost = input_tokens * WH_RATE
-    ml_cost = input_tokens * ML_RATE
-    co2_cost = input_tokens * G_CO2_RATE
+    ml_cost = wh_cost * ML_RATE
+    co2_cost = ml_cost * G_CO2_RATE
+    # ml_cost = input_tokens * ML_RATE
+    # co2_cost = input_tokens * G_CO2_RATE
     usd_cost_in = input_tokenizer * USD_RATE_INPUT
     usd_cost_cache = cached_tokens * USD_RATE_CACHE
     usd_cost_out = usage.output_tokens * USD_RATE_OUT
