@@ -86,7 +86,7 @@ function flashTotalStat(elementId) {
   element.classList.add("total-flash")
   setTimeout(() => {
     element.classList.remove("total-flash")
-  }, 500)
+  }, 1000)
 }
 
 function showMarginalStats() {
@@ -161,7 +161,7 @@ function updateIncrement(elementId, value, decimals = 2, unit = "", prefix = "")
 
   setTimeout(() => {
     element.classList.remove("increment-flash")
-  }, 600)
+  }, 1000)
 }
 
 async function sendMessage() {
