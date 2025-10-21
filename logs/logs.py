@@ -13,7 +13,7 @@ subprocess.run(["echo", 'hi bro'])
 load_dotenv()
 engine = create_engine(os.getenv('MYSQL_URI')).connect()
 
-print("Pulling latest from database..")
+print("Pulling latest from database...")
 
 logs = pd.read_sql_table('logs', con=engine).sort_values(by='datetime', ascending=False)
 logs_dev = pd.read_sql_table('logs-dev', con=engine).sort_values(by='datetime', ascending=False)
@@ -25,15 +25,17 @@ logs_dev.to_csv('logs/logs-dev.csv', index=False)
 prompts.to_csv('logs/prompts.csv', index=False)
 prompts_dev.to_csv('logs/prompts-dev.csv', index=False)
 
-print("Pulled latest from database and saved to CSV files.")
+print("Successfully pulled from database.")
 
 print("--------------------------------")
 
 print("Staging changes to logs.csv & logs-dev.csv...")
 subprocess.run(["git", "add", "logs/logs-dev.csv", "logs/logs.csv"])
+
 print("Committing changes...")
 subprocess.run(["git", "commit", "-m", "logs"])
-print("Done!")
+
+print('Committed changes as "logs"')
 
 print("--------------------------------")
 
@@ -66,8 +68,8 @@ for table_name, (sheet_name, worksheet_name) in worksheet_map.items():
     # worksheet.update([df.columns.values.tolist()] + df.values.tolist(), value_input_option='RAW')
     print(f"Updated {worksheet_name} in {sheet_name}")
 
-print("All sheets updated successfully.")
+print("Sheets updated successfully.")
 
-
+print("--------------------------------")
 
 subprocess.run(["echo", 'bye bro'])
