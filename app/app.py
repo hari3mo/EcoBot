@@ -34,10 +34,7 @@ engine = create_engine(os.getenv('MYSQL_URI'))
 # Constants
 WH_RATE = 0.018 # Wh/token
 ML_RATE = 0.3 # mL/Wh
-G_CO2_RATE = 0.367 # gCO2/mL
-# ML_RATE = 0.0324
-# G_CO2_RATE = 0.00594
-
+G_CO2_RATE = 0.3528 # g CO2/Wh
 USD_RATE_INPUT = 0.00000125
 USD_RATE_CACHE = 0.000000125
 USD_RATE_OUT = 0.00001
