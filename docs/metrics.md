@@ -35,33 +35,29 @@ The Carbon Intensity Factor (CIF) is an industry metric measuring a facilities g
 
 The API pricing by model are available from OpenAI:
 
-$\$1.250 / \text{1M tokens}$
-
 1. **GPT-5**:
-     -   **Input**: $\frac{\$1.250}{1\text{M tokens}} \times \frac{\text{tokens}}{1000000} = \fbox{\$0.00000125/\text{token}}$
-     -   **Cached input**: $\$0.125 / \text{1M tokens} = \fbox{\$0.000000125/\text{token}}$
-     -   **Output**: $\$10.000 / 1\text{M tokens} = \fbox{\$0.00001/\text{token}}$
+     -   **Input**: $\frac{\$1.250}{1\text{M tokens}}  = \fbox{\$0.00000125/\text{token}}$
+     -   **Cached input**: $\frac{\$0.125}{1\text{M tokens}} = \fbox{\$0.000000125/\text{token}}$
+     -   **Output**: $\frac{\$10.000}{1\text{M tokens}} = \fbox{\$0.00001/\text{token}}$
 
 2.  **GPT-4o**:
-      -   **Input**: 
-      -   **Cached input**: \$1.250 / 1M tokens = $\fbox{\$0.00000125/\text{token}}$
-      -   **Output**: \$10.000 / 1M tokens = $\fbox{\$0.00001/\text{token}}$
-
-
-|   Model    |    Input   |    Output    | Cached |
-| :--------: | :--------: | :----------: | :----: |
-| **GPT-5**  | $0.00000125 | $0.00001  | $0.000000125
-| **GPT-4o** | $0.0000025 | $0.00001 | $0.00000125 | 
-
+      -   **Input**: $\frac{\$2.50}{1\text{M tokens}} = \fbox{\$0.0000025/\text{token}}$
+      -   **Cached input**: $\frac{\$1.250}{1\text{M tokens}} = \fbox{\$0.00000125/\text{token}}$
+      -   **Output**: $\frac{\$10.000}{1\text{M tokens}} = \fbox{\$0.00001/\text{token}}$
 ---
 ### ⭐ Impact per Token
 
-| Metric       | High-End Model (GPT-5) | High-Efficiency Model (GPT-4o) |
+| Metric       | GPT-5 | GPT-4o |
 | :----------- | :--------------------- | :----------------------------- |
 | **⚡ Energy** | 0.018 Wh           | 0.0006 Wh                   |
 | **💧 Water**  | 0.0054 mL          | 0.00018 mL                 |
 | **🌎 Emissions**    | 0.0064 g CO₂e          | 0.00021 g CO₂e                 |
-| **💵 Cost**    | 0.0064 g CO₂e          | 0.00021 g CO₂e                  |
+
+| **💵 Cost** |  **GPT-5**   | **GPT-4o**  |
+| :--------: | :----------: | :---------: |
+| **Input**  | $0.00000125  | $0.00000125 |
+| **Output** |   $0.00001   |  $0.00001   |
+| **Cached** | $0.000000125 | $0.00000125 |
 
 ---
 #### 📚 Sources:
@@ -72,6 +68,3 @@ $\$1.250 / \text{1M tokens}$
 5.  [How much carbon dioxide is produced per kilowatthour of U.S. electricity generation?](https://www.eia.gov/tools/faqs/faq.php?id=74&t=11)
 6.  [Microsoft 2024 Environmental Sustainability Report](https://cdn-dynmedia-1.microsoft.com/is/content/microsoftcorp/microsoft/msc/documents/presentations/CSR/2024-Environmental-Sustainability-Report-Data-Fact.pdf)
 7.  [OpenAI API Pricing](https://platform.openai.com/docs/pricing)
-
-This video explains how researchers are working to understand and benchmark the energy consumption of these large-scale AI models.
-[How GPT-5 "Thinks"](https://www.youtube.com/watch?v=RqWIvvv3SnQ)
