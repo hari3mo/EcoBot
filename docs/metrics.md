@@ -18,9 +18,11 @@ The app will use GPT-5's energy estimate to calculate statistics, but will actua
 ---
 ### 💧 Milliliters of Water (mL)
 
-The Water Use Effectiveness (WUE) is an industry metric measuring a facilities rate of water consumed (L) relative to energy consumed (kWh).
+The Water Use Effectiveness (WUE) is an industry metric measuring a facilities rate of water consumed (L) relative to energy consumed (kWh). 
 
-**Microsoft Azure WUE**: $0.30 \frac{\text{L}}{\text{kWh}} \times \frac{kWh}{1000 \text{mL}} \times \frac{\text{kWh}}{1000 \text{Wh}} = \fbox{0.30 mL/Wh}$
+**Microsoft Azure WUE**: $0.30 \frac{\text{L}}{\text{kWh}} \times \frac{kWh}{1000 \text{mL}} \times \frac{\text{kWh}}{1000 \text{Wh}} = \fbox{0.30 mL/Wh}$ 
+
+- **Water per Token**: $0.30\frac{\text{mL}}{\text{Wh}} \times 0.018\frac{\text{Wh}}{\text{token}} = \fbox{0.054 \text{mL}/\text{token}}$
 
 
 ---
@@ -29,6 +31,8 @@ The Water Use Effectiveness (WUE) is an industry metric measuring a facilities r
 The Carbon Intensity Factor (CIF) is an industry metric measuring a facilities greenhouse gas emissions (kg CO₂e) relative to energy consumed (kWh).
 
 **Microsoft Azure CIF**: $0.3528 \frac{\text{kg CO₂e}}{\text{kWh}} \times \frac{1000 \text{g}}{\text{kg}} \times \frac{\text{kWh}}{1000\text{Wh}} = \fbox{0.3528 \text{\ g CO₂e/Wh}}$
+
+- **Emissions per Token:** $0.3528\frac{\text{g CO₂e}}{\text{Wh}} \times 0.018\frac{\text{Wh}}{\text{token}} = \fbox{0.0064 \text{g CO₂e}/\text{token}}$
 
 ---
 ### 💵 USD Cost per Token ($)
