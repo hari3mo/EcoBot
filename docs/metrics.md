@@ -20,7 +20,7 @@ The app will use GPT-5's energy estimate to calculate statistics, but will actua
 
 The Water Use Effectiveness (WUE) is an industry metric measuring a facilities rate of water consumed (L) relative to energy consumed (kWh). 
 
-**Microsoft Azure WUE**: $0.30 \frac{\text{L}}{\text{kWh}} \times \frac{kWh}{1000 \text{mL}} \times \frac{\text{kWh}}{1000 \text{Wh}} = \fbox{0.30 mL/Wh}$ 
+**Microsoft Azure WUE**: $0.30 \frac{\text{L}}{\text{kWh}} \times \frac{\text{kWh}}{1000 \text{mL}} \times \frac{\text{kWh}}{1000 \text{Wh}} = \fbox{0.30 mL/Wh}$ 
 
 - **Water per Token**: $0.30\frac{\text{mL}}{\text{Wh}} \times 0.018\frac{\text{Wh}}{\text{token}} = \fbox{0.054 \text{mL}/\text{token}}$
 
