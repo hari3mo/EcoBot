@@ -16,6 +16,7 @@ body {
   min-height: 100vh;
   padding: 0;
   overflow: hidden;
+  /* Default desktop state: no body scroll */
   display: flex;
   flex-direction: column;
   -webkit-font-smoothing: antialiased;
@@ -33,6 +34,7 @@ body {
   grid-template-columns: 1fr 300px;
   gap: 1.25rem;
   height: calc(100vh - 100px);
+  /* Fixed height for desktop layout */
   flex: 1;
 }
 
@@ -342,7 +344,8 @@ body {
   gap: 0.75rem;
   padding: 0.2rem 0 0 0;
   height: 100%;
-  overflow: hidden;
+  overflow-y: auto;
+  /* Allow stats to scroll on desktop if they overflow */
 }
 
 .stat-card {
@@ -513,6 +516,7 @@ body {
 }
 
 @keyframes bounce {
+
   0%,
   80%,
   100% {
@@ -583,9 +587,26 @@ body {
    RESPONSIVE
    ============================================ */
 @media (max-width: 900px) {
+  body {
+    overflow: auto;
+    /* Allows the whole page to scroll */
+    height: auto;
+  }
+
   .container {
     grid-template-columns: 1fr;
+    height: auto;
+    /* Let the container grow with its content */
   }
+
+  /* --- NEW RULE --- */
+  /* This forces the chat section to take up viewport height */
+  /* The .chat-messages area will expand to fill this height */
+  .chat-section {
+    min-height: 70vh;
+  }
+
+  /* --- END NEW RULE --- */
 
   .course-header {
     flex-direction: column;
@@ -618,8 +639,8 @@ body {
   margin: 0.25rem 0;
 }
 
-.message-content li > ul,
-.message-content li > ol {
+.message-content li>ul,
+.message-content li>ol {
   margin: 0.25rem 0;
   padding-left: 1.25rem;
 }
