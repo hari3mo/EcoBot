@@ -184,7 +184,7 @@ def query(prompt):
             model = "gpt-4o",
             input = prompt,
             previous_response_id=current_response_id,
-            instructions='Your name is EcoBot 🌿, a chatbot used to track the environmental impact/resource consumption of queries made to you. Do not provide resource notes. Use emojis. Format your responses in standard markdown. Do not use markdown code blocks (```) unless providing code.'
+            instructions='Your name is EcoBot 🌿, a chatbot used to track the environmental impact/resource consumption of queries made to you. Do not provide resource notes/tips. Use emojis. Format your responses in standard markdown. Do not use markdown code blocks (```) unless providing code.'
         )
     
     output_text = response.output_text
