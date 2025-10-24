@@ -47,18 +47,17 @@ def not_found(e):
 @app.route("/")
 def index():
     session['prod'] = PROD
-    session.get('id', None)
-    session.get('previous_id', None)
-    session.get('total_WH', 0)
-    session.get('total_ML', 0)
-    session.get('total_CO2', 0)
-    session.get('total_usd', 0)
-    session.get('total_tokens', 0)
-    session.get('cached_tokens', 0)
-    session.get('chat_index', 0)
-    session.get('admin', False)
+    session.setdefault('id', None)
+    session.setdefault('previous_id', None)
+    session.setdefault('total_WH', 0)
+    session.setdefault('total_ML', 0)
+    session.setdefault('total_CO2', 0)
+    session.setdefault('total_usd', 0)
+    session.setdefault('total_tokens', 0)
+    session.setdefault('cached_tokens', 0)
+    session.setdefault('chat_index', 0)
+    session.setdefault('admin', False)
     
-    # Load existing stats from session
     stats = {
         "total_wh": f"{session.get('total_WH', 0):.2f}",
         "total_ml": f"{session.get('total_ML', 0):.2f}",
@@ -68,14 +67,10 @@ def index():
         "chat_index": int(session.get('chat_index', 0)),
         "cached_tokens": int(session.get('cached_tokens', 0))
     }
-
-    # History is now loaded by main.js from localStorage.
-    # We pass an empty list so the template variable exists.
     return render_template('index.html', stats=stats, chat_history_json=json.dumps([]))
 
 @app.route("/new")
 def new_chat():
-    """Clears the session to start a new chat."""
     session['id'] = None
     session['previous_id'] = None
     session['total_WH'] = 0
@@ -96,9 +91,11 @@ def chat():
     if prompt == "admin":
         session['admin'] = not session.get('admin', False)
         return jsonify({'redirect': url_for('index')})
+    
     elif prompt in ["exit", "quit"]:
         session['admin'] = False
         return jsonify({'redirect': url_for('index')})
+    
     if session.get('admin'):
         admin_commands = {
             "pull": {"endpoint": "pull", "prod": False},
@@ -109,6 +106,7 @@ def chat():
             "prompts-dev": {"endpoint": "prompts_dev", "prod": False},
             "dashboard": {"endpoint": "dashboard", "prod": True}
         }
+
         if prompt in admin_commands:
             route = admin_commands[prompt]
             if PROD and not route["prod"]:
@@ -135,6 +133,7 @@ def push():
 def pull():
     if PROD or not session.get('admin'):
         return redirect(url_for('index'))
+    
     try:
         pull_db()
         logging.info("Database pulled successfully to local CSV files.")
@@ -367,10 +366,119 @@ def pull_db():
     prompts_dev.to_csv('../logs/prompts-dev.csv', index=False)
 
 @app.route("/dashboard", methods=["GET"])
+@app.route("/dashboard", methods=["GET"])
 def dashboard():
-    # ... (dashboard code remains unchanged) ...
-    # (omitted for brevity, no changes needed here)
-    pass # Placeholder, your existing dashboard code is fine
+    # logs = 'logs' if PROD else 'logs-dev'
+    # prompts = 'prompts' if PROD else 'prompts-dev'
+    try:
+        # logs_df = pd.read_sql_table(logs, con=engine)
+        # prompts_df = pd.read_sql_table(prompts, con=engine)
+        logs_prod = pd.read_sql_table('logs', con=engine)
+        prompts_prod = pd.read_sql_table('prompts', con=engine)
+        logs_dev = pd.read_sql_table('logs-dev', con=engine)
+        prompts_dev = pd.read_sql_table('prompts-dev', con=engine)
+
+        logs_df = pd.concat([logs_prod, logs_dev], ignore_index=True)
+        prompts_df = pd.concat([prompts_prod, prompts_dev], ignore_index=True)
+    except Exception as e:
+        logging.error(f"Error reading from database for dashboard: {e}")
+        return render_template("dashboard.html", error=str(e))
+    
+    if logs_df.empty or prompts_df.empty:
+        return render_template("dashboard.html", error="No data found in database tables.")
+
+    total_queries = len(prompts_df)
+    total_wh = logs_df['wh'].sum()
+    total_ml = logs_df['ml'].sum()
+    total_g_co2 = logs_df['g_co2'].sum()
+    total_usd = (logs_df['usd_in'] + logs_df['usd_cache'] + logs_df['usd_out']).sum()
+    total_tokens = logs_df['tokens'].sum()
+    
+    avg_wh_per_query = logs_df['wh'].mean()
+    avg_ml_per_query = logs_df['ml'].mean()
+    avg_co2_per_query = logs_df['g_co2'].mean()
+    avg_usd_per_query = (logs_df['usd_in'] + logs_df['usd_cache'] + logs_df['usd_out']).mean()
+
+    kpis = {
+        'total_queries': int(total_queries),
+        'total_wh': f"{total_wh:.2f}",
+        'total_ml': f"{total_ml:.2f}",
+        'total_g_co2': f"{total_g_co2:.2f}",
+        'total_usd': f"{total_usd:.4f}",
+        'total_tokens': int(total_tokens),
+        'avg_wh_per_query': f"{avg_wh_per_query:.3f}",
+        'avg_ml_per_query': f"{avg_ml_per_query:.3f}",
+        'avg_co2_per_query': f"{avg_co2_per_query:.3f}",
+        'avg_usd_per_query': f"{avg_usd_per_query:.5f}",
+    }
+
+    logs_df['datetime'] = pd.to_datetime(logs_df['datetime'])
+    logs_df['date'] = logs_df['datetime'].dt.date
+    
+    daily_stats = logs_df.groupby('date').agg(
+        wh=('wh', 'sum'),
+        g_co2=('g_co2', 'sum'),
+        ml=('ml', 'sum'),
+        queries=('id', 'count')
+    ).reset_index()
+    
+    daily_stats['date'] = daily_stats['date'].astype(str)
+
+    timeseries_data = {
+        'labels': daily_stats['date'].tolist(),
+        'queries': daily_stats['queries'].tolist(),
+        'wh': daily_stats['wh'].tolist(),
+        'ml': daily_stats['ml'].tolist(),
+        'g_co2': daily_stats['g_co2'].tolist()
+    }
+
+    total_usd_in = logs_df['usd_in'].sum()
+    total_usd_cache = logs_df['usd_cache'].sum()
+    total_usd_out = logs_df['usd_out'].sum()
+
+    cost_breakdown_data = {
+        'labels': ['Input Cost', 'Cache Cost', 'Output Cost'],
+        'data': [round(total_usd_in, 5), round(total_usd_cache, 5), round(total_usd_out, 5)]
+    }
+
+    total_input_tokens = logs_df['input_tokens_tokenizer'].sum()
+    total_cached_tokens = logs_df['cached_tokens'].sum()
+    total_output_tokens = logs_df['output_tokens'].sum()
+    
+    token_breakdown_data = {
+        'labels': ['Input Tokens', 'Cached Tokens', 'Output Tokens'],
+        'data': [int(total_input_tokens), int(total_cached_tokens), int(total_output_tokens)]
+    }
+
+    recent_logs = {}
+    if session['admin']:
+        logs = logs_prod if PROD else logs_dev
+        prompts_simple_df = prompts_df[['id', 'prompt']]
+        # logs_recent_df = logs_df.sort_values(by='datetime', ascending=False).head(10)
+        logs_recent_df = logs.sort_values(by='datetime', ascending=False).head(10)
+        
+        recent_activity_df = pd.merge(logs_recent_df, prompts_simple_df, on='id', how='left')
+        recent_activity_df = recent_activity_df[['datetime', 'prompt', 'wh', 'ml', 'g_co2', 'tokens', 'usd_in', 'usd_cache', 'usd_out']]
+        recent_activity_df['prompt'] = recent_activity_df['prompt'].apply(lambda x: x if len(x) <= 50 else x[:50] + '...')
+        recent_logs = recent_activity_df.to_dict('records')
+        
+        for log in recent_logs:
+            log['datetime'] = log['datetime'].strftime('%Y-%m-%d %H:%M')
+            log['ml'] = f"{log['ml']:.3f}"
+            log['wh'] = f"{log['wh']:.3f}"
+            log['g_co2'] = f"{log['g_co2']:.3f}"
+
+    chart_data = {
+        'timeseries': timeseries_data,
+        'cost_breakdown': cost_breakdown_data,
+        'token_breakdown': token_breakdown_data
+    }
+
+    return render_template("dashboard.html",
+                           kpis=kpis,
+                           chart_data=json.dumps(chart_data),
+                           recent_logs=recent_logs,
+                           error=None)
 
 
 if __name__ == '__main__':
