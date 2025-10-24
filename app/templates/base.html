@@ -10,7 +10,7 @@
 </head>
 <body>
     <div class="page-container">
-        <!-- Redesigned header with icon-based actions -->
+        <!-- Improved header with better button styling -->
         <div class="course-header">
             <div class="course-left">
                 <span class="ecobot-title">🌿 EcoBot 5</span>
@@ -22,11 +22,22 @@
             <h1 class="course-title">SYN 100 - Artificial Intelligence: Climate Applications & Ethical Implications</h1>
 
             <div class="course-actions">
-                <button class="action-button" onclick="window.open('{{ url_for('dashboard') }}', '_blank')" data-tooltip="Dashboard">
-                    📊
+                <button class="action-button dashboard-btn" onclick="window.open('{{ url_for('dashboard') }}', '_blank')" data-tooltip="Dashboard" aria-label="Open Dashboard">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <span class="button-label">Dashboard</span>
                 </button>
-                <button class="action-button" onclick="startNewChat()" data-tooltip="New Chat">
-                    🔄
+                <button class="action-button new-chat-btn" onclick="startNewChat()" data-tooltip="New Chat" aria-label="Start New Chat">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        <line x1="9" y1="10" x2="15" y2="10"></line>
+                        <line x1="12" y1="7" x2="12" y2="13"></line>
+                    </svg>
+                    <span class="button-label">New Chat</span>
                 </button>
             </div>
         </div>

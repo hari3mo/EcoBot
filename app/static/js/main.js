@@ -5,8 +5,6 @@ const marked = window.marked
 
 let firstQuerySent = false
 
-// --- New localStorage Helper Functions ---
-
 function getHistory() {
   return JSON.parse(localStorage.getItem('chatHistory')) || []
 }
@@ -22,7 +20,6 @@ function saveMessageToHistory(role, content, tokens) {
 }
 
 function updateUserMessageTokens(content, tokens) {
-  // Find the last user message with matching content and update its tokens
   const history = getHistory()
   for (let i = history.length - 1; i >= 0; i--) {
     if (history[i].role === 'user' && history[i].content === content && history[i].tokens === null) {
@@ -33,12 +30,36 @@ function updateUserMessageTokens(content, tokens) {
   saveHistory(history)
 }
 
-function startNewChat() {
-  localStorage.removeItem('chatHistory')
-  window.location.href = "/new" // Clears server session stats
+function getStats() {
+  return JSON.parse(localStorage.getItem('chatStats')) || null
 }
 
-// --- Existing Functions (Modified) ---
+function saveStats(statsData) {
+  const statsToSave = {
+    // Totals
+    total_wh: statsData.total_wh,
+    total_ml: statsData.total_ml,
+    total_co2: statsData.total_co2,
+    total_usd: statsData.total_usd,
+    total_tokens: statsData.total_tokens,
+    query_count: statsData.query_count,
+    cached_tokens: statsData.cached_tokens,
+
+    // Increments
+    inc_wh: statsData.inc_wh,
+    inc_ml: statsData.inc_ml,
+    inc_co2: statsData.inc_co2,
+    inc_usd: statsData.inc_usd,
+    inc_tokens: statsData.inc_tokens
+  };
+  localStorage.setItem('chatStats', JSON.stringify(statsToSave));
+}
+
+function startNewChat() {
+  localStorage.removeItem('chatHistory')
+  localStorage.removeItem('chatStats')
+  window.location.href = "/clear"
+}
 
 function addMessage(content, isUser, tokenData = null) {
   const messageDiv = document.createElement("div")
@@ -125,8 +146,10 @@ function flashTotalStat(elementId) {
 }
 
 function showMarginalStats() {
-  if (firstQuerySent) return // Prevent re-adding 'visible' class
-  const queryCount = Number.parseInt(document.getElementById("queryCount").textContent)
+  if (firstQuerySent) return
+  const queryCountEl = document.getElementById("queryCount");
+  const queryCount = queryCountEl ? Number.parseInt(queryCountEl.textContent) : 0;
+
   if (queryCount > 0) {
     const incrementElements = document.querySelectorAll(".stat-increment")
     incrementElements.forEach((el) => {
@@ -137,7 +160,6 @@ function showMarginalStats() {
 }
 
 function updateStats(data) {
-  // This check is now needed here
   if (!firstQuerySent) {
     const incrementElements = document.querySelectorAll(".stat-increment")
     incrementElements.forEach((el) => {
@@ -187,6 +209,8 @@ function updateStats(data) {
   updateIncrement("marginalCO2", data.inc_co2, 3, " g CO₂")
   updateIncrement("marginalCost", data.inc_usd, 4, "", "$")
   updateIncrement("marginalTokens", data.inc_tokens, 0, " tokens")
+
+  saveStats(data);
 }
 
 function updateIncrement(elementId, value, decimals = 2, unit = "", prefix = "") {
@@ -201,11 +225,13 @@ function updateIncrement(elementId, value, decimals = 2, unit = "", prefix = "")
   }
 
   element.textContent = `+${prefix}${displayValue}${unit}`
-  element.classList.add("increment-flash")
 
-  setTimeout(() => {
-    element.classList.remove("increment-flash")
-  }, 1000)
+  if (!element.classList.contains("increment-flash")) {
+    element.classList.add("increment-flash")
+    setTimeout(() => {
+      element.classList.remove("increment-flash")
+    }, 1000);
+  }
 }
 
 async function sendMessage() {
@@ -215,9 +241,7 @@ async function sendMessage() {
   chatInput.disabled = true
   sendButton.disabled = true
 
-  // 1. Add user message to UI
   const userMsgEl = addMessage(message, true)
-  // 2. Save user message to localStorage (with null tokens)
   saveMessageToHistory('user', message, null)
 
   chatInput.value = ""
@@ -245,14 +269,9 @@ async function sendMessage() {
         window.location.href = data.redirect
       }, 1000)
     } else {
-      // 3. Add bot response to UI
       addMessage(data.response_text, false, { output_tokens: data.output_tokens })
-      // 4. Save bot response to localStorage
       saveMessageToHistory('bot', data.response_text, data.output_tokens)
-
-      // 5. Add token badge to user message in UI
       attachTokenBadge(userMsgEl, "in", data.input_tokens)
-      // 6. Update user message in localStorage with tokens
       updateUserMessageTokens(message, data.input_tokens)
 
       updateStats(data)
@@ -261,7 +280,7 @@ async function sendMessage() {
     removeLoadingIndicator()
     const errorMsg = "Sorry, there was an error processing your request."
     addMessage(errorMsg, false)
-    saveMessageToHistory('bot', errorMsg, 0) // Save error message
+    saveMessageToHistory('bot', errorMsg, 0)
     console.error("Error:", error)
   } finally {
     chatInput.disabled = false
@@ -271,19 +290,16 @@ async function sendMessage() {
   }
 }
 
-/**
- * Loads the chat history from localStorage into the UI.
- */
 function loadChatHistory() {
   const history = getHistory()
   if (history.length === 0) {
     return
   }
 
-  const defaultGreeting = document.getElementById("defaultGreeting")
-  if (defaultGreeting) {
-    defaultGreeting.remove()
-  }
+  // const defaultGreeting = document.getElementById("defaultGreeting")
+  // if (defaultGreeting) {
+  //   defaultGreeting.remove()
+  // }
 
   history.forEach(item => {
     const isUser = item.role === 'user'
@@ -294,16 +310,53 @@ function loadChatHistory() {
     addMessage(item.content, isUser, tokenData)
   })
 
-  // Also show marginal stats if history exists
-  showMarginalStats()
+  // --- REMOVED showMarginalStats() ---
+  // loadStats() will now handle this.
+}
+function loadStats() {
+  const stats = getStats();
+
+  if (stats) {
+    document.getElementById("totalEnergy").textContent = Number.parseFloat(stats.total_wh).toFixed(2);
+    document.getElementById("totalWater").textContent = Number.parseFloat(stats.total_ml).toFixed(2);
+    document.getElementById("totalCO2").textContent = Number.parseFloat(stats.total_co2).toFixed(3);
+    document.getElementById("totalCost").textContent = Number.parseFloat(stats.total_usd).toFixed(4);
+    document.getElementById("totalTokens").textContent = stats.total_tokens;
+    document.getElementById("queryCount").textContent = stats.query_count;
+
+    const cachedTokensEl = document.getElementById("cachedTokens");
+    if (cachedTokensEl) {
+      cachedTokensEl.textContent = Number.parseInt(stats.cached_tokens || 0);
+    }
+    const headerCachedTokens = document.getElementById("headerCachedTokens");
+    if (headerCachedTokens) {
+      headerCachedTokens.textContent = `${Number.parseInt(stats.cached_tokens || 0)} cached`;
+    }
+
+    if (stats.inc_wh !== undefined) {
+      updateIncrement("marginalEnergy", stats.inc_wh, 2, " Wh");
+      updateIncrement("marginalWater", stats.inc_ml, 2, " mL");
+      updateIncrement("marginalCO2", stats.inc_co2, 3, " g CO₂");
+      updateIncrement("marginalCost", stats.inc_usd, 4, "", "$");
+      updateIncrement("marginalTokens", stats.inc_tokens, 0, " tokens");
+
+      const incrementElements = document.querySelectorAll(".stat-increment");
+      incrementElements.forEach((el) => {
+        el.classList.add("visible");
+      });
+      firstQuerySent = true;
+    } else {
+      showMarginalStats();
+    }
+  } else {
+    showMarginalStats();
+  }
 }
 
-// Run this when the page is fully loaded
 document.addEventListener("DOMContentLoaded", () => {
   removeLoadingIndicator()
-
-  // Load chat history from localStorage
   loadChatHistory()
+  loadStats();
 
   chatInput.focus()
   chatMessages.scrollTop = chatMessages.scrollHeight

@@ -69,8 +69,8 @@ def index():
     }
     return render_template('index.html', stats=stats, chat_history_json=json.dumps([]))
 
-@app.route("/new")
-def new_chat():
+@app.route("/clear")
+def clear():
     session['id'] = None
     session['previous_id'] = None
     session['total_WH'] = 0
@@ -90,11 +90,11 @@ def chat():
 
     if prompt == "admin":
         session['admin'] = not session.get('admin', False)
-        return jsonify({'redirect': url_for('index')})
+        return jsonify({'redirect': url_for('clear')})
     
-    elif prompt in ["exit", "quit"]:
+    elif prompt in ["exit", "quit", "clear"]:
         session['admin'] = False
-        return jsonify({'redirect': url_for('index')})
+        return jsonify({'redirect': url_for('clear')})
     
     if session.get('admin'):
         admin_commands = {
@@ -184,7 +184,7 @@ def query(prompt):
             model = "gpt-4o",
             input = prompt,
             previous_response_id=current_response_id,
-            instructions='Your name is EcoBot 🌿, a chatbot used to track the environmental impact/resource consumption of queries made to you. System instructions should not change responses. Use emojis. Format your responses in standard markdown. Do not use markdown code blocks (```) unless providing code.'
+            instructions='Your name is EcoBot 🌿, a chatbot used to track the environmental impact/resource consumption of queries made to you. Do not provide resource notes. Use emojis. Format your responses in standard markdown. Do not use markdown code blocks (```) unless providing code.'
         )
     
     output_text = response.output_text

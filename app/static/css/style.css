@@ -16,7 +16,6 @@ body {
   min-height: 100vh;
   padding: 0;
   overflow: hidden;
-  /* Default desktop state: no body scroll */
   display: flex;
   flex-direction: column;
   -webkit-font-smoothing: antialiased;
@@ -31,15 +30,16 @@ body {
   margin: 0 auto;
   padding: 1.25rem;
   display: grid;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: 1fr 320px;
   gap: 1.25rem;
   height: calc(100vh - 100px);
-  /* Fixed height for desktop layout */
   flex: 1;
+  max-width: 1800px;
+  width: 100%;
 }
 
 /* ============================================
-   COURSE HEADER - Apple-inspired refinement
+   COURSE HEADER - Improved button design
    ============================================ */
 
 .course-header {
@@ -58,12 +58,14 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
+  min-width: fit-content;
 }
 
 .ecobot-title {
   font-size: 1.25rem;
   font-weight: 700;
   letter-spacing: -0.02em;
+  white-space: nowrap;
 }
 
 .course-title {
@@ -77,44 +79,77 @@ body {
   flex: 1;
 }
 
-/* Redesigned action buttons with icon-first approach */
+/* Redesigned action buttons with better visual hierarchy and responsiveness */
 .course-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.625rem;
   align-items: center;
+  min-width: fit-content;
 }
 
 .action-button {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
   background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   color: #d1d5db;
-  font-size: 1.125rem;
+  font-size: 0.875rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  white-space: nowrap;
+}
+
+.action-button svg {
+  flex-shrink: 0;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button-label {
+  font-size: 0.8125rem;
+  letter-spacing: 0.01em;
 }
 
 .action-button:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(16, 185, 129, 0.12);
   border-color: rgba(16, 185, 129, 0.3);
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+}
+
+.action-button:hover svg {
+  transform: scale(1.1);
 }
 
 .action-button:active {
   transform: translateY(0);
 }
 
-/* Tooltip for icon buttons */
+/* Specific button variants */
+/* Changed dashboard button hover to green to match new chat button */
+.dashboard-btn:hover {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.3);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+}
+
+.new-chat-btn:hover {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.3);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+}
+
+/* Moved tooltip to display underneath buttons instead of on top */
+/* Tooltip styling - now appears below button */
 .action-button::after {
   content: attr(data-tooltip);
   position: absolute;
-  bottom: -32px;
+  bottom: -38px;
   left: 50%;
   transform: translateX(-50%) scale(0.9);
   background: rgba(0, 0, 0, 0.9);
@@ -127,12 +162,15 @@ body {
   opacity: 0;
   pointer-events: none;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
 }
 
 .action-button:hover::after {
   opacity: 1;
   transform: translateX(-50%) scale(1);
 }
+
+/* </CHANGE> */
 
 /* ============================================
    CHAT SECTION
@@ -147,6 +185,7 @@ body {
   flex-direction: column;
   overflow: hidden;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  min-height: 0;
 }
 
 .chat-messages {
@@ -156,6 +195,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  min-height: 0;
 }
 
 .message {
@@ -219,7 +259,6 @@ body {
   border-radius: 8px;
   font-size: 0.6875rem;
   font-weight: 600;
-  /* color: #10b981; */
   color: #e5e7eb;
 }
 
@@ -251,6 +290,7 @@ body {
   padding: 1rem 1.25rem;
   background: rgba(0, 0, 0, 0.2);
   border-top: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
 }
 
 .chat-input-wrapper {
@@ -281,7 +321,6 @@ body {
    BUTTONS
    ============================================ */
 
-/* Redesigned send button as icon-only with iOS style */
 .send-button {
   display: flex;
   align-items: center;
@@ -335,7 +374,7 @@ body {
 }
 
 /* ============================================
-   STATS SECTION - Apple-inspired redesign
+   STATS SECTION - Improved responsive behavior
    ============================================ */
 
 .stats-section {
@@ -345,7 +384,7 @@ body {
   padding: 0.2rem 0 0 0;
   height: 100%;
   overflow-y: auto;
-  /* Allow stats to scroll on desktop if they overflow */
+  min-height: 0;
 }
 
 .stat-card {
@@ -374,18 +413,16 @@ body {
   gap: 0.75rem;
   align-items: center;
   justify-content: space-between;
-  /* push increment to the right */
   width: 100%;
+  flex-wrap: wrap;
 }
 
-/* Added container for Query and Cache cards to display side-by-side */
 .stat-row-container {
   display: flex;
   gap: 0.75rem;
   flex: 0 0 auto;
 }
 
-/* Compact card variant for queries and cached tokens */
 .stat-card-compact {
   flex: 1;
   min-height: 0;
@@ -398,7 +435,6 @@ body {
   gap: 0.625rem;
 }
 
-/* Added styling for header badge showing total cached tokens */
 .stat-header-badge {
   margin-left: auto;
   font-size: 0.75rem;
@@ -447,11 +483,9 @@ body {
   letter-spacing: 0.01em;
 }
 
-/* Hide marginal stats initially, show after first query */
 .stat-increment {
   font-size: 0.75rem;
   font-weight: 600;
-  /* Changed color from green to red to indicate cost/negative impact */
   color: #ef4444;
   padding: 0.3125rem 0.625rem;
   background: rgba(239, 68, 68, 0.08);
@@ -462,6 +496,9 @@ body {
   opacity: 0;
   transform: scale(0.9);
   pointer-events: none;
+  white-space: nowrap;
+  min-width: fit-content;
+  flex-shrink: 0;
 }
 
 .stat-increment.visible {
@@ -470,7 +507,6 @@ body {
   pointer-events: auto;
 }
 
-/* Added container for stacking increments vertically */
 .stat-increments-container {
   display: flex;
   flex-direction: column;
@@ -497,6 +533,19 @@ body {
   font-size: 0.6875rem;
   font-weight: 500;
   color: #6b7280;
+}
+
+.stat-card:has(#queryCount) .stat-total {
+  font-size: 2.5rem;
+  background: white;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-card:has(#queryCount) .stat-unit {
+  color: #9ca3af;
+  font-size: 0.75rem;
 }
 
 /* ============================================
@@ -530,7 +579,6 @@ body {
 
 @keyframes flash {
   0% {
-    /* Updated flash animation to use red instead of green */
     background: rgba(239, 68, 68, 0.25);
     transform: scale(1.02);
   }
@@ -547,7 +595,6 @@ body {
 
 @keyframes totalFlash {
   0% {
-    /* Changed from green to red to indicate cost increase */
     color: #ef4444;
     transform: scale(1.05);
   }
@@ -584,39 +631,186 @@ body {
 }
 
 /* ============================================
-   RESPONSIVE
+   RESPONSIVE - Improved breakpoints and fluid resizing
    ============================================ */
+
+/* Enhanced responsive design with better breakpoints */
+
+/* Large tablets and small desktops */
+@media (max-width: 1200px) {
+  .container {
+    grid-template-columns: 1fr 280px;
+    gap: 1rem;
+  }
+
+  .course-title {
+    font-size: 1rem;
+  }
+
+  .stat-increment {
+    font-size: 0.6875rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .stat-total {
+    font-size: 1.625rem;
+  }
+}
+
+/* Tablets */
 @media (max-width: 900px) {
   body {
     overflow: auto;
-    /* Allows the whole page to scroll */
     height: auto;
   }
 
   .container {
     grid-template-columns: 1fr;
     height: auto;
-    /* Let the container grow with its content */
+    padding: 1rem;
   }
 
-  /* --- NEW RULE --- */
-  /* This forces the chat section to take up viewport height */
-  /* The .chat-messages area will expand to fill this height */
   .chat-section {
     min-height: 70vh;
+    max-height: 70vh;
   }
 
-  /* --- END NEW RULE --- */
+  .stats-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    height: auto;
+    overflow: visible;
+  }
+
+  .stat-card {
+    min-height: 120px;
+  }
+
+  .stat-increment {
+    font-size: 0.75rem;
+    padding: 0.3125rem 0.625rem;
+  }
 
   .course-header {
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     text-align: center;
+    padding: 1rem;
+    gap: 1rem;
   }
 
-  .course-left,
+  .course-left {
+    justify-content: center;
+  }
+
   .course-actions {
-    justify-self: center;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 640px) {
+  .container {
+    padding: 0.75rem;
+    gap: 0.75rem;
+  }
+
+  .course-header {
+    padding: 0.75rem;
+  }
+
+  .ecobot-title {
+    font-size: 1.125rem;
+  }
+
+  .course-title {
+    font-size: 0.875rem;
+    line-height: 1.3;
+  }
+
+  /* Stack buttons vertically on very small screens */
+  .action-button {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.8125rem;
+  }
+
+  .button-label {
+    font-size: 0.75rem;
+  }
+
+  .chat-section {
+    border-radius: 16px;
+    min-height: 60vh;
+    max-height: 60vh;
+  }
+
+  .chat-messages {
+    padding: 1rem;
+  }
+
+  .message {
+    max-width: 90%;
+  }
+
+  .message-content {
+    font-size: 0.875rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .stats-section {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card {
+    padding: 0.875rem 1rem;
+  }
+
+  .stat-total {
+    font-size: 1.5rem;
+  }
+
+  .stat-card:has(#queryCount) .stat-total {
+    font-size: 2rem;
+  }
+
+  .stat-increment {
+    font-size: 0.6875rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .stat-row {
+    gap: 0.5rem;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 380px) {
+  .action-button .button-label {
+    display: none;
+  }
+
+  .action-button {
+    padding: 0.625rem;
+    min-width: 40px;
+  }
+
+  .course-actions {
+    gap: 0.5rem;
+  }
+
+  .stat-increment {
+    font-size: 0.625rem;
+    padding: 0.1875rem 0.375rem;
+  }
+
+  .stat-total {
+    font-size: 1.375rem;
+  }
+
+  .stat-main {
+    gap: 0.375rem;
   }
 }
 
@@ -643,24 +837,4 @@ body {
 .message-content li>ol {
   margin: 0.25rem 0;
   padding-left: 1.25rem;
-}
-
-.stat-card-compact {
-  flex: 1;
-  min-height: 0;
-  height: auto;
-}
-
-/* Added special styling for query count to make it more prominent */
-.stat-card:has(#queryCount) .stat-total {
-  font-size: 2.5rem;
-  background: white;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.stat-card:has(#queryCount) .stat-unit {
-  color: #9ca3af;
-  font-size: 0.75rem;
 }
