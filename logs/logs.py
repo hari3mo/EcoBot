@@ -30,15 +30,6 @@ print("Successfully pulled from database.")
 
 print("--------------------------------")
 
-print("Staging changes logs.csv & logs-dev.csv...")
-subprocess.run(["git", "add", "logs/logs-dev.csv", "logs/logs.csv"])
-
-print("Committing changes...")
-subprocess.run(["git", "commit", "-m", "logs"])
-
-print('Committed changes as "logs"')
-
-print("--------------------------------")
 
 print("Pushing logs to Google Sheets...")
 
@@ -70,6 +61,16 @@ for table_name, (sheet_name, worksheet_name) in worksheet_map.items():
     print(f"Updated {worksheet_name} in {sheet_name}")
 
 print("Sheets updated successfully.")
+
+print("--------------------------------")
+
+print("Staging changes logs.csv & logs-dev.csv...")
+subprocess.run(["git", "add", "logs/logs-dev.csv", "logs/logs.csv"])
+
+print("Committing changes...")
+subprocess.run(["git", "commit", "-m", "logs"])
+
+print('Committed changes as "logs"')
 
 print("--------------------------------")
 

@@ -3,9 +3,8 @@
 {% block content %}
 <div class="container">
     <div class="chat-section">
-        <!-- Messages -->
         <div class="chat-messages" id="chatMessages">
-            <div class="message bot-message">
+            <div class="message bot-message" id="defaultGreeting">
                 <div class="message-label">EcoBot</div>
                 <div class="message-content">
                     Hello! I'm EcoBot 🌿. I track the environmental impact of our conversation. Ask me anything!
@@ -28,9 +27,7 @@
         </div>
     </div>
     
-    <!-- Stats -->
     <div class="stats-section">
-        <!-- Energy Card -->
         <div class="stat-card">
             <div class="stat-header">
                 <span class="stat-icon">⚡</span>
@@ -39,14 +36,13 @@
             <br>
             <div class="stat-row">
                 <div class="stat-main">
-                    <div class="stat-total" id="totalEnergy">0</div>
+                    <div class="stat-total" id="totalEnergy">{{ stats.total_wh }}</div>
                     <div class="stat-unit">Wh</div>
                 </div>
                 <div class="stat-increment" id="marginalEnergy">+0</div>
             </div>
         </div>
 
-        <!-- Water Card -->
         <div class="stat-card">
             <div class="stat-header">
                 <span class="stat-icon">💧</span>
@@ -55,14 +51,13 @@
             <br>
             <div class="stat-row">
                 <div class="stat-main">
-                    <div class="stat-total" id="totalWater">0</div>
+                    <div class="stat-total" id="totalWater">{{ stats.total_ml }}</div>
                     <div class="stat-unit">mL</div>
                 </div>
                 <div class="stat-increment" id="marginalWater">+0</div>
             </div>
         </div>
 
-        <!-- CO2 Card -->
         <div class="stat-card">
             <div class="stat-header">
                 <span class="stat-icon">🌍</span>
@@ -71,14 +66,13 @@
             <br>
             <div class="stat-row">
                 <div class="stat-main">
-                    <div class="stat-total" id="totalCO2">0</div>
+                    <div class="stat-total" id="totalCO2">{{ stats.total_co2 }}</div>
                     <div class="stat-unit">g CO₂</div>
                 </div>
                 <div class="stat-increment" id="marginalCO2">+0</div>
             </div>
         </div>
 
-        <!-- Cost Card -->
         <div class="stat-card">
             <div class="stat-header">
                 <span class="stat-icon">💵</span>
@@ -87,24 +81,23 @@
             <br>
             <div class="stat-row">
                 <div class="stat-main">
-                    <div class="stat-total" id="totalCost">0.00</div>
+                    <div class="stat-total" id="totalCost">{{ stats.total_usd }}</div>
                     <div class="stat-unit">USD</div>
                 </div>
                 <div class="stat-increment" id="marginalCost">+0.00</div>
             </div>
         </div>
 
-        <!-- Updated Tokens Card to show cached tokens increment below marginal tokens -->
         <div class="stat-card">
             <div class="stat-header">
                 <span class="stat-icon">🪙</span>
                 <span class="stat-title">Tokens</span>
-                <div class="stat-header-badge" id="headerCachedTokens">0 cached</div>
+                <div class="stat-header-badge" id="headerCachedTokens">{{ stats.cached_tokens }} cached</div>
             </div>
             <br>
             <div class="stat-row">
                 <div class="stat-main">
-                    <div class="stat-total" id="totalTokens">0</div>
+                    <div class="stat-total" id="totalTokens">{{ stats.total_tokens }}</div>
                     <div class="stat-unit">tokens</div>
                 </div>
                 <div class="stat-increments-container">
@@ -113,7 +106,6 @@
             </div>
         </div>
 
-        <!--Queries Card-->
         <div class="stat-card">
             <div class="stat-header">
                     <span class="stat-icon">💬</span>
@@ -123,11 +115,14 @@
             <div class="stat-row">
                 <div class="stat-main">
                     <div class="stat-unit">#</div>
-                    <div class="stat-total" id="queryCount">0</div>
+                    <div class="stat-total" id="queryCount">{{ stats.chat_index }}</div>
                 </div>
             </div>
         </div>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    {% endblock %}
+    
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+{% endblock %}

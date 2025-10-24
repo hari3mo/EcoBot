@@ -66,7 +66,7 @@ The API pricing by model are available from OpenAI:
 ---
 #### 📚 Sources:
 1.  [How Hungry is Al? Benchmarking Energy, Water, and Carbon Footprint of LLM Inference](https://github.com/hari3mo/EcoGPT/blob/fd3fc5ee7c3d727a3ca5301d5647ac88e7afcad8/docs/benchmarks.pdf)
-2.  [Model Consumption & Comparison Dashboard](https://app.powerbi.com/view?r=eyJrIjoiZjVmOTI0MmMtY2U2Mi00ZTE2LTk2MGYtY2ZjNDMzODZkMjlmIiwidCI6IjQyNmQyYThkLTljY2QtNDI1NS04OTNkLTA2ODZhMzJjMTY4ZCIsImMiOjF9)
+2.  [Model Consumption & Comparison Dashboard (Very insightful!)](https://app.powerbi.com/view?r=eyJrIjoiZjVmOTI0MmMtY2U2Mi00ZTE2LTk2MGYtY2ZjNDMzODZkMjlmIiwidCI6IjQyNmQyYThkLTljY2QtNDI1NS04OTNkLTA2ODZhMzJjMTY4ZCIsImMiOjF9)
 3.  [OpenAI will not disclose GPT-5’s energy use. It could be higher than past models](https://www.theguardian.com/technology/2025/aug/09/open-ai-chat-gpt5-energy-use)
 4.  [Measuring datacenter energy and water use to improve Microsoft Cloud sustainability](https://datacenters.microsoft.com/sustainability/efficiency/)
 5.  [How much carbon dioxide is produced per kilowatthour of U.S. electricity generation?](https://www.eia.gov/tools/faqs/faq.php?id=74&t=11)

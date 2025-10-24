@@ -24,7 +24,7 @@
                 <button class="action-button" onclick="window.open('{{ url_for('dashboard') }}', '_blank')" data-tooltip="Dashboard">
                     📊
                 </button>
-                <button class="action-button" onclick="location.reload()" data-tooltip="New Chat">
+                <button class="action-button" onclick="startNewChat()" data-tooltip="New Chat">
                     🔄
                 </button>
             </div>
@@ -32,7 +32,5 @@
         {% block content %}
         {% endblock %}
     </div>
-    
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

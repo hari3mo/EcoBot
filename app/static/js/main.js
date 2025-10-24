@@ -5,6 +5,41 @@ const marked = window.marked
 
 let firstQuerySent = false
 
+// --- New localStorage Helper Functions ---
+
+function getHistory() {
+  return JSON.parse(localStorage.getItem('chatHistory')) || []
+}
+
+function saveHistory(history) {
+  localStorage.setItem('chatHistory', JSON.stringify(history))
+}
+
+function saveMessageToHistory(role, content, tokens) {
+  const history = getHistory()
+  history.push({ role, content, tokens })
+  saveHistory(history)
+}
+
+function updateUserMessageTokens(content, tokens) {
+  // Find the last user message with matching content and update its tokens
+  const history = getHistory()
+  for (let i = history.length - 1; i >= 0; i--) {
+    if (history[i].role === 'user' && history[i].content === content && history[i].tokens === null) {
+      history[i].tokens = tokens
+      break
+    }
+  }
+  saveHistory(history)
+}
+
+function startNewChat() {
+  localStorage.removeItem('chatHistory')
+  window.location.href = "/new" // Clears server session stats
+}
+
+// --- Existing Functions (Modified) ---
+
 function addMessage(content, isUser, tokenData = null) {
   const messageDiv = document.createElement("div")
   messageDiv.className = `message ${isUser ? "user-message" : "bot-message"}`
@@ -90,7 +125,9 @@ function flashTotalStat(elementId) {
 }
 
 function showMarginalStats() {
-  if (!firstQuerySent) {
+  if (firstQuerySent) return // Prevent re-adding 'visible' class
+  const queryCount = Number.parseInt(document.getElementById("queryCount").textContent)
+  if (queryCount > 0) {
     const incrementElements = document.querySelectorAll(".stat-increment")
     incrementElements.forEach((el) => {
       el.classList.add("visible")
@@ -100,7 +137,14 @@ function showMarginalStats() {
 }
 
 function updateStats(data) {
-  showMarginalStats()
+  // This check is now needed here
+  if (!firstQuerySent) {
+    const incrementElements = document.querySelectorAll(".stat-increment")
+    incrementElements.forEach((el) => {
+      el.classList.add("visible")
+    })
+    firstQuerySent = true
+  }
 
   const totalEnergy = document.getElementById("totalEnergy")
   totalEnergy.textContent = Number.parseFloat(data.total_wh).toFixed(2)
@@ -171,9 +215,12 @@ async function sendMessage() {
   chatInput.disabled = true
   sendButton.disabled = true
 
+  // 1. Add user message to UI
   const userMsgEl = addMessage(message, true)
-  chatInput.value = ""
+  // 2. Save user message to localStorage (with null tokens)
+  saveMessageToHistory('user', message, null)
 
+  chatInput.value = ""
   addLoadingIndicator()
 
   try {
@@ -189,6 +236,7 @@ async function sendMessage() {
     const lowerMsg = message.trim().toLowerCase()
     if (data.redirect && lowerMsg !== "admin" && lowerMsg !== "exit" && lowerMsg !== "quit") {
       addMessage(`Redirecting to ${data.redirect}...`, false)
+      // Don't save redirects to history
       setTimeout(() => {
         window.location.href = data.redirect
       }, 1000)
@@ -197,14 +245,23 @@ async function sendMessage() {
         window.location.href = data.redirect
       }, 1000)
     } else {
+      // 3. Add bot response to UI
       addMessage(data.response_text, false, { output_tokens: data.output_tokens })
+      // 4. Save bot response to localStorage
+      saveMessageToHistory('bot', data.response_text, data.output_tokens)
+
+      // 5. Add token badge to user message in UI
       attachTokenBadge(userMsgEl, "in", data.input_tokens)
+      // 6. Update user message in localStorage with tokens
+      updateUserMessageTokens(message, data.input_tokens)
+
       updateStats(data)
     }
   } catch (error) {
     removeLoadingIndicator()
-    addMessage("Error: " + error.message, false)
-    addMessage("Sorry, there was an error processing your request.", false)
+    const errorMsg = "Sorry, there was an error processing your request."
+    addMessage(errorMsg, false)
+    saveMessageToHistory('bot', errorMsg, 0) // Save error message
     console.error("Error:", error)
   } finally {
     chatInput.disabled = false
@@ -213,3 +270,41 @@ async function sendMessage() {
     chatMessages.scrollTop = chatMessages.scrollHeight
   }
 }
+
+/**
+ * Loads the chat history from localStorage into the UI.
+ */
+function loadChatHistory() {
+  const history = getHistory()
+  if (history.length === 0) {
+    return
+  }
+
+  const defaultGreeting = document.getElementById("defaultGreeting")
+  if (defaultGreeting) {
+    defaultGreeting.remove()
+  }
+
+  history.forEach(item => {
+    const isUser = item.role === 'user'
+    const tokenData = {
+      input_tokens: isUser ? item.tokens : null,
+      output_tokens: !isUser ? item.tokens : null
+    }
+    addMessage(item.content, isUser, tokenData)
+  })
+
+  // Also show marginal stats if history exists
+  showMarginalStats()
+}
+
+// Run this when the page is fully loaded
+document.addEventListener("DOMContentLoaded", () => {
+  removeLoadingIndicator()
+
+  // Load chat history from localStorage
+  loadChatHistory()
+
+  chatInput.focus()
+  chatMessages.scrollTop = chatMessages.scrollHeight
+})
