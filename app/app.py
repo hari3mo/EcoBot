@@ -3,7 +3,6 @@ from google.oauth2.service_account import Credentials
 from gspread_dataframe import set_with_dataframe
 from openai import OpenAI
 from dotenv import load_dotenv
-from datetime import datetime
 import pandas as pd
 import gspread
 import tiktoken
@@ -377,7 +376,6 @@ def dashboard():
         prompts_prod = pd.read_sql_table('prompts', con=engine)
         logs_dev = pd.read_sql_table('logs-dev', con=engine)
         prompts_dev = pd.read_sql_table('prompts-dev', con=engine)
-
         logs_df = pd.concat([logs_prod, logs_dev], ignore_index=True)
         prompts_df = pd.concat([prompts_prod, prompts_dev], ignore_index=True)
     except Exception as e:
