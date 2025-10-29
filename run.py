@@ -3,7 +3,7 @@ import subprocess
 
 if __name__ == "__main__":
     args = sys.argv[1:]
-    if 'app' in args:
+    if args[0] == 'app':
         subprocess.run(['python3', 'app/app.py'])
-    elif 'logs' in args:
+    elif args[0] == 'logs':
         subprocess.run(['python3', 'logs/logs.py'])
