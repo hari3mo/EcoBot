@@ -257,7 +257,6 @@ def query(prompt):
             'output_tokens': usage.output_tokens,
             'output_tokens_tokenizer': output_tokenizer,
             'cached_tokens': cached_tokens,
-            'total_tokens': query_tokens,
             'total_wh': session['total_WH'],
             'total_ml': session['total_ML'],
             'total_co2': session['total_CO2'],
@@ -276,7 +275,7 @@ def query(prompt):
     log_columns = [
         'id', 'previous_id', 'datetime', 'chat_index', 'wh', 'ml', 'g_co2', 'usd_in', 'usd_cache', 'usd_out',
         'tokens', 'input_tokens', 'input_tokens_tokenizer', 'output_tokens',
-        'output_tokens_tokenizer', 'cached_tokens', 'total_tokens', 'total_wh',
+        'output_tokens_tokenizer', 'cached_tokens', 'total_wh',
         'total_ml', 'total_co2', 'total_usd', 'total_tokens_session',
         'avg_tokens', 'avg_wh', 'avg_ml', 'avg_co2', 'avg_usd'
     ]
