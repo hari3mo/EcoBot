@@ -82,6 +82,10 @@ def clear():
     # session['admin'] = session.get('admin', False) 
     return redirect(url_for('index'))
 
+@app.route("/metrics")
+def metrics():
+    return render_template("metrics.html")
+
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()
