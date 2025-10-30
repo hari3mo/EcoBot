@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+import subprocess
 import os
 
 load_dotenv()
@@ -40,7 +41,15 @@ for i, m in enumerate(metrics):
 
 plt.tight_layout()
 plt.savefig('charts/charts.png')
+
+print("Staging changes charts.png...")
+subprocess.run(["git", "add", "charts/charts.png"])
+
+print("Committing changes...")
+subprocess.run(["git", "commit", "-m", "charts"])
+
 plt.show()
 
 # Data are clustered around smaller token values (x-axis) due to shorter queries during testing
 # However, there is a clear linear fit for each variable (positive relationship between resource consumption and token usage)
+
