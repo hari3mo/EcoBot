@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="height=device-height, initial-scale=1.0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}EcoBot{% endblock %}</title>
+    <title>{% block title %}{% endblock %} - EcoBot</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🌿</text></svg>">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
@@ -30,7 +30,7 @@
                     </svg>
                     <span class="button-label">Dashboard</span>
                 </button>
-                <button class="action-button dashboard-btn" onclick="window.open('{{ url_for('metrics') }}', '_blank')" data-tooltip="Docs" aria-label="Open Documentation">
+                <button class="action-button dashboard-btn" onclick="window.open('{{ url_for('docs') }}', '_blank')" data-tooltip="Docs" aria-label="Open Documentation">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                         <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
