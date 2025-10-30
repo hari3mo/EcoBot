@@ -1,6 +1,7 @@
 env/
 app/logs/prompts*
 .env
+.idea/
 app/.vercel
 app/__pycache__
 app/static/.DS_Store
