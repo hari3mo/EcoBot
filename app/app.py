@@ -368,7 +368,6 @@ def pull_db():
     prompts_dev.to_csv('../logs/prompts-dev.csv', index=False)
 
 @app.route("/dashboard", methods=["GET"])
-@app.route("/dashboard", methods=["GET"])
 def dashboard():
     # logs = 'logs' if PROD else 'logs-dev'
     # prompts = 'prompts' if PROD else 'prompts-dev'
