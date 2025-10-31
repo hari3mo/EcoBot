@@ -148,11 +148,15 @@ def pull():
 
 @app.route("/logs", methods=["GET"])
 def logs():
-    if not session.get('admin'):
-        return redirect(url_for('index'))
-    logs = pd.read_sql_table('logs', con=engine)\
-        .sort_values(by='datetime', ascending=False)
+    if session.get('admin'):
+        logs = pd.concat([pd.read_sql_table('logs', con=engine),\
+                          pd.read_sql_table('logs-dev', con=engine)], ignore_index=True)\
+                    .sort_values(by='datetime', ascending=False)
+    else:
+        logs = pd.read_sql_table('logs', con=engine)\
+            .sort_values(by='datetime', ascending=False)
     return render_template("logs.html", logs=logs)
+
 
 @app.route("/logs-dev", methods=["GET"])
 def logs_dev():

@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}EcoBot{% endblock %}</title>
+    <title>{% block title %}Logs - EcoBot{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🌿</text></svg>">
     <style>
         * {
             margin: 0;
@@ -32,9 +33,10 @@
         .header h1 {
             font-size: 2.5rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            {#background: linear-gradient(135deg, #10b981 0%, #34d399 100%);#}
+            {#-webkit-background-clip: text;#}
+            {#-webkit-text-fill-color: transparent;#}
+            color: #d1d5db;
             background-clip: text;
             margin-bottom: 0.5rem;
         }
@@ -62,6 +64,7 @@
             transform: translateX(-4px);
         }
 
+        /* Improved content card with better scroll handling */
         .content-card {
             background: rgba(30, 41, 59, 0.6);
             backdrop-filter: blur(10px);
@@ -69,13 +72,37 @@
             border-radius: 16px;
             padding: 2rem;
             margin-bottom: 2rem;
-            overflow-x: auto; /* Add this line */
-            /* Optionally, set a max-width if needed */
+            overflow: hidden;
         }
-        .data-table {
-            width: 100%;
-            /* ...existing code... */
-            }
+
+        .table-container {
+            overflow-x: auto;
+            margin: -0.5rem;
+            padding: 0.5rem;
+            border-radius: 12px;
+            /* Custom scrollbar styling */
+            scrollbar-width: thin;
+            scrollbar-color: rgba(16, 185, 129, 0.3) rgba(15, 23, 42, 0.4);
+        }
+
+        .table-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 4px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background: rgba(16, 185, 129, 0.3);
+            border-radius: 4px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(16, 185, 129, 0.5);
+        }
+        /* </CHANGE> */
 
         .content-title {
             font-size: 1.5rem;
@@ -84,8 +111,10 @@
             margin-bottom: 1.5rem;
         }
 
+        /* Optimized table layout for all columns to be visible */
         .data-table {
             width: 100%;
+            min-width: 900px;
             border-collapse: collapse;
             background: rgba(15, 23, 42, 0.4);
             border-radius: 12px;
@@ -98,21 +127,51 @@
 
         .data-table th {
             text-align: left;
-            padding: 1rem 1.5rem;
-            font-size: 0.875rem;
+            padding: 0.875rem 0.75rem;
+            font-size: 0.8125rem;
             color: #10b981;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             font-weight: 700;
             border-bottom: 2px solid rgba(16, 185, 129, 0.3);
+            white-space: nowrap;
         }
 
         .data-table td {
-            padding: 1rem 1.5rem;
+            padding: 0.875rem 0.75rem;
             border-bottom: 1px solid rgba(148, 163, 184, 0.1);
             color: #cbd5e1;
-            font-size: 0.95rem;
+            font-size: 0.875rem;
         }
+
+        /* Column-specific widths for optimal layout */
+        .data-table th:nth-child(1),
+        .data-table td:nth-child(1) {
+            min-width: 130px;
+        }
+
+        .data-table th:nth-child(2),
+        .data-table td:nth-child(2),
+        .data-table th:nth-child(3),
+        .data-table td:nth-child(3) {
+            min-width: 100px;
+            max-width: 150px;
+        }
+
+        .data-table th:nth-child(4),
+        .data-table td:nth-child(4),
+        .data-table th:nth-child(5),
+        .data-table td:nth-child(5),
+        .data-table th:nth-child(6),
+        .data-table td:nth-child(6),
+        .data-table th:nth-child(7),
+        .data-table td:nth-child(7),
+        .data-table th:nth-child(8),
+        .data-table td:nth-child(8) {
+            text-align: right;
+            min-width: 80px;
+        }
+        /* </CHANGE> */
 
         .data-table tbody tr {
             transition: all 0.2s ease;
@@ -155,12 +214,16 @@
             color: #3b82f6;
         }
 
+        /* Improved text truncation for ID columns */
         .text-truncate {
-            max-width: 400px;
+            max-width: 150px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8125rem;
         }
+        /* </CHANGE> */
 
         .empty-state {
             text-align: center;
@@ -232,6 +295,22 @@
             background-clip: text;
         }
 
+        /* Added scroll hint indicator */
+        .scroll-hint {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.8125rem;
+            margin-top: 0.75rem;
+            display: none;
+        }
+
+        @media (max-width: 1200px) {
+            .scroll-hint {
+                display: block;
+            }
+        }
+        /* </CHANGE> */
+
         @media (max-width: 768px) {
             body {
                 padding: 1rem;
@@ -241,8 +320,13 @@
                 font-size: 2rem;
             }
 
+            .content-card {
+                padding: 1rem;
+            }
+
             .data-table {
-                font-size: 0.875rem;
+                font-size: 0.8125rem;
+                min-width: 800px;
             }
 
             .data-table th,
@@ -251,7 +335,7 @@
             }
 
             .text-truncate {
-                max-width: 200px;
+                max-width: 100px;
             }
         }
     </style>
@@ -262,43 +346,46 @@
         <a href="/" class="back-button">← Back to Chat</a>
 
         <div class="header">
-            <h1>{% block page_title %}🌿 EcoBot{% endblock %}</h1>
-            <p>{% block page_subtitle %}Environmental Impact Analytics{% endblock %}</p>
+            <h1>{% block page_title %}🌿 EcoBot Logs{% endblock %}</h1>
+            <p>{% block page_subtitle %}{% endblock %}</p>
         </div>
 
-        <!-- ...existing code... -->
 {% block content %}
     <div class="content-card">
-        <div class="content-title">Logs</div>
         {% if logs is not none and logs.shape[0] > 0 %}
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Date/Time</th>
-                    <th>Prompt ID</th>
-                    <th>Prev ID</th>
-                    <th>Wh</th>
-                    <th>ML</th>
-                    <th>CO₂ (g)</th>
-                    <th>USD</th>
-                    <th>Tokens</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for _, row in logs.iterrows() %}
-                <tr>
-                    <td>{{ row['datetime'].strftime('%Y-%m-%d %H:%M') if row['datetime'] else '' }}</td>
-                    <td class="text-truncate">{{ row['id'] }}</td>
-                    <td class="text-truncate">{{ row['previous_id'] }}</td>
-                    <td>{{ "%.3f"|format(row['wh']) }}</td>
-                    <td>{{ "%.3f"|format(row['ml']) }}</td>
-                    <td>{{ "%.4f"|format(row['g_co2']) }}</td>
-                    <td>${{ "%.5f"|format(row['usd_in'] + row['usd_cache'] + row['usd_out']) }}</td>
-                    <td>{{ row['tokens'] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Date/Time</th>
+                        <th>Prompt ID</th>
+                        <th>Prev ID</th>
+                        <th>Wh</th>
+                        <th>ML</th>
+                        <th>CO₂ (g)</th>
+                        <th>USD</th>
+                        <th>Tokens</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for _, row in logs.iterrows() %}
+                    <tr>
+                        <td>{{ row['datetime'].strftime('%Y-%m-%d %H:%M') if row['datetime'] else '' }}</td>
+                        <td class="text-truncate">{{ row['id'] }}</td>
+                        <td class="text-truncate">{{ row['previous_id'] }}</td>
+                        <td>{{ "%.3f"|format(row['wh']) }}</td>
+                        <td>{{ "%.3f"|format(row['ml']) }}</td>
+                        <td>{{ "%.4f"|format(row['g_co2']) }}</td>
+                        <td>${{ "%.5f"|format(row['usd_in'] + row['usd_cache'] + row['usd_out']) }}</td>
+                        <td>{{ row['tokens'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            {{  logs.shape[0] }} rows x 4 columns
+        </div>
+        <div class="scroll-hint">← Scroll horizontally to view all columns →</div>
         {% else %}
         <div class="empty-state">
             <div class="empty-state-icon">📄</div>
@@ -308,7 +395,7 @@
         {% endif %}
     </div>
 {% endblock %}
-<!-- ...existing code... -->
+
     </div>
 
     {% block extra_scripts %}{% endblock %}
