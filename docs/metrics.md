@@ -1,8 +1,10 @@
 ## 📈 Metrics
 
-AI models process language using units called tokens, which are essentially pieces of words. To estimate the environmental impact of a model like GPT-5, the first step is to determine its energy consumption per token.
+AI models process language using units called tokens, which are essentially pieces of words. To estimate the environmental impact of a model like GPT-5, the first step is to determine its energy consumption (Wh) per token . 
 
-As OpenAI runs its models on Microsoft Azure data centers, this energy metric can then be combined with Microsoft's public data on water consumption and greenhouse gas emissions to calculate the model's full environmental footprint.
+This figure can then be combined with the public water consumption and greenhouse gas emissions data released by Microsoft Azure (OpenAI's cloud provider/data center partner) to calculate other metrics such as water consumption (mL), emissions (g CO₂e), and cost (USD) per token.
+
+These metrics accurately estimate a prompt's full environmental footprint.
 
 ---
 ### ⚡ Watt Hours of Energy (Wh)
