@@ -47,6 +47,7 @@ subprocess.run(["git", "add", "charts/charts.png"])
 
 print("Committing changes...")
 subprocess.run(["git", "commit", "-m", "charts"])
+print('Committed changes as "charts"')
 
 plt.show()
 
