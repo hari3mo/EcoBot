@@ -1,3 +1,78 @@
+/* css
+File: `app/static/css/style.css`
+Notes:
+- Added compositing hints for stat cards and badges to reduce flicker on high-refresh monitors.
+- Replaced background/color animation for flashes with transform/opacity-only animations.
+- Honors prefers-reduced-motion.
+*/
+
+/* ============================================
+   FLICKER REDUCTION / GPU COMPOSITING HINTS
+   ============================================ */
+
+/* Promote stat cards and increment badges to their own layer for smoother animations */
+.stat-card,
+.stat-increment,
+.total-flash,
+.increment-flash {
+  will-change: transform, opacity;
+  -webkit-transform: translate3d(0,0,0);
+  transform: translate3d(0,0,0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Avoid expensive repainting while animating small elements */
+.chat-section,
+.stat-card {
+  will-change: transform;
+}
+
+/* Ensure flash animations only animate compositable properties */
+@keyframes flash-composite {
+  from {
+    opacity: 0.0;
+    transform: scale(1.02);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.increment-flash {
+  animation-name: flash-composite;
+  animation-duration: 0.9s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
+}
+
+.total-flash {
+  animation-name: flash-composite;
+  animation-duration: 0.9s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .increment-flash,
+  .total-flash,
+  .stat-card:hover,
+  .action-button,
+  .send-button,
+  .message,
+  .loading-dot,
+  .chat-input {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
 /* ============================================
    RESET & BASE STYLES
    ============================================ */
@@ -9,7 +84,7 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial,
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial,
     sans-serif;
   background: linear-gradient(135deg, #0a0f1e 0%, #1a1f2e 100%);
   color: #e5e7eb;
@@ -100,7 +175,7 @@ body {
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
   position: relative;
   white-space: nowrap;
 }
@@ -131,7 +206,6 @@ body {
 }
 
 /* Specific button variants */
-/* Changed dashboard button hover to green to match new chat button */
 .dashboard-btn:hover {
   background: rgba(16, 185, 129, 0.12);
   border-color: rgba(16, 185, 129, 0.3);
@@ -144,8 +218,7 @@ body {
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
 }
 
-/* Moved tooltip to display underneath buttons instead of on top */
-/* Tooltip styling - now appears below button */
+/* Tooltip moved to appear below button */
 .action-button::after {
   content: attr(data-tooltip);
   position: absolute;
@@ -161,7 +234,7 @@ body {
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s;
   z-index: 100;
 }
 
@@ -169,8 +242,6 @@ body {
   opacity: 1;
   transform: translateX(-50%) scale(1);
 }
-
-/* </CHANGE> */
 
 /* ============================================
    CHAT SECTION
@@ -307,7 +378,7 @@ body {
   border-radius: 12px;
   color: #e5e7eb;
   font-size: 0.9375rem;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s;
 }
 
 .chat-input:focus {
@@ -333,7 +404,7 @@ body {
   color: white;
   font-size: 1.125rem;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
   box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
   flex-shrink: 0;
 }
@@ -363,7 +434,7 @@ body {
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
 }
 
 .new-chat-button:hover,
@@ -393,7 +464,7 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 16px;
   padding: 1rem 1.25rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s, border-color 0.3s;
   display: flex;
   flex-direction: column;
   gap: 0.625rem;
@@ -444,7 +515,7 @@ body {
   background: rgba(16, 185, 129, 0.08);
   border-radius: 8px;
   font-variant-numeric: tabular-nums;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s, opacity 0.3s;
 }
 
 .stat-icon {
@@ -492,7 +563,7 @@ body {
   border-radius: 8px;
   width: fit-content;
   font-variant-numeric: tabular-nums;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.3s;
   opacity: 0;
   transform: scale(0.9);
   pointer-events: none;
@@ -565,7 +636,6 @@ body {
 }
 
 @keyframes bounce {
-
   0%,
   80%,
   100% {
@@ -577,36 +647,31 @@ body {
   }
 }
 
-@keyframes flash {
-  0% {
-    background: rgba(239, 68, 68, 0.25);
-    transform: scale(1.02);
-  }
+/* previous non-compositable flash replaced by flash-composite above */
 
-  100% {
-    background: rgba(239, 68, 68, 0.08);
-    transform: scale(1);
-  }
-}
-
-.increment-flash {
-  animation: flash 1s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@keyframes totalFlash {
-  0% {
-    color: #ef4444;
+/* totalFlash replaced to use compositable properties */
+@keyframes total-flash-composite {
+  from {
+    opacity: 0.0;
     transform: scale(1.05);
   }
 
-  100% {
-    color: #f9fafb;
+  40% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+
+  to {
+    opacity: 1;
     transform: scale(1);
   }
 }
 
 .total-flash {
-  animation: totalFlash 1s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-name: total-flash-composite;
+  animation-duration: 0.9s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
 }
 
 /* ============================================
@@ -633,8 +698,6 @@ body {
 /* ============================================
    RESPONSIVE - Improved breakpoints and fluid resizing
    ============================================ */
-
-/* Enhanced responsive design with better breakpoints */
 
 /* Large tablets and small desktops */
 @media (max-width: 1200px) {
@@ -777,7 +840,7 @@ body {
 
   .stat-increment {
     font-size: 0.6875rem;
-    padding: 0.25rem 0.5rem;
+    padding: 0.3125rem 0.625rem;
   }
 
   .stat-row {
@@ -814,6 +877,7 @@ body {
   }
 }
 
+/* Message lists styling */
 .message-content ul,
 .message-content ol {
   margin: 0.5rem 0 0.75rem;
