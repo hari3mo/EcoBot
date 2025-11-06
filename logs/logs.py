@@ -26,7 +26,7 @@ dfs['logs-dev'].to_csv('logs/logs-dev.csv', index=False)
 dfs['prompts'].to_csv('logs/prompts.csv', index=False)
 dfs['prompts-dev'].to_csv('logs/prompts-dev.csv', index=False)
 
-print("Successfully pulled from database.")
+print("Successfully pulled to CSV from database.")
 
 print("--------------------------------")
 
