@@ -188,7 +188,7 @@ def query(prompt):
     current_response_id = session.get('id', None)
     
     response = client.responses.create(
-            model = "gpt-4o",
+            model = "gpt-5-nano",
             input = prompt,
             previous_response_id=current_response_id,
             instructions='Your name is EcoBot 🌿, a chatbot used to track the environmental impact/resource consumption of queries made to you. Do not provide resource notes/tips. Use emojis. Format your responses in standard markdown. Do not use markdown code blocks (```) unless providing code.'
@@ -198,7 +198,8 @@ def query(prompt):
     usage = response.usage
     query_tokens = usage.total_tokens
 
-    enc = tiktoken.encoding_for_model("gpt-4o")
+    # enc = tiktoken.encoding_for_model("gpt-4o")
+    enc = tiktoken.encoding_for_model("gpt-5-nano")
     input_tokenizer = len(enc.encode(prompt))
     output_tokenizer = len(enc.encode(output_text))
     input_tokens = usage.output_tokens + input_tokenizer
