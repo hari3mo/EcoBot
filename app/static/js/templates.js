@@ -134,7 +134,7 @@ const templates = {
             { name: 'person', label: 'Person to Ask', type: 'text', placeholder: 'e.g., Professor Smith, Manager Jones' },
             { name: 'context', label: 'Context/Purpose', type: 'select', options: ['Internship', 'Graduate school', 'Job application', 'Scholarship', 'Research position'] },
             { name: 'highlights', label: 'Desired Highlights', type: 'textarea', placeholder: 'What should they emphasize? e.g., Leadership, Research skills' },
-            { name: 'deadline', label: 'Deadline', type: 'text', placeholder: 'e.g., March 15' }
+            { name: 'deadline', label: 'Deadline', type: 'text', placeholder: 'e.g., March 15, 202X' }
         ],
         template: (data) => `Draft a short, professional email requesting a letter of recommendation from ${data.person} for ${data.context}. Please emphasize: ${data.highlights}. The deadline is ${data.deadline}. Include a courteous closing.`
     }
