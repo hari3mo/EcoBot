@@ -21,7 +21,6 @@
     <div class="container">
         <div class="section-header">
             <h2 class="section-title">Academic Templates</h2>
-            <p class="section-description">Templates designed for students and educators to enhance learning and productivity.</p>
         </div>
 
         <div class="templates-grid">
@@ -72,7 +71,6 @@
 
         <div class="section-header">
             <h2 class="section-title">Professional Templates</h2>
-            <p class="section-description">Templates for workplace communication and career development.</p>
         </div>
 
         <div class="templates-grid">
@@ -123,7 +121,6 @@
 
         <div class="section-header">
             <h2 class="section-title">Content & Planning Templates</h2>
-            <p class="section-description">Tools for content creation, organization, and strategic planning.</p>
         </div>
 
         <div class="templates-grid">
@@ -183,13 +180,17 @@
             <div class="modal-body" id="modalBody">
                 <!-- Form fields will be inserted here -->
             </div>
-            <div class="modal-actions">
+             <div class="modal-actions">
                 <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
                 <button class="btn btn-primary" onclick="generatePrompt()">Generate Prompt</button>
             </div>
             <div id="outputSection" class="output-section" style="display: none;">
-                <div class="output-label">Generated Prompt</div>
+                <div class="output-header">
+                    <div class="output-label">Generated Prompt</div>
+                </div>
                 <div class="output-text" id="outputText"></div>
+                <br>
+                <button class="btn btn-primary" onclick="usePrompt()">Use Prompt →</button>
             </div>
         </div>
     </div>

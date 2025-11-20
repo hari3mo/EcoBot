@@ -234,6 +234,33 @@ function updateIncrement(elementId, value, decimals = 2, unit = "", prefix = "")
   }
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  const INACTIVITY_TIMEOUT = 60 * 60 * 1000; // 1 hour in milliseconds
+  const lastActivityTime = localStorage.getItem('lastActivityTime');
+
+  if (lastActivityTime) {
+    const currentTime = new Date().getTime();
+    if (currentTime - lastActivityTime > INACTIVITY_TIMEOUT) {
+      startNewChat();
+      return;
+    }
+  }
+
+  const generatedPrompt = localStorage.getItem('generatedPrompt');
+  if (generatedPrompt) {
+    chatInput.value = generatedPrompt;
+    localStorage.removeItem('generatedPrompt');
+  }
+
+  removeLoadingIndicator()
+  loadChatHistory()
+  loadStats();
+
+  chatInput.focus()
+  chatMessages.scrollTop = chatMessages.scrollHeight
+})
+
+
 async function sendMessage() {
   const message = chatInput.value.trim()
   if (!message) return

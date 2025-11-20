@@ -192,39 +192,34 @@ function generatePrompt() {
     const template = templates[templateId];
     const form = document.getElementById('templateForm');
 
-    // Validate form
     if (!form.checkValidity()) {
         form.reportValidity();
         return;
     }
 
-    // Collect form data
     const formData = new FormData(form);
     const data = {};
     for (let [key, value] of formData.entries()) {
         data[key] = value;
     }
 
-    // Generate prompt
     const generatedPrompt = template.template(data);
 
-    // Display output
     const outputSection = document.getElementById('outputSection');
     const outputText = document.getElementById('outputText');
     outputText.textContent = generatedPrompt;
     outputSection.style.display = 'block';
 
-    // Scroll to output
     outputSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-// Close modal on outside click
-document.getElementById('templateModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeModal();
+function usePrompt() {
+    const outputText = document.getElementById('outputText').textContent;
+    if (outputText) {
+        localStorage.setItem('generatedPrompt', outputText);
+        window.location.href = "/";
     }
-});
-
+}
 // Close modal on Escape key
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
