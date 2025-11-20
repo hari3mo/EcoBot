@@ -7,6 +7,7 @@ import pandas as pd
 import gspread
 import tiktoken
 import json
+import time
 import os
 
 from flask_sqlalchemy import SQLAlchemy
@@ -187,6 +188,7 @@ def prompts_dev():
     return render_template("prompts_dev.html", prompts_dev=prompts_dev)
 
 def query(prompt):
+    start_time = time.time()
     logging.info(f'Prompt received:\n{prompt}')
     db.session.commit()
     current_response_id = session.get('id', None)
@@ -211,9 +213,7 @@ def query(prompt):
                             + usage.output_tokens)
     
     inc_cache = current_cache - session['cached_tokens']
-    
-    logging.info(f'Cache (Before): {cached_tokens}')
-    logging.info(f'Cache (After): {session["cached_tokens"] + input_tokenizer + usage.output_tokens}')
+
     logging.info(f'~{inc_cache} tokens added to cache.')
 
     session['cached_tokens'] = current_cache
@@ -242,12 +242,16 @@ def query(prompt):
     avg_usd = session['total_usd'] / session['chat_index']
     avg_tokens = session['total_tokens'] / session['chat_index']
 
+    duration = time.time() - start_time
+
     logging.info(f'Response ID: {response.id}')
     logging.info(f'Output Tokens (API): {usage.output_tokens} == ${usd_cost_out:.6f}')
     logging.info(f'Input Tokens (API): {usage.input_tokens} == ${usd_cost_in + usd_cost_cache:.6f}')
     logging.info(f'Input Tokens (Tokenizer): {input_tokenizer} == ${usd_cost_in:.6f}')
     logging.info(f'Cached Tokens: {cached_tokens} == ${usd_cost_cache:.6f}')
     logging.info(f'Query Tokens: {query_tokens} == ${usd_cost:.6f}')
+
+    logging.info(f'Response time: {duration:.2f} seconds')
 
     log_data = {
             'prompt': prompt,
