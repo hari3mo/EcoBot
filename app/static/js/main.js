@@ -58,6 +58,7 @@ function saveStats(statsData) {
 function startNewChat() {
   localStorage.removeItem('chatHistory')
   localStorage.removeItem('chatStats')
+  localStorage.removeItem('lastActivityTime');
   window.location.href = "/clear"
 }
 
@@ -201,7 +202,6 @@ function updateStats(data) {
   const headerCachedTokens = document.getElementById("headerCachedTokens")
   if (headerCachedTokens) {
     headerCachedTokens.textContent = `${Number.parseInt(data.cached_tokens || 0)} cached`
-    // flashTotalStat("headerCachedTokens")
   }
 
   updateIncrement("marginalEnergy", data.inc_wh, 2, " Wh")
@@ -238,6 +238,8 @@ async function sendMessage() {
   const message = chatInput.value.trim()
   if (!message) return
 
+  localStorage.setItem('lastActivityTime', new Date().getTime());
+
   chatInput.disabled = true
   sendButton.disabled = true
 
@@ -260,7 +262,6 @@ async function sendMessage() {
     const lowerMsg = message.trim().toLowerCase()
     if (data.redirect && lowerMsg !== "admin" && lowerMsg !== "exit" && lowerMsg !== "quit") {
       addMessage(`Redirecting to ${data.redirect}...`, false)
-      // Don't save redirects to history
       setTimeout(() => {
         window.location.href = data.redirect
       }, 1000)
@@ -296,11 +297,6 @@ function loadChatHistory() {
     return
   }
 
-  // const defaultGreeting = document.getElementById("defaultGreeting")
-  // if (defaultGreeting) {
-  //   defaultGreeting.remove()
-  // }
-
   history.forEach(item => {
     const isUser = item.role === 'user'
     const tokenData = {
@@ -309,10 +305,8 @@ function loadChatHistory() {
     }
     addMessage(item.content, isUser, tokenData)
   })
-
-  // --- REMOVED showMarginalStats() ---
-  // loadStats() will now handle this.
 }
+
 function loadStats() {
   const stats = getStats();
 
@@ -354,6 +348,17 @@ function loadStats() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  const INACTIVITY_TIMEOUT = 60 * 60 * 1000; // 1 hour in milliseconds
+  const lastActivityTime = localStorage.getItem('lastActivityTime');
+
+  if (lastActivityTime) {
+    const currentTime = new Date().getTime();
+    if (currentTime - lastActivityTime > INACTIVITY_TIMEOUT) {
+      startNewChat();
+      return;
+    }
+  }
+
   removeLoadingIndicator()
   loadChatHistory()
   loadStats();
