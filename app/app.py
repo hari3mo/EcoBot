@@ -197,8 +197,7 @@ def query(prompt):
     usage = response.usage
     query_tokens = usage.total_tokens
 
-    # enc = tiktoken.encoding_for_model("gpt-4o")
-    enc = tiktoken.encoding_for_model("gpt-5-nano")
+    enc = tiktoken.encoding_for_model("gpt-4o-mini")
     input_tokenizer = len(enc.encode(prompt))
     output_tokenizer = len(enc.encode(output_text))
     input_tokens = usage.output_tokens + input_tokenizer
