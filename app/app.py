@@ -186,12 +186,11 @@ def query(prompt):
     logging.info(f'Prompt received:\n{prompt}')
     db.session.commit()
     current_response_id = session.get('id', None)
-    
     response = client.responses.create(
-            model = "gpt-5-nano",
+            model = "gpt-5-nano", # Simulating GPT 5
             input = prompt,
             previous_response_id=current_response_id,
-            instructions='Your name is EcoBot 🌿, a chatbot used to track the environmental impact/resource consumption of queries made to you. Do not provide resource notes/tips. Use emojis. Format your responses in standard markdown. Do not use markdown code blocks (```) unless providing code.'
+            instructions=f'Your name is EcoBot 🌿, a chatbot used to track the environmental impact/resource consumption of queries made to you. Do not provide resource consumption notes/tips. Use emojis. Format your responses in standard markdown. Do not use markdown code blocks (```) unless providing code.'
         )
     
     output_text = response.output_text
