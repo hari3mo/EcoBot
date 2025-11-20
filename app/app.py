@@ -86,6 +86,10 @@ def clear():
 def docs():
     return render_template("docs.html")
 
+@app.route("/templates")
+def templates():
+    return render_template("templates.html")
+
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()

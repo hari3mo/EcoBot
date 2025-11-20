@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Templates - EcoBot</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🌿</text></svg>">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/templates.css') }}">
+</head>
+<body>
+    <div class="page-header">
+        <div class="header-left">
+            <span class="ecobot-title">🌿 EcoBot</span>
+            <h1 class="page-title">AI Prompt Templates</h1>
+        </div>
+        <a href="/" class="back-button">
+            ← Back to Chat
+        </a>
+    </div>
+
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Academic Templates</h2>
+            <p class="section-description">Templates designed for students and educators to enhance learning and productivity.</p>
+        </div>
+
+        <div class="templates-grid">
+            <!-- Asking a Question -->
+            <div class="template-card" onclick="openTemplate('question')">
+                <span class="template-icon">💭</span>
+                <h3 class="template-name">Ask a Question</h3>
+                <p class="template-description">Get expert explanations for complex concepts with examples and analogies.</p>
+                <div class="template-tags">
+                    <span class="template-tag">Learning</span>
+                    <span class="template-tag">Tutoring</span>
+                </div>
+            </div>
+
+            <!-- Create Exam/Quiz -->
+            <div class="template-card" onclick="openTemplate('exam')">
+                <span class="template-icon">📝</span>
+                <h3 class="template-name">Create Exam/Quiz</h3>
+                <p class="template-description">Generate custom tests with solutions based on your study material.</p>
+                <div class="template-tags">
+                    <span class="template-tag">Assessment</span>
+                    <span class="template-tag">Study</span>
+                </div>
+            </div>
+
+            <!-- Summarize Text -->
+            <div class="template-card" onclick="openTemplate('summarize')">
+                <span class="template-icon">📄</span>
+                <h3 class="template-name">Summarize Text</h3>
+                <p class="template-description">Extract key ideas from long texts with optional quotes as evidence.</p>
+                <div class="template-tags">
+                    <span class="template-tag">Reading</span>
+                    <span class="template-tag">Analysis</span>
+                </div>
+            </div>
+
+            <!-- Create Flashcards -->
+            <div class="template-card" onclick="openTemplate('flashcards')">
+                <span class="template-icon">🃏</span>
+                <h3 class="template-name">Create Flashcards</h3>
+                <p class="template-description">Generate study flashcards ready to import into Quizlet.</p>
+                <div class="template-tags">
+                    <span class="template-tag">Memorization</span>
+                    <span class="template-tag">Study</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2 class="section-title">Professional Templates</h2>
+            <p class="section-description">Templates for workplace communication and career development.</p>
+        </div>
+
+        <div class="templates-grid">
+            <!-- Create Email -->
+            <div class="template-card" onclick="openTemplate('email')">
+                <span class="template-icon">📧</span>
+                <h3 class="template-name">Draft an Email</h3>
+                <p class="template-description">Compose professional emails with custom tone and call-to-action.</p>
+                <div class="template-tags">
+                    <span class="template-tag">Communication</span>
+                    <span class="template-tag">Professional</span>
+                </div>
+            </div>
+
+            <!-- Create Resume -->
+            <div class="template-card" onclick="openTemplate('resume')">
+                <span class="template-icon">📋</span>
+                <h3 class="template-name">Build a Resume</h3>
+                <p class="template-description">Create tailored resumes highlighting your skills and accomplishments.</p>
+                <div class="template-tags">
+                    <span class="template-tag">Career</span>
+                    <span class="template-tag">Job Search</span>
+                </div>
+            </div>
+
+            <!-- Letter of Recommendation -->
+            <div class="template-card" onclick="openTemplate('recommendation')">
+                <span class="template-icon">✉️</span>
+                <h3 class="template-name">Request Recommendation</h3>
+                <p class="template-description">Draft professional requests for letters of recommendation.</p>
+                <div class="template-tags">
+                    <span class="template-tag">Career</span>
+                    <span class="template-tag">Academic</span>
+                </div>
+            </div>
+
+            <!-- Create Advertisement -->
+            <div class="template-card" onclick="openTemplate('ad')">
+                <span class="template-icon">📢</span>
+                <h3 class="template-name">Media Advertisement</h3>
+                <p class="template-description">Create targeted advertisements for products or services.</p>
+                <div class="template-tags">
+                    <span class="template-tag">Marketing</span>
+                    <span class="template-tag">Business</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2 class="section-title">Content & Planning Templates</h2>
+            <p class="section-description">Tools for content creation, organization, and strategic planning.</p>
+        </div>
+
+        <div class="templates-grid">
+            <!-- Planning -->
+            <div class="template-card" onclick="openTemplate('planning')">
+                <span class="template-icon">🎯</span>
+                <h3 class="template-name">Strategic Planning</h3>
+                <p class="template-description">Create comprehensive plans with timelines, costs, and alternatives.</p>
+                <div class="template-tags">
+                    <span class="template-tag">Strategy</span>
+                    <span class="template-tag">Organization</span>
+                </div>
+            </div>
+
+            <!-- Rewrite Content -->
+            <div class="template-card" onclick="openTemplate('rewrite')">
+                <span class="template-icon">✏️</span>
+                <h3 class="template-name">Rewrite Content</h3>
+                <p class="template-description">Transform text to match different tones while preserving meaning.</p>
+                <div class="template-tags">
+                    <span class="template-tag">Writing</span>
+                    <span class="template-tag">Editing</span>
+                </div>
+            </div>
+
+            <!-- Improve Text -->
+            <div class="template-card" onclick="openTemplate('improve')">
+                <span class="template-icon">⭐</span>
+                <h3 class="template-name">Improve Text</h3>
+                <p class="template-description">Enhance clarity, structure, and flow of your writing.</p>
+                <div class="template-tags">
+                    <span class="template-tag">Enhancement</span>
+                    <span class="template-tag">Quality</span>
+                </div>
+            </div>
+
+            <!-- Organize -->
+            <div class="template-card" onclick="openTemplate('organize')">
+                <span class="template-icon">📊</span>
+                <h3 class="template-name">Organize Information</h3>
+                <p class="template-description">Sort and categorize data into structured formats.</p>
+                <div class="template-tags">
+                    <span class="template-tag">Organization</span>
+                    <span class="template-tag">Data</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="templateModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Template</h2>
+                <button class="close-button" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Form fields will be inserted here -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="generatePrompt()">Generate Prompt</button>
+            </div>
+            <div id="outputSection" class="output-section" style="display: none;">
+                <div class="output-label">Generated Prompt</div>
+                <div class="output-text" id="outputText"></div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/templates.js') }}"></script>
+</body>
+</html>
