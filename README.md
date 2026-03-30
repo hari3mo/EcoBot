@@ -1,6 +1,8 @@
 # EcoBot 🌿
 
-EcoBot is a Flask-based web application designed to track and visualize the exact resource consumption of queries to high-performace LLMs such as GPT-5. 
+EcoBot is a Flask-based web application designed to track and visualize the resource consumption of queries to high-performace LLMs such as GPT-5. 
+
+Live App: https://eco-bot-beta.vercel.app/
 
 ## 🚀 Features
 
