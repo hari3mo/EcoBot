@@ -1,13 +1,13 @@
 # EcoBot 🌿
 
-EcoBot is a Flask-based web application designed to track and visualize the environmental impact and resource consumption of AI queries. It specifically estimates energy usage (Wh), water consumption (mL), and carbon emissions (g CO₂e) based on token usage, simulating the footprint of high-performance models like GPT-5.
+EcoBot is a Flask-based web application designed to track and visualize the environmental impact and resource consumption of AI queries of high-performace models like GPT-5. 
 
 ## 🚀 Features
 
-* **Real-time Environmental Tracking**: Calculates the footprint of every chat interaction, including energy, water, and CO2e emissions.
+* **Real-time Environmental Tracking**: Calculates the footprint of every chat interaction, including energy usage (Wh), water consumption (mL), and carbon emissions (g CO₂e) based on token usage.
 * **Token-Based Cost Estimation**: Estimates USD costs for input, output, and cached tokens.
-* **Usage Dashboard**: Provides comprehensive analytics including daily time series stats, cost breakdowns, and token distributions.
-* **Database Integration**: Logs all interactions and metrics to a MySQL database using SQLAlchemy.
+* **Usage Dashboard**: Provides analytics including daily time series stats, cost breakdowns, and token distributions.
+* **Database Integration**: Logs all interactions and metrics to a MySQL databse.
 * **Google Sheets Sync**: Integrated functionality to push database logs to Google Sheets.
 * **Serverless Deployment**: Configured for seamless deployment on Vercel.
 
